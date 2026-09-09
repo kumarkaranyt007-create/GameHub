@@ -83,16 +83,22 @@
     }
 
     .brand-logo {
-      width: 64px;
-      height: 64px;
+      width: 90px;
+      height: 70px;
       margin-bottom: 8px;
-      filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.55));
+      filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.6));
       animation: float 4s ease-in-out infinite;
     }
 
     @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-5px); }
+      0%, 100% { 
+        transform: translateY(0px); 
+        filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.55));
+      }
+      50% { 
+        transform: translateY(-5px); 
+        filter: drop-shadow(0 0 26px rgba(6, 182, 212, 0.85));
+      }
     }
 
     h1 {
@@ -416,25 +422,31 @@
         <span>NETWORK: ONLINE</span>
       </div>
       
-      <!-- Custom Tech Gaming Vector Logo -->
-      <svg class="brand-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Custom Tech Logo (Naught Kansari Limited) -->
+      <svg class="brand-logo" viewBox="0 0 150 110" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="cyberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#38bdf8"/>
-            <stop offset="50%" stop-color="#818cf8"/>
-            <stop offset="100%" stop-color="#06b6d4"/>
-          </linearGradient>
-          <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.2"/>
-            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.05"/>
+            <stop offset="50%" stop-color="#06b6d4"/>
+            <stop offset="100%" stop-color="#0284c7"/>
           </linearGradient>
         </defs>
-        <polygon points="50,4 92,24 92,72 50,96 8,72 8,24" stroke="url(#cyberGrad)" stroke-width="3.5" fill="url(#glowGrad)"/>
-        <circle cx="50" cy="24" r="3.5" fill="#38bdf8"/>
-        <circle cx="28" cy="62" r="3.5" fill="#22c55e"/>
-        <circle cx="72" cy="62" r="3.5" fill="#22c55e"/>
-        <path d="M50 27 L28 59 M50 27 L72 59 M28 62 L72 62" stroke="rgba(56, 189, 248, 0.4)" stroke-width="2"/>
-        <path d="M38 48 H62 M50 36 V60" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
+        <!-- Coding Brackets < and > -->
+        <path d="M 22 55 L 34 38 M 22 55 L 34 72" stroke="#38bdf8" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 128 55 L 116 38 M 128 55 L 116 72" stroke="#38bdf8" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Top Small Tag </ -->
+        <text x="75" y="16" font-family="monospace" font-size="11" font-weight="900" fill="#22d3ee" text-anchor="middle">&lt;/&gt;</text>
+        <!-- Connected 'NK' Circuit Lines -->
+        <path d="M 44 26 L 44 84 M 44 26 L 75 84 M 75 26 L 75 84" stroke="url(#cyberGrad)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 75 55 L 106 26 M 75 55 L 106 84" stroke="url(#cyberGrad)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Cyber Node Points -->
+        <circle cx="44" cy="26" r="4.5" fill="#38bdf8"/>
+        <circle cx="44" cy="84" r="4.5" fill="#06b6d4"/>
+        <circle cx="75" cy="26" r="4.5" fill="#e0f2fe"/>
+        <circle cx="75" cy="84" r="4.5" fill="#0284c7"/>
+        <circle cx="106" cy="26" r="4.5" fill="#38bdf8"/>
+        <circle cx="106" cy="84" r="4.5" fill="#06b6d4"/>
+        <circle cx="75" cy="55" r="3.5" fill="#ffffff"/>
       </svg>
 
       <h1>GAME HUB</h1>
