@@ -10,6 +10,7 @@
       --cyber-neon: #06b6d4;
       --cyber-green: #22c55e;
       --cyber-red: #ef4444;
+      --cyber-purple: #c084fc;
       --glass-bg: rgba(10, 15, 29, 0.78);
       --glass-card: rgba(17, 24, 39, 0.72);
       --glass-border: rgba(56, 189, 248, 0.28);
@@ -39,7 +40,7 @@
 
     .container {
       width: 100%;
-      max-width: 520px;
+      max-width: 540px;
     }
 
     .status-bar {
@@ -75,15 +76,15 @@
 
     .header-box {
       text-align: center;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
     .brand-logo {
-      width: 68px;
-      height: 68px;
+      width: 64px;
+      height: 64px;
       margin-bottom: 8px;
       filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.55));
       animation: float 4s ease-in-out infinite;
@@ -124,6 +125,43 @@
       background: rgba(148, 163, 184, 0.4);
     }
 
+    /* Tab Switcher */
+    .tab-container {
+      display: flex;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 18px;
+      gap: 6px;
+      backdrop-filter: blur(12px);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px 14px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(129, 140, 248, 0.25));
+      color: var(--cyber-blue);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+    }
+
     .card {
       background: var(--glass-card);
       backdrop-filter: blur(18px);
@@ -135,7 +173,7 @@
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.55);
     }
 
-    input {
+    input, select, textarea {
       width: 100%;
       padding: 12px 14px;
       margin: 7px 0;
@@ -146,9 +184,18 @@
       font-size: 14px;
       outline: none;
       transition: all 0.2s ease;
+      font-family: inherit;
     }
 
-    input:focus {
+    textarea {
+      font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace;
+      font-size: 0.85rem;
+      min-height: 120px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    input:focus, select:focus, textarea:focus {
       border-color: var(--cyber-blue);
       box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
       background: rgba(15, 23, 42, 0.95);
@@ -224,6 +271,10 @@
       animation: slideIn 0.3s ease-out;
     }
 
+    .feed-item.solution-card {
+      border-left-color: var(--cyber-purple);
+    }
+
     @keyframes slideIn {
       from { opacity: 0; transform: translateY(-10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -241,6 +292,17 @@
       color: #fde047;
       font-size: 1.15rem;
       letter-spacing: 0.04em;
+    }
+
+    .lang-badge {
+      background: rgba(192, 132, 252, 0.18);
+      border: 1px solid rgba(192, 132, 252, 0.4);
+      color: #e9d5ff;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-family: monospace;
+      font-weight: bold;
     }
 
     .countdown-tag {
@@ -274,6 +336,36 @@
       box-shadow: 0 0 10px rgba(34, 197, 94, 0.18);
     }
 
+    /* Solution Terminal Box */
+    .code-snippet-box {
+      background: #090d16;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      position: relative;
+    }
+
+    .code-snippet-box pre {
+      font-family: 'SF Mono', Monaco, Consolas, monospace;
+      font-size: 0.82rem;
+      color: #a7f3d0;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 220px;
+      overflow-y: auto;
+      margin: 0;
+    }
+
+    .code-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
     .link-text {
       color: var(--cyber-blue);
       word-break: break-all;
@@ -305,6 +397,14 @@
       margin-top: 10px;
       font-family: monospace;
     }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -329,14 +429,11 @@
             <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.05"/>
           </linearGradient>
         </defs>
-        <!-- Outer Cyber Shield Frame -->
         <polygon points="50,4 92,24 92,72 50,96 8,72 8,24" stroke="url(#cyberGrad)" stroke-width="3.5" fill="url(#glowGrad)"/>
-        <!-- Inner Circuit Nodes -->
         <circle cx="50" cy="24" r="3.5" fill="#38bdf8"/>
         <circle cx="28" cy="62" r="3.5" fill="#22c55e"/>
         <circle cx="72" cy="62" r="3.5" fill="#22c55e"/>
         <path d="M50 27 L28 59 M50 27 L72 59 M28 62 L72 62" stroke="rgba(56, 189, 248, 0.4)" stroke-width="2"/>
-        <!-- Futuristic Gamepad / Monogram Symbol -->
         <path d="M38 48 H62 M50 36 V60" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
       </svg>
 
@@ -344,22 +441,59 @@
       <div class="sub-brand">By Naughty Kansari Limited</div>
     </div>
 
-    <div class="card">
-      <h3 style="margin-bottom: 8px; font-size: 1rem; color: #cbd5e1;">Broadcast Lobby</h3>
-      <input type="text" id="game" placeholder="Game Name (e.g. BGMI, Skribbl)">
-      <input type="text" id="code" placeholder="Room Code / Match Key">
-      <input type="url" id="link" placeholder="Direct Link (optional)">
-      
-      <div class="btn-grid">
-        <button class="broadcast-btn" onclick="postUpdate()">Broadcast</button>
-        <button class="clear-btn" onclick="clearAllGames()">Clear Feed</button>
-      </div>
+    <!-- Navigation Tabs -->
+    <div class="tab-container">
+      <button class="tab-btn active" onclick="switchTab('game-tab')">🎮 Game Lobbies</button>
+      <button class="tab-btn" onclick="switchTab('code-tab')">💻 Lab Solutions</button>
     </div>
 
-    <div class="section-title">
-      <span>Active Broadcast</span>
+    <!-- TAB 1: GAME HUB -->
+    <div id="game-tab" class="tab-content active">
+      <div class="card">
+        <h3 style="margin-bottom: 8px; font-size: 1rem; color: #cbd5e1;">Broadcast Lobby</h3>
+        <input type="text" id="game" placeholder="Game Name (e.g. BGMI, Skribbl)">
+        <input type="text" id="code" placeholder="Room Code / Match Key">
+        <input type="url" id="link" placeholder="Direct Link (optional)">
+        
+        <div class="btn-grid">
+          <button class="broadcast-btn" onclick="postGameUpdate()">Broadcast</button>
+          <button class="clear-btn" onclick="clearFeed('games')">Clear Feed</button>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <span>Active Broadcast</span>
+      </div>
+      <div id="feed">Connecting to network...</div>
     </div>
-    <div id="feed">Connecting to network...</div>
+
+    <!-- TAB 2: CODING SOLUTIONS -->
+    <div id="code-tab" class="tab-content">
+      <div class="card">
+        <h3 style="margin-bottom: 8px; font-size: 1rem; color: #cbd5e1;">Broadcast Code Solution</h3>
+        <select id="code-lang">
+          <option value="C/C++">C / C++</option>
+          <option value="Java">Java</option>
+          <option value="Python">Python</option>
+          <option value="Web/HTML/JS">Web (HTML/CSS/JS)</option>
+          <option value="SQL">SQL</option>
+          <option value="Other">Other</option>
+        </select>
+        <input type="text" id="code-title" placeholder="Question Title (e.g. Matrix Multiplication, Reverse String)">
+        <textarea id="code-body" placeholder="// Paste complete working code solution here..."></textarea>
+        
+        <div class="btn-grid">
+          <button class="broadcast-btn" onclick="postCodeSolution()">Transmit Solution</button>
+          <button class="clear-btn" onclick="clearFeed('solutions')">Clear Feed</button>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <span>Active Lab Solutions</span>
+      </div>
+      <div id="code-feed">Connecting to network...</div>
+    </div>
+
   </div>
 
   <script type="module">
@@ -380,9 +514,22 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const gamesRef = ref(db, 'lab-games');
+    const solutionsRef = ref(db, 'lab-solutions');
 
-    // 5 minutes expiry in milliseconds (5 * 60 * 1000)
-    const EXPIRY_TIME_MS = 5 * 60 * 1000;
+    const EXPIRY_TIME_MS = 5 * 60 * 1000; // 5 minutes
+
+    // Tab Switcher
+    window.switchTab = function(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      if (tabId === 'game-tab') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+      } else {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+      }
+    };
 
     window.copyText = function(text, btnElement) {
       navigator.clipboard.writeText(text).then(() => {
@@ -398,7 +545,8 @@
       });
     };
 
-    window.postUpdate = function() {
+    // Broadcast Game
+    window.postGameUpdate = function() {
       const game = document.getElementById("game").value.trim();
       const code = document.getElementById("code").value.trim();
       const link = document.getElementById("link").value.trim();
@@ -421,13 +569,37 @@
       document.getElementById("link").value = "";
     };
 
-    window.clearAllGames = function() {
-      if (confirm("Wipe all active broadcasts across all systems?")) {
-        remove(gamesRef);
+    // Broadcast Coding Solution
+    window.postCodeSolution = function() {
+      const lang = document.getElementById("code-lang").value;
+      const title = document.getElementById("code-title").value.trim();
+      const body = document.getElementById("code-body").value.trim();
+
+      if (!body) {
+        alert("Please paste your code solution before transmitting!");
+        return;
+      }
+
+      push(solutionsRef, {
+        lang: lang,
+        title: title || "Lab Problem Solution",
+        codeBody: body,
+        timeString: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        createdAt: Date.now()
+      });
+
+      document.getElementById("code-title").value = "";
+      document.getElementById("code-body").value = "";
+    };
+
+    window.clearFeed = function(type) {
+      if (confirm(`Wipe all active ${type} broadcasts across all systems?`)) {
+        if (type === 'games') remove(gamesRef);
+        if (type === 'solutions') remove(solutionsRef);
       }
     };
 
-    // Real-time second-by-second 5-minute countdown updater
+    // 5-minute countdown ticker
     setInterval(() => {
       const countdownElements = document.querySelectorAll("[data-created]");
       const now = Date.now();
@@ -446,6 +618,7 @@
       });
     }, 1000);
 
+    // Sync Game Lobbies
     onValue(gamesRef, (snapshot) => {
       const feed = document.getElementById("feed");
       feed.innerHTML = "";
@@ -461,7 +634,6 @@
       let activeCount = 0;
 
       entries.forEach(([key, item]) => {
-        // Auto wipe if older than 5 minutes
         if (item.createdAt && (now - item.createdAt > EXPIRY_TIME_MS)) {
           remove(ref(db, `lab-games/${key}`));
           return;
@@ -499,13 +671,4 @@
         html += `<div class="time">TRANSMITTED: ${item.timeString || "RECENT"}</div>`;
 
         div.innerHTML = html;
-        feed.appendChild(div);
-      });
-
-      if (activeCount === 0) {
-        feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE SIGNALS]</p>";
-      }
-    });
-  </script>
-</body>
-</html>
+        feed.appendChild
