@@ -43,7 +43,7 @@
       color: white;
       font-size: 15px;
     }
-    button {
+    button.broadcast-btn {
       background: #38bdf8;
       color: #0f172a;
       font-weight: bold;
@@ -51,39 +51,73 @@
       cursor: pointer;
       margin-top: 10px;
     }
+    button.clear-btn {
+      background: #ef4444;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      margin-top: 6px;
+      padding: 8px;
+      font-size: 13px;
+    }
     .feed-item {
       background: #1e293b;
       border-left: 4px solid #38bdf8;
       padding: 12px;
       border-radius: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .game-name {
       font-weight: bold;
       color: #fbbf24;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
+      margin-bottom: 6px;
+    }
+    .row-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      flex-wrap: wrap;
     }
     .code-box {
       background: #0f172a;
-      padding: 6px 10px;
+      padding: 6px 12px;
       border-radius: 6px;
       font-family: monospace;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       color: #4ade80;
       display: inline-block;
-      margin: 6px 0;
+      border: 1px solid #334155;
     }
-    .link-btn {
-      display: block;
+    .link-text {
       color: #38bdf8;
       word-break: break-all;
       text-decoration: underline;
-      margin-top: 4px;
+      font-size: 0.9rem;
+      max-width: 320px;
+    }
+    .copy-pill {
+      background: #334155;
+      color: #f8fafc;
+      border: 1px solid #475569;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      width: auto;
+      margin: 0;
+      transition: background 0.2s;
+    }
+    .copy-pill:active {
+      background: #22c55e;
+      color: #0f172a;
     }
     .time {
       font-size: 0.75rem;
       color: #94a3b8;
-      margin-top: 6px;
+      margin-top: 8px;
     }
   </style>
 </head>
@@ -97,7 +131,8 @@
       <input type="text" id="game" placeholder="Game Name (e.g. BGMI, Skribbl)">
       <input type="text" id="code" placeholder="Room Code / Match ID">
       <input type="url" id="link" placeholder="Direct Link (optional)">
-      <button onclick="postUpdate()">Broadcast to Systems</button>
+      <button class="broadcast-btn" onclick="postUpdate()">Broadcast to Systems</button>
+      <button class="clear-btn" onclick="clearAllGames()">Clear Feed Now</button>
     </div>
 
     <h3>Active Games</h3>
@@ -106,7 +141,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyALuuDDM5SeC5_Ff5FNg1FofYfm06BxdY0",
@@ -123,6 +158,23 @@
     const db = getDatabase(app);
     const gamesRef = ref(db, 'lab-games');
 
+    // Automatically remove after 10 minutes (600,000 milliseconds)
+    const EXPIRY_TIME_MS = 10 * 60 * 1000;
+
+    window.copyText = function(text, btnElement) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = btnElement.innerText;
+        btnElement.innerText = "Copied! ✓";
+        btnElement.style.background = "#22c55e";
+        btnElement.style.color = "#0f172a";
+        setTimeout(() => {
+          btnElement.innerText = originalText;
+          btnElement.style.background = "#334155";
+          btnElement.style.color = "#f8fafc";
+        }, 1500);
+      });
+    };
+
     window.postUpdate = function() {
       const game = document.getElementById("game").value.trim();
       const code = document.getElementById("code").value.trim();
@@ -137,12 +189,19 @@
         game: game || "Game",
         code: code || "",
         link: link || "",
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        timeString: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        createdAt: Date.now()
       });
 
       document.getElementById("game").value = "";
       document.getElementById("code").value = "";
       document.getElementById("link").value = "";
+    };
+
+    window.clearAllGames = function() {
+      if (confirm("Clear all active games for everyone?")) {
+        remove(gamesRef);
+      }
     };
 
     onValue(gamesRef, (snapshot) => {
@@ -155,19 +214,50 @@
         return;
       }
 
-      const items = Object.values(data).reverse();
-      items.forEach(item => {
+      const now = Date.now();
+      const entries = Object.entries(data).reverse();
+      let activeCount = 0;
+
+      entries.forEach(([key, item]) => {
+        // Auto-delete from Firebase if older than 10 minutes
+        if (item.createdAt && (now - item.createdAt > EXPIRY_TIME_MS)) {
+          remove(ref(db, `lab-games/${key}`));
+          return;
+        }
+
+        activeCount++;
         const div = document.createElement("div");
         div.className = "feed-item";
-        
-        let content = `<div class="game-name">${item.game}</div>`;
-        if (item.code) content += `<div class="code-box">${item.code}</div>`;
-        if (item.link) content += `<div><a class="link-btn" href="${item.link}" target="_blank">Open Link</a></div>`;
-        content += `<div class="time">Sent at ${item.timestamp}</div>`;
 
-        div.innerHTML = content;
+        let html = `<div class="game-name">${item.game}</div>`;
+
+        if (item.code) {
+          html += `
+            <div class="row-group">
+              <span class="code-box">${item.code}</span>
+              <button class="copy-pill" onclick="copyText('${item.code}', this)">Copy Code</button>
+            </div>
+          `;
+        }
+
+        if (item.link) {
+          html += `
+            <div class="row-group">
+              <a class="link-text" href="${item.link}" target="_blank">Open Link</a>
+              <button class="copy-pill" onclick="copyText('${item.link}', this)">Copy Link</button>
+            </div>
+          `;
+        }
+
+        html += `<div class="time">Sent at ${item.timeString || "Just now"}</div>`;
+
+        div.innerHTML = html;
         feed.appendChild(div);
       });
+
+      if (activeCount === 0) {
+        feed.innerHTML = "<p style='color:#64748b;'>No active games right now.</p>";
+      }
     });
   </script>
 </body>
