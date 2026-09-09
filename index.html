@@ -11,8 +11,7 @@
       --cyber-green: #22c55e;
       --cyber-red: #ef4444;
       --cyber-purple: #c084fc;
-      --glass-bg: rgba(10, 15, 29, 0.78);
-      --glass-card: rgba(17, 24, 39, 0.72);
+      --glass-card: rgba(17, 24, 39, 0.75);
       --glass-border: rgba(56, 189, 248, 0.28);
     }
 
@@ -82,36 +81,31 @@
       align-items: center;
     }
 
-    /* Custom Logo with Floating Glow Animation */
-    .logo-frame {
-      width: 88px;
-      height: 88px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 6px;
+    /* Embedded Logo with Neon Cyber Glow Pulse */
+    .brand-logo-wrap {
+      width: 84px;
+      height: 84px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 12px;
-      border: 2px solid var(--cyber-blue);
+      margin-bottom: 10px;
       animation: cyberFloat 3.5s ease-in-out infinite;
     }
 
-    .logo-frame img {
+    .brand-logo-wrap svg {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      border-radius: 14px;
+      filter: drop-shadow(0 0 14px rgba(6, 182, 212, 0.65));
     }
 
     @keyframes cyberFloat {
       0%, 100% {
         transform: translateY(0px);
-        box-shadow: 0 0 18px rgba(56, 189, 248, 0.45);
+        filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.5));
       }
       50% {
         transform: translateY(-6px);
-        box-shadow: 0 0 32px rgba(6, 182, 212, 0.85), 0 0 10px rgba(129, 140, 248, 0.5);
+        filter: drop-shadow(0 0 26px rgba(6, 182, 212, 0.9));
       }
     }
 
@@ -430,9 +424,34 @@
         <span>NETWORK: ONLINE</span>
       </div>
       
-      <!-- Custom Animated Logo Badge -->
-      <div class="logo-frame">
-        <img src="logo.png" alt="NKL Logo" onerror="this.src='https://via.placeholder.com/80?text=NK'">
+      <!-- Vectorized Tech-Node Logo Matching Your Image (Directly Embedded) -->
+      <div class="brand-logo-wrap">
+        <svg viewBox="0 0 160 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="cyberNodeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38bdf8"/>
+              <stop offset="50%" stop-color="#06b6d4"/>
+              <stop offset="100%" stop-color="#0284c7"/>
+            </linearGradient>
+          </defs>
+          <!-- Left Bracket < -->
+          <path d="M 22 70 L 36 50 M 22 70 L 36 90" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+          <!-- Right Bracket > -->
+          <path d="M 138 70 L 124 50 M 138 70 L 124 90" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+          <!-- Top Tag </ -->
+          <text x="80" y="24" font-family="monospace" font-size="12" font-weight="900" fill="#22d3ee" text-anchor="middle">&lt;/&gt;</text>
+          <!-- Interconnected 'NK' Node Lines -->
+          <path d="M 48 34 L 48 106 M 48 34 L 80 106 M 80 34 L 80 106" stroke="url(#cyberNodeGrad)" stroke-width="6.5" stroke-linecap="round"/>
+          <path d="M 80 70 L 112 34 M 80 70 L 112 106" stroke="url(#cyberNodeGrad)" stroke-width="6.5" stroke-linecap="round"/>
+          <path d="M 48 34 L 112 34 M 48 106 L 112 106" stroke="rgba(56, 189, 248, 0.4)" stroke-width="2.5" stroke-dasharray="3,3"/>
+          <!-- Glowing Node Points -->
+          <circle cx="48" cy="34" r="6" fill="#38bdf8"/>
+          <circle cx="48" cy="106" r="6" fill="#06b6d4"/>
+          <circle cx="80" cy="34" r="6" fill="#e0f2fe"/>
+          <circle cx="80" cy="106" r="6" fill="#0284c7"/>
+          <circle cx="112" cy="34" r="6" fill="#38bdf8"/>
+          <circle cx="112" cy="106" r="6" fill="#06b6d4"/>
+        </svg>
       </div>
 
       <h1>GAME HUB</h1>
@@ -521,19 +540,19 @@
     const gameTabContent = document.getElementById("game-tab");
     const codeTabContent = document.getElementById("code-tab");
 
-    tabGamesBtn.addEventListener("click", () => {
+    tabGamesBtn.onclick = () => {
       tabGamesBtn.classList.add("active");
       tabCodesBtn.classList.remove("active");
       gameTabContent.classList.add("active");
       codeTabContent.classList.remove("active");
-    });
+    };
 
-    tabCodesBtn.addEventListener("click", () => {
+    tabCodesBtn.onclick = () => {
       tabCodesBtn.classList.add("active");
       tabGamesBtn.classList.remove("active");
       codeTabContent.classList.add("active");
       gameTabContent.classList.remove("active");
-    });
+    };
 
     function triggerCopy(text, buttonElement) {
       navigator.clipboard.writeText(text).then(() => {
@@ -549,7 +568,7 @@
       });
     }
 
-    document.getElementById("btn-broadcast-game").addEventListener("click", () => {
+    document.getElementById("btn-broadcast-game").onclick = () => {
       const game = document.getElementById("game").value.trim();
       const code = document.getElementById("code").value.trim();
       const link = document.getElementById("link").value.trim();
@@ -570,15 +589,15 @@
       document.getElementById("game").value = "";
       document.getElementById("code").value = "";
       document.getElementById("link").value = "";
-    });
+    };
 
-    document.getElementById("btn-clear-games").addEventListener("click", () => {
+    document.getElementById("btn-clear-games").onclick = () => {
       if (confirm("Wipe all active game broadcasts?")) {
         remove(gamesRef);
       }
-    });
+    };
 
-    document.getElementById("btn-broadcast-code").addEventListener("click", () => {
+    document.getElementById("btn-broadcast-code").onclick = () => {
       const lang = document.getElementById("code-lang").value;
       const title = document.getElementById("code-title").value.trim();
       const body = document.getElementById("code-body").value.trim();
@@ -598,13 +617,13 @@
 
       document.getElementById("code-title").value = "";
       document.getElementById("code-body").value = "";
-    });
+    };
 
-    document.getElementById("btn-clear-codes").addEventListener("click", () => {
+    document.getElementById("btn-clear-codes").onclick = () => {
       if (confirm("Wipe all active code solutions?")) {
         remove(solutionsRef);
       }
-    });
+    };
 
     setInterval(() => {
       const countdownElements = document.querySelectorAll("[data-created]");
@@ -649,37 +668,4 @@
         card.className = "feed-item";
 
         const topRow = document.createElement("div");
-        topRow.className = "card-top";
-        topRow.innerHTML = `
-          <span class="game-name">${item.game}</span>
-          <span class="countdown-tag" data-created="${item.createdAt}">CALCULATING...</span>
-        `;
-        card.appendChild(topRow);
-
-        if (item.code) {
-          const row = document.createElement("div");
-          row.className = "row-group";
-          const codeSpan = document.createElement("span");
-          codeSpan.className = "code-box";
-          codeSpan.innerText = item.code;
-          const copyBtn = document.createElement("button");
-          copyBtn.className = "copy-pill";
-          copyBtn.innerText = "Copy Code";
-          copyBtn.addEventListener("click", () => triggerCopy(item.code, copyBtn));
-          row.appendChild(codeSpan);
-          row.appendChild(copyBtn);
-          card.appendChild(row);
-        }
-
-        if (item.link) {
-          const row = document.createElement("div");
-          row.className = "row-group";
-          const linkA = document.createElement("a");
-          linkA.className = "link-text";
-          linkA.href = item.link;
-          linkA.target = "_blank";
-          linkA.innerText = "Open Lobby URL";
-          const copyBtn = document.createElement("button");
-          copyBtn.className = "copy-pill";
-          copyBtn.innerText = "Copy Link";
-          copyBtn.addEventListener("click", () => triggerCopy(item.link, 
+        topRow.className = "card
