@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab Game Hub</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      margin: 0;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 500px;
+    }
+    h1 {
+      text-align: center;
+      color: #38bdf8;
+      font-size: 1.6rem;
+      margin-bottom: 16px;
+    }
+    .card {
+      background: #1e293b;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #334155;
+    }
+    input, button {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      margin: 6px 0;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: white;
+      font-size: 15px;
+    }
+    button {
+      background: #38bdf8;
+      color: #0f172a;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .feed-item {
+      background: #1e293b;
+      border-left: 4px solid #38bdf8;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .game-name {
+      font-weight: bold;
+      color: #fbbf24;
+      font-size: 1.1rem;
+    }
+    .code-box {
+      background: #0f172a;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 1.1rem;
+      color: #4ade80;
+      display: inline-block;
+      margin: 6px 0;
+    }
+    .link-btn {
+      display: block;
+      color: #38bdf8;
+      word-break: break-all;
+      text-decoration: underline;
+      margin-top: 4px;
+    }
+    .time {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Lab Hub 🎮</h1>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Broadcast Room / Code</h3>
+      <input type="text" id="game" placeholder="Game Name (e.g. BGMI, Skribbl)">
+      <input type="text" id="code" placeholder="Room Code / Match ID">
+      <input type="url" id="link" placeholder="Direct Link (optional)">
+      <button onclick="postUpdate()">Broadcast to Systems</button>
+    </div>
+
+    <h3>Active Games</h3>
+    <div id="feed">Waiting for updates...</div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+
+    // REPLACE THIS BLOCK WITH YOUR FIREBASE KEYS
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const gamesRef = ref(db, 'lab-games');
+
+    window.postUpdate = function() {
+      const game = document.getElementById("game").value.trim();
+      const code = document.getElementById("code").value.trim();
+      const link = document.getElementById("link").value.trim();
+
+      if (!game && !code && !link) {
+        alert("Enter at least a name or code!");
+        return;
+      }
+
+      push(gamesRef, {
+        game: game || "Game",
+        code: code || "",
+        link: link || "",
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+
+      document.getElementById("game").value = "";
+      document.getElementById("code").value = "";
+      document.getElementById("link").value = "";
+    };
+
+    onValue(gamesRef, (snapshot) => {
+      const feed = document.getElementById("feed");
+      feed.innerHTML = "";
+      const data = snapshot.val();
+
+      if (!data) {
+        feed.innerHTML = "<p style='color:#64748b;'>No active games right now.</p>";
+        return;
+      }
+
+      const items = Object.values(data).reverse();
+      items.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "feed-item";
+        
+        let content = `<div class="game-name">${item.game}</div>`;
+        if (item.code) content += `<div class="code-box">${item.code}</div>`;
+        if (item.link) content += `<div><a class="link-btn" href="${item.link}" target="_blank">Open Link</a></div>`;
+        content += `<div class="time">Sent at ${item.timestamp}</div>`;
+
+        div.innerHTML = content;
+        feed.appendChild(div);
+      });
+    });
+  </script>
+</body>
+</html>        feed.appendChild(div);
+      });
+    });
+  </script>
+</body>
+</html>
