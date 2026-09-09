@@ -82,17 +82,37 @@
       align-items: center;
     }
 
-    .brand-logo {
-      width: 64px;
-      height: 64px;
-      margin-bottom: 8px;
-      filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.55));
-      animation: float 4s ease-in-out infinite;
+    /* Custom Logo with Floating Glow Animation */
+    .logo-frame {
+      width: 88px;
+      height: 88px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      border: 2px solid var(--cyber-blue);
+      animation: cyberFloat 3.5s ease-in-out infinite;
     }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-5px); }
+    .logo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 14px;
+    }
+
+    @keyframes cyberFloat {
+      0%, 100% {
+        transform: translateY(0px);
+        box-shadow: 0 0 18px rgba(56, 189, 248, 0.45);
+      }
+      50% {
+        transform: translateY(-6px);
+        box-shadow: 0 0 32px rgba(6, 182, 212, 0.85), 0 0 10px rgba(129, 140, 248, 0.5);
+      }
     }
 
     h1 {
@@ -410,26 +430,10 @@
         <span>NETWORK: ONLINE</span>
       </div>
       
-      <!-- Tech Gaming Vector Logo -->
-      <svg class="brand-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="cyberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#38bdf8"/>
-            <stop offset="50%" stop-color="#818cf8"/>
-            <stop offset="100%" stop-color="#06b6d4"/>
-          </linearGradient>
-          <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.2"/>
-            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.05"/>
-          </linearGradient>
-        </defs>
-        <polygon points="50,4 92,24 92,72 50,96 8,72 8,24" stroke="url(#cyberGrad)" stroke-width="3.5" fill="url(#glowGrad)"/>
-        <circle cx="50" cy="24" r="3.5" fill="#38bdf8"/>
-        <circle cx="28" cy="62" r="3.5" fill="#22c55e"/>
-        <circle cx="72" cy="62" r="3.5" fill="#22c55e"/>
-        <path d="M50 27 L28 59 M50 27 L72 59 M28 62 L72 62" stroke="rgba(56, 189, 248, 0.4)" stroke-width="2"/>
-        <path d="M38 48 H62 M50 36 V60" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
-      </svg>
+      <!-- Custom Animated Logo Badge -->
+      <div class="logo-frame">
+        <img src="logo.png" alt="NKL Logo" onerror="this.src='https://via.placeholder.com/80?text=NK'">
+      </div>
 
       <h1>GAME HUB</h1>
       <div class="sub-brand">By Naughty Kansari Limited</div>
@@ -512,7 +516,6 @@
 
     const EXPIRY_TIME_MS = 5 * 60 * 1000; // 5 minutes
 
-    // Tab switcher via direct listeners
     const tabGamesBtn = document.getElementById("btn-tab-games");
     const tabCodesBtn = document.getElementById("btn-tab-codes");
     const gameTabContent = document.getElementById("game-tab");
@@ -546,7 +549,6 @@
       });
     }
 
-    // Broadcast Game Lobby
     document.getElementById("btn-broadcast-game").addEventListener("click", () => {
       const game = document.getElementById("game").value.trim();
       const code = document.getElementById("code").value.trim();
@@ -570,14 +572,12 @@
       document.getElementById("link").value = "";
     });
 
-    // Clear Game Lobbies
     document.getElementById("btn-clear-games").addEventListener("click", () => {
       if (confirm("Wipe all active game broadcasts?")) {
         remove(gamesRef);
       }
     });
 
-    // Broadcast Code Solution
     document.getElementById("btn-broadcast-code").addEventListener("click", () => {
       const lang = document.getElementById("code-lang").value;
       const title = document.getElementById("code-title").value.trim();
@@ -600,14 +600,12 @@
       document.getElementById("code-body").value = "";
     });
 
-    // Clear Code Solutions
     document.getElementById("btn-clear-codes").addEventListener("click", () => {
       if (confirm("Wipe all active code solutions?")) {
         remove(solutionsRef);
       }
     });
 
-    // 5-minute countdown ticker
     setInterval(() => {
       const countdownElements = document.querySelectorAll("[data-created]");
       const now = Date.now();
@@ -626,7 +624,6 @@
       });
     }, 1000);
 
-    // Sync Game Lobbies Feed
     onValue(gamesRef, (snapshot) => {
       const feed = document.getElementById("feed");
       feed.innerHTML = "";
@@ -685,96 +682,4 @@
           const copyBtn = document.createElement("button");
           copyBtn.className = "copy-pill";
           copyBtn.innerText = "Copy Link";
-          copyBtn.addEventListener("click", () => triggerCopy(item.link, copyBtn));
-          row.appendChild(linkA);
-          row.appendChild(copyBtn);
-          card.appendChild(row);
-        }
-
-        const timeRow = document.createElement("div");
-        timeRow.className = "time";
-        timeRow.innerText = `TRANSMITTED: ${item.timeString || "RECENT"}`;
-        card.appendChild(timeRow);
-
-        feed.appendChild(card);
-      });
-
-      if (activeCount === 0) {
-        feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE SIGNALS]</p>";
-      }
-    });
-
-    // Sync Coding Solutions Feed
-    onValue(solutionsRef, (snapshot) => {
-      const feed = document.getElementById("code-feed");
-      feed.innerHTML = "";
-      const data = snapshot.val();
-
-      if (!data) {
-        feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE CODE SOLUTIONS]</p>";
-        return;
-      }
-
-      const now = Date.now();
-      const entries = Object.entries(data).reverse();
-      let activeCount = 0;
-
-      entries.forEach(([key, item]) => {
-        if (item.createdAt && (now - item.createdAt > EXPIRY_TIME_MS)) {
-          remove(ref(db, `lab-solutions/${key}`));
-          return;
-        }
-
-        activeCount++;
-        const card = document.createElement("div");
-        card.className = "feed-item solution-card";
-
-        const topRow = document.createElement("div");
-        topRow.className = "card-top";
-        topRow.innerHTML = `
-          <span class="game-name" style="color: #a7f3d0;">${item.title}</span>
-          <div style="display: flex; gap: 6px; align-items: center;">
-            <span class="lang-badge">${item.lang}</span>
-            <span class="countdown-tag" data-created="${item.createdAt}">CALCULATING...</span>
-          </div>
-        `;
-        card.appendChild(topRow);
-
-        const snippetBox = document.createElement("div");
-        snippetBox.className = "code-snippet-box";
-
-        const headerBar = document.createElement("div");
-        headerBar.className = "code-header-bar";
-        headerBar.innerHTML = `<span style="font-size:0.75rem; color:#94a3b8; font-family:monospace;">Source Code</span>`;
-        
-        const copyBtn = document.createElement("button");
-        copyBtn.className = "copy-pill";
-        copyBtn.innerText = "Copy Solution";
-        copyBtn.addEventListener("click", () => triggerCopy(item.codeBody, copyBtn));
-        
-        headerBar.appendChild(copyBtn);
-        snippetBox.appendChild(headerBar);
-
-        const pre = document.createElement("pre");
-        const code = document.createElement("code");
-        code.innerText = item.codeBody;
-        pre.appendChild(code);
-        snippetBox.appendChild(pre);
-
-        card.appendChild(snippetBox);
-
-        const timeRow = document.createElement("div");
-        timeRow.className = "time";
-        timeRow.innerText = `SHARED: ${item.timeString || "RECENT"}`;
-        card.appendChild(timeRow);
-
-        feed.appendChild(card);
-      });
-
-      if (activeCount === 0) {
-        feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE CODE SOLUTIONS]</p>";
-      }
-    });
-  </script>
-</body>
-</html>
+          copyBtn.addEventListener("click", () => triggerCopy(item.link, 
