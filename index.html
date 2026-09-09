@@ -54,7 +54,7 @@
       font-family: monospace;
       letter-spacing: 0.08em;
       color: var(--cyber-green);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       backdrop-filter: blur(10px);
       box-shadow: 0 0 14px rgba(34, 197, 94, 0.2);
     }
@@ -76,12 +76,28 @@
     .header-box {
       text-align: center;
       margin-bottom: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .brand-logo {
+      width: 68px;
+      height: 68px;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.55));
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
     }
 
     h1 {
       font-size: 2.2rem;
       font-weight: 900;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       background: linear-gradient(135deg, #38bdf8, #818cf8, #a855f7);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -90,22 +106,22 @@
 
     .sub-brand {
       font-size: 0.82rem;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: #94a3b8;
-      margin-top: 5px;
+      margin-top: 6px;
       font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .sub-brand::before, .sub-brand::after {
       content: "";
-      width: 24px;
+      width: 28px;
       height: 1px;
-      background: rgba(148, 163, 184, 0.45);
+      background: rgba(148, 163, 184, 0.4);
     }
 
     .card {
@@ -299,8 +315,33 @@
         <span class="pulse-dot"></span>
         <span>NETWORK: ONLINE</span>
       </div>
+      
+      <!-- Custom Tech Gaming Vector Logo -->
+      <svg class="brand-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="cyberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#38bdf8"/>
+            <stop offset="50%" stop-color="#818cf8"/>
+            <stop offset="100%" stop-color="#06b6d4"/>
+          </linearGradient>
+          <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.05"/>
+          </linearGradient>
+        </defs>
+        <!-- Outer Cyber Shield Frame -->
+        <polygon points="50,4 92,24 92,72 50,96 8,72 8,24" stroke="url(#cyberGrad)" stroke-width="3.5" fill="url(#glowGrad)"/>
+        <!-- Inner Circuit Nodes -->
+        <circle cx="50" cy="24" r="3.5" fill="#38bdf8"/>
+        <circle cx="28" cy="62" r="3.5" fill="#22c55e"/>
+        <circle cx="72" cy="62" r="3.5" fill="#22c55e"/>
+        <path d="M50 27 L28 59 M50 27 L72 59 M28 62 L72 62" stroke="rgba(56, 189, 248, 0.4)" stroke-width="2"/>
+        <!-- Futuristic Gamepad / Monogram Symbol -->
+        <path d="M38 48 H62 M50 36 V60" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+
       <h1>GAME HUB</h1>
-      <div class="sub-brand">By Naught Kansari Limited</div>
+      <div class="sub-brand">By Naughty Kansari Limited</div>
     </div>
 
     <div class="card">
@@ -340,7 +381,8 @@
     const db = getDatabase(app);
     const gamesRef = ref(db, 'lab-games');
 
-    const EXPIRY_TIME_MS = 10 * 60 * 1000;
+    // 5 minutes expiry in milliseconds (5 * 60 * 1000)
+    const EXPIRY_TIME_MS = 5 * 60 * 1000;
 
     window.copyText = function(text, btnElement) {
       navigator.clipboard.writeText(text).then(() => {
@@ -385,6 +427,7 @@
       }
     };
 
+    // Real-time second-by-second 5-minute countdown updater
     setInterval(() => {
       const countdownElements = document.querySelectorAll("[data-created]");
       const now = Date.now();
@@ -418,6 +461,7 @@
       let activeCount = 0;
 
       entries.forEach(([key, item]) => {
+        // Auto wipe if older than 5 minutes
         if (item.createdAt && (now - item.createdAt > EXPIRY_TIME_MS)) {
           remove(ref(db, `lab-games/${key}`));
           return;
