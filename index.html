@@ -81,7 +81,6 @@
       align-items: center;
     }
 
-    /* Embedded Logo with Neon Cyber Glow Pulse */
     .brand-logo-wrap {
       width: 84px;
       height: 84px;
@@ -414,6 +413,10 @@
       display: block;
     }
   </style>
+
+  <!-- Reliable Global Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -424,7 +427,6 @@
         <span>NETWORK: ONLINE</span>
       </div>
       
-      <!-- Vectorized Tech-Node Logo Matching Your Image (Directly Embedded) -->
       <div class="brand-logo-wrap">
         <svg viewBox="0 0 160 140" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -434,17 +436,12 @@
               <stop offset="100%" stop-color="#0284c7"/>
             </linearGradient>
           </defs>
-          <!-- Left Bracket < -->
           <path d="M 22 70 L 36 50 M 22 70 L 36 90" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
-          <!-- Right Bracket > -->
           <path d="M 138 70 L 124 50 M 138 70 L 124 90" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
-          <!-- Top Tag </ -->
           <text x="80" y="24" font-family="monospace" font-size="12" font-weight="900" fill="#22d3ee" text-anchor="middle">&lt;/&gt;</text>
-          <!-- Interconnected 'NK' Node Lines -->
           <path d="M 48 34 L 48 106 M 48 34 L 80 106 M 80 34 L 80 106" stroke="url(#cyberNodeGrad)" stroke-width="6.5" stroke-linecap="round"/>
           <path d="M 80 70 L 112 34 M 80 70 L 112 106" stroke="url(#cyberNodeGrad)" stroke-width="6.5" stroke-linecap="round"/>
           <path d="M 48 34 L 112 34 M 48 106 L 112 106" stroke="rgba(56, 189, 248, 0.4)" stroke-width="2.5" stroke-dasharray="3,3"/>
-          <!-- Glowing Node Points -->
           <circle cx="48" cy="34" r="6" fill="#38bdf8"/>
           <circle cx="48" cy="106" r="6" fill="#06b6d4"/>
           <circle cx="80" cy="34" r="6" fill="#e0f2fe"/>
@@ -460,8 +457,8 @@
 
     <!-- Navigation Tabs -->
     <div class="tab-container">
-      <button class="tab-btn active" id="btn-tab-games">🎮 Game Lobbies</button>
-      <button class="tab-btn" id="btn-tab-codes">💻 Lab Solutions</button>
+      <button class="tab-btn active" id="tab-btn-games" onclick="switchActiveTab('games')">🎮 Game Lobbies</button>
+      <button class="tab-btn" id="tab-btn-codes" onclick="switchActiveTab('codes')">💻 Lab Solutions</button>
     </div>
 
     <!-- TAB 1: GAME HUB -->
@@ -473,8 +470,8 @@
         <input type="url" id="link" placeholder="Direct Link (optional)">
         
         <div class="btn-grid">
-          <button class="broadcast-btn" id="btn-broadcast-game">Broadcast</button>
-          <button class="clear-btn" id="btn-clear-games">Clear Feed</button>
+          <button class="broadcast-btn" onclick="postGameUpdate()">Broadcast</button>
+          <button class="clear-btn" onclick="clearFeed('games')">Clear Feed</button>
         </div>
       </div>
 
@@ -500,8 +497,8 @@
         <textarea id="code-body" placeholder="// Paste complete working code solution here..."></textarea>
         
         <div class="btn-grid">
-          <button class="broadcast-btn" id="btn-broadcast-code">Transmit Solution</button>
-          <button class="clear-btn" id="btn-clear-codes">Clear Feed</button>
+          <button class="broadcast-btn" onclick="postCodeSolution()">Transmit Solution</button>
+          <button class="clear-btn" onclick="clearFeed('solutions')">Clear Feed</button>
         </div>
       </div>
 
@@ -513,10 +510,7 @@
 
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
-
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyALuuDDM5SeC5_Ff5FNg1FofYfm06BxdY0",
       authDomain: "lab-hub-318a2.firebaseapp.com",
@@ -528,47 +522,47 @@
       measurementId: "G-83NNL4613F"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const gamesRef = ref(db, 'lab-games');
-    const solutionsRef = ref(db, 'lab-solutions');
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const gamesRef = db.ref('lab-games');
+    const solutionsRef = db.ref('lab-solutions');
 
-    const EXPIRY_TIME_MS = 5 * 60 * 1000; // 5 minutes
+    const EXPIRY_TIME_MS = 5 * 60 * 1000;
 
-    const tabGamesBtn = document.getElementById("btn-tab-games");
-    const tabCodesBtn = document.getElementById("btn-tab-codes");
-    const gameTabContent = document.getElementById("game-tab");
-    const codeTabContent = document.getElementById("code-tab");
+    window.switchActiveTab = function(type) {
+      const tabGamesBtn = document.getElementById("tab-btn-games");
+      const tabCodesBtn = document.getElementById("tab-btn-codes");
+      const gameTab = document.getElementById("game-tab");
+      const codeTab = document.getElementById("code-tab");
 
-    tabGamesBtn.onclick = () => {
-      tabGamesBtn.classList.add("active");
-      tabCodesBtn.classList.remove("active");
-      gameTabContent.classList.add("active");
-      codeTabContent.classList.remove("active");
+      if (type === 'games') {
+        tabGamesBtn.classList.add("active");
+        tabCodesBtn.classList.remove("active");
+        gameTab.classList.add("active");
+        codeTab.classList.remove("active");
+      } else {
+        tabCodesBtn.classList.add("active");
+        tabGamesBtn.classList.remove("active");
+        codeTab.classList.add("active");
+        gameTab.classList.remove("active");
+      }
     };
 
-    tabCodesBtn.onclick = () => {
-      tabCodesBtn.classList.add("active");
-      tabGamesBtn.classList.remove("active");
-      codeTabContent.classList.add("active");
-      gameTabContent.classList.remove("active");
-    };
-
-    function triggerCopy(text, buttonElement) {
+    window.triggerCopy = function(text, btnElement) {
       navigator.clipboard.writeText(text).then(() => {
-        const original = buttonElement.innerText;
-        buttonElement.innerText = "COPIED ✓";
-        buttonElement.style.background = "#22c55e";
-        buttonElement.style.color = "#020617";
+        const original = btnElement.innerText;
+        btnElement.innerText = "COPIED ✓";
+        btnElement.style.background = "#22c55e";
+        btnElement.style.color = "#020617";
         setTimeout(() => {
-          buttonElement.innerText = original;
-          buttonElement.style.background = "rgba(51, 65, 85, 0.85)";
-          buttonElement.style.color = "#f8fafc";
+          btnElement.innerText = original;
+          btnElement.style.background = "rgba(51, 65, 85, 0.85)";
+          btnElement.style.color = "#f8fafc";
         }, 1500);
       });
-    }
+    };
 
-    document.getElementById("btn-broadcast-game").onclick = () => {
+    window.postGameUpdate = function() {
       const game = document.getElementById("game").value.trim();
       const code = document.getElementById("code").value.trim();
       const link = document.getElementById("link").value.trim();
@@ -578,7 +572,7 @@
         return;
       }
 
-      push(gamesRef, {
+      gamesRef.push({
         game: game || "Game",
         code: code || "",
         link: link || "",
@@ -591,13 +585,7 @@
       document.getElementById("link").value = "";
     };
 
-    document.getElementById("btn-clear-games").onclick = () => {
-      if (confirm("Wipe all active game broadcasts?")) {
-        remove(gamesRef);
-      }
-    };
-
-    document.getElementById("btn-broadcast-code").onclick = () => {
+    window.postCodeSolution = function() {
       const lang = document.getElementById("code-lang").value;
       const title = document.getElementById("code-title").value.trim();
       const body = document.getElementById("code-body").value.trim();
@@ -607,7 +595,7 @@
         return;
       }
 
-      push(solutionsRef, {
+      solutionsRef.push({
         lang: lang,
         title: title || "Code Solution",
         codeBody: body,
@@ -619,17 +607,18 @@
       document.getElementById("code-body").value = "";
     };
 
-    document.getElementById("btn-clear-codes").onclick = () => {
-      if (confirm("Wipe all active code solutions?")) {
-        remove(solutionsRef);
+    window.clearFeed = function(type) {
+      if (confirm(`Wipe all active ${type} broadcasts?`)) {
+        if (type === 'games') gamesRef.remove();
+        if (type === 'solutions') solutionsRef.remove();
       }
     };
 
     setInterval(() => {
-      const countdownElements = document.querySelectorAll("[data-created]");
+      const elements = document.querySelectorAll("[data-created]");
       const now = Date.now();
 
-      countdownElements.forEach(el => {
+      elements.forEach(el => {
         const created = parseInt(el.getAttribute("data-created"), 10);
         const remaining = Math.max(0, EXPIRY_TIME_MS - (now - created));
 
@@ -643,7 +632,7 @@
       });
     }, 1000);
 
-    onValue(gamesRef, (snapshot) => {
+    gamesRef.on('value', (snapshot) => {
       const feed = document.getElementById("feed");
       feed.innerHTML = "";
       const data = snapshot.val();
@@ -655,17 +644,29 @@
 
       const now = Date.now();
       const entries = Object.entries(data).reverse();
-      let activeCount = 0;
+      let count = 0;
 
       entries.forEach(([key, item]) => {
         if (item.createdAt && (now - item.createdAt > EXPIRY_TIME_MS)) {
-          remove(ref(db, `lab-games/${key}`));
+          db.ref(`lab-games/${key}`).remove();
           return;
         }
 
-        activeCount++;
+        count++;
         const card = document.createElement("div");
         card.className = "feed-item";
 
         const topRow = document.createElement("div");
-        topRow.className = "card
+        topRow.className = "card-top";
+        topRow.innerHTML = `
+          <span class="game-name">${item.game}</span>
+          <span class="countdown-tag" data-created="${item.createdAt}">CALCULATING...</span>
+        `;
+        card.appendChild(topRow);
+
+        if (item.code) {
+          const row = document.createElement("div");
+          row.className = "row-group";
+          const span = document.createElement("span");
+          span.className = "code-box";
+   
