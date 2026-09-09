@@ -5,138 +5,301 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lab Game Hub</title>
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #0f172a;
-      color: #f8fafc;
+    :root {
+      --cyber-blue: #38bdf8;
+      --cyber-neon: #22d3ee;
+      --cyber-green: #4ade80;
+      --cyber-red: #f43f5e;
+      --glass-bg: rgba(15, 23, 42, 0.72);
+      --glass-card: rgba(30, 41, 59, 0.65);
+      --glass-border: rgba(56, 189, 248, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
-      padding: 16px;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: 
+        radial-gradient(ellipse at top, rgba(30, 58, 138, 0.45), transparent 70%),
+        radial-gradient(ellipse at bottom, rgba(15, 23, 42, 0.95), #020617),
+        url("https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070&auto=format&fit=crop");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #f8fafc;
+      min-height: 100vh;
+      padding: 24px 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
+
     .container {
       width: 100%;
-      max-width: 500px;
+      max-width: 520px;
     }
-    h1 {
+
+    /* Live Network Status Pill */
+    .status-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(74, 222, 128, 0.35);
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-family: monospace;
+      letter-spacing: 0.08em;
+      color: var(--cyber-green);
+      margin-bottom: 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 12px rgba(74, 222, 128, 0.2);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--cyber-green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--cyber-green);
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .header-box {
       text-align: center;
-      color: #38bdf8;
-      font-size: 1.6rem;
-      margin-bottom: 16px;
-    }
-    .card {
-      background: #1e293b;
-      padding: 16px;
-      border-radius: 12px;
       margin-bottom: 20px;
-      border: 1px solid #334155;
     }
-    input, button {
+
+    h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(56, 189, 248, 0.35);
+    }
+
+    /* Glassmorphic Cards */
+    .card {
+      background: var(--glass-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+    }
+
+    input {
       width: 100%;
-      box-sizing: border-box;
-      padding: 12px;
-      margin: 6px 0;
-      border-radius: 8px;
-      border: 1px solid #334155;
-      background: #0f172a;
-      color: white;
-      font-size: 15px;
+      padding: 12px 14px;
+      margin: 8px 0;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      background: rgba(15, 23, 42, 0.75);
+      color: #f8fafc;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s ease;
     }
-    button.broadcast-btn {
-      background: #38bdf8;
-      color: #0f172a;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
+
+    input:focus {
+      border-color: var(--cyber-blue);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .btn-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
       margin-top: 10px;
     }
-    button.clear-btn {
-      background: #ef4444;
-      color: white;
-      font-weight: bold;
+
+    button {
+      border-radius: 10px;
       border: none;
       cursor: pointer;
-      margin-top: 6px;
-      padding: 8px;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    button.broadcast-btn {
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      color: #041324;
+      padding: 12px;
+      font-size: 15px;
+      letter-spacing: 0.03em;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.35);
+    }
+
+    button.broadcast-btn:hover {
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
+      transform: translateY(-1px);
+    }
+
+    button.clear-btn {
+      background: rgba(244, 63, 94, 0.15);
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      color: #fda4af;
+      padding: 12px 16px;
       font-size: 13px;
     }
-    .feed-item {
-      background: #1e293b;
-      border-left: 4px solid #38bdf8;
-      padding: 12px;
-      border-radius: 8px;
+
+    button.clear-btn:hover {
+      background: var(--cyber-red);
+      color: #ffffff;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #94a3b8;
       margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+
+    /* Cyber Feed Items */
+    .feed-item {
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-left: 4px solid var(--cyber-neon);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
     .game-name {
-      font-weight: bold;
-      color: #fbbf24;
+      font-weight: 800;
+      color: #fde047;
       font-size: 1.15rem;
-      margin-bottom: 6px;
+      letter-spacing: 0.04em;
     }
+
+    .countdown-tag {
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--cyber-neon);
+      background: rgba(34, 211, 238, 0.1);
+      border: 1px solid rgba(34, 211, 238, 0.25);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
     .row-group {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-top: 6px;
+      gap: 10px;
+      margin-top: 8px;
       flex-wrap: wrap;
     }
+
     .code-box {
-      background: #0f172a;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-family: monospace;
-      font-size: 1.05rem;
-      color: #4ade80;
-      display: inline-block;
-      border: 1px solid #334155;
+      background: rgba(2, 6, 23, 0.8);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-family: 'SF Mono', Monaco, Consolas, monospace;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--cyber-green);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      letter-spacing: 0.05em;
+      box-shadow: 0 0 10px rgba(74, 222, 128, 0.15);
     }
+
     .link-text {
-      color: #38bdf8;
+      color: var(--cyber-blue);
       word-break: break-all;
       text-decoration: underline;
       font-size: 0.9rem;
-      max-width: 320px;
+      max-width: 300px;
     }
+
     .copy-pill {
-      background: #334155;
+      background: rgba(51, 65, 85, 0.8);
       color: #f8fafc;
-      border: 1px solid #475569;
-      border-radius: 6px;
-      padding: 4px 8px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 8px;
+      padding: 6px 12px;
       font-size: 0.8rem;
       cursor: pointer;
-      width: auto;
-      margin: 0;
-      transition: background 0.2s;
+      transition: all 0.2s ease;
     }
+
     .copy-pill:active {
-      background: #22c55e;
-      color: #0f172a;
+      background: var(--cyber-green);
+      color: #020617;
+      transform: scale(0.96);
     }
+
     .time {
-      font-size: 0.75rem;
-      color: #94a3b8;
-      margin-top: 8px;
+      font-size: 0.72rem;
+      color: #64748b;
+      margin-top: 10px;
+      font-family: monospace;
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1>Lab Hub 🎮</h1>
-
-    <div class="card">
-      <h3 style="margin-top:0;">Broadcast Room / Code</h3>
-      <input type="text" id="game" placeholder="Game Name (e.g. BGMI, Skribbl)">
-      <input type="text" id="code" placeholder="Room Code / Match ID">
-      <input type="url" id="link" placeholder="Direct Link (optional)">
-      <button class="broadcast-btn" onclick="postUpdate()">Broadcast to Systems</button>
-      <button class="clear-btn" onclick="clearAllGames()">Clear Feed Now</button>
+    <div class="header-box">
+      <div class="status-bar">
+        <span class="pulse-dot"></span>
+        <span>NETWORK: ONLINE</span>
+      </div>
+      <h1>COMMAND HUB</h1>
     </div>
 
-    <h3>Active Games</h3>
-    <div id="feed">Waiting for updates...</div>
+    <div class="card">
+      <h3 style="margin-bottom: 8px; font-size: 1rem; color: #cbd5e1;">Transmit Lobby</h3>
+      <input type="text" id="game" placeholder="Game Name (e.g. BGMI, Skribbl)">
+      <input type="text" id="code" placeholder="Room Code / Match Key">
+      <input type="url" id="link" placeholder="Lobby URL (optional)">
+      
+      <div class="btn-grid">
+        <button class="broadcast-btn" onclick="postUpdate()">Transmit Code</button>
+        <button class="clear-btn" onclick="clearAllGames()">Wipe</button>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <span>Incoming Transmissions</span>
+    </div>
+    <div id="feed">Connecting to network...</div>
   </div>
 
   <script type="module">
@@ -158,18 +321,17 @@
     const db = getDatabase(app);
     const gamesRef = ref(db, 'lab-games');
 
-    // Automatically remove after 10 minutes (600,000 milliseconds)
-    const EXPIRY_TIME_MS = 10 * 60 * 1000;
+    const EXPIRY_TIME_MS = 10 * 60 * 1000; // 10 minutes
 
     window.copyText = function(text, btnElement) {
       navigator.clipboard.writeText(text).then(() => {
-        const originalText = btnElement.innerText;
-        btnElement.innerText = "Copied! ✓";
+        const prev = btnElement.innerText;
+        btnElement.innerText = "COPIED ✓";
         btnElement.style.background = "#22c55e";
-        btnElement.style.color = "#0f172a";
+        btnElement.style.color = "#020617";
         setTimeout(() => {
-          btnElement.innerText = originalText;
-          btnElement.style.background = "#334155";
+          btnElement.innerText = prev;
+          btnElement.style.background = "rgba(51, 65, 85, 0.8)";
           btnElement.style.color = "#f8fafc";
         }, 1500);
       });
@@ -181,15 +343,15 @@
       const link = document.getElementById("link").value.trim();
 
       if (!game && !code && !link) {
-        alert("Enter at least a name or code!");
+        alert("Payload empty. Enter at least a game or room code.");
         return;
       }
 
       push(gamesRef, {
-        game: game || "Game",
+        game: game || "Unknown Target",
         code: code || "",
         link: link || "",
-        timeString: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        timeString: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
         createdAt: Date.now()
       });
 
@@ -199,10 +361,29 @@
     };
 
     window.clearAllGames = function() {
-      if (confirm("Clear all active games for everyone?")) {
+      if (confirm("Wipe all transmissions across all terminals?")) {
         remove(gamesRef);
       }
     };
+
+    // Live second-by-second countdown handler
+    setInterval(() => {
+      const countdownElements = document.querySelectorAll("[data-created]");
+      const now = Date.now();
+
+      countdownElements.forEach(el => {
+        const created = parseInt(el.getAttribute("data-created"), 10);
+        const remaining = Math.max(0, EXPIRY_TIME_MS - (now - created));
+
+        if (remaining <= 0) {
+          el.innerText = "EXPIRING...";
+        } else {
+          const m = Math.floor(remaining / 60000);
+          const s = Math.floor((remaining % 60000) / 1000);
+          el.innerText = `TTL: ${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+      });
+    }, 1000);
 
     onValue(gamesRef, (snapshot) => {
       const feed = document.getElementById("feed");
@@ -210,7 +391,7 @@
       const data = snapshot.val();
 
       if (!data) {
-        feed.innerHTML = "<p style='color:#64748b;'>No active games right now.</p>";
+        feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE SIGNALS]</p>";
         return;
       }
 
@@ -219,7 +400,6 @@
       let activeCount = 0;
 
       entries.forEach(([key, item]) => {
-        // Auto-delete from Firebase if older than 10 minutes
         if (item.createdAt && (now - item.createdAt > EXPIRY_TIME_MS)) {
           remove(ref(db, `lab-games/${key}`));
           return;
@@ -229,13 +409,18 @@
         const div = document.createElement("div");
         div.className = "feed-item";
 
-        let html = `<div class="game-name">${item.game}</div>`;
+        let html = `
+          <div class="card-top">
+            <span class="game-name">${item.game}</span>
+            <span class="countdown-tag" data-created="${item.createdAt}">CALCULATING...</span>
+          </div>
+        `;
 
         if (item.code) {
           html += `
             <div class="row-group">
               <span class="code-box">${item.code}</span>
-              <button class="copy-pill" onclick="copyText('${item.code}', this)">Copy Code</button>
+              <button class="copy-pill" onclick="copyText('${item.code}', this)">Copy Key</button>
             </div>
           `;
         }
@@ -243,20 +428,20 @@
         if (item.link) {
           html += `
             <div class="row-group">
-              <a class="link-text" href="${item.link}" target="_blank">Open Link</a>
-              <button class="copy-pill" onclick="copyText('${item.link}', this)">Copy Link</button>
+              <a class="link-text" href="${item.link}" target="_blank">Access Link</a>
+              <button class="copy-pill" onclick="copyText('${item.link}', this)">Copy URL</button>
             </div>
           `;
         }
 
-        html += `<div class="time">Sent at ${item.timeString || "Just now"}</div>`;
+        html += `<div class="time">TRANSMITTED: ${item.timeString || "RECENT"}</div>`;
 
         div.innerHTML = html;
         feed.appendChild(div);
       });
 
       if (activeCount === 0) {
-        feed.innerHTML = "<p style='color:#64748b;'>No active games right now.</p>";
+        feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE SIGNALS]</p>";
       }
     });
   </script>
