@@ -11,7 +11,7 @@
       --cyber-green: #22c55e;
       --cyber-red: #ef4444;
       --cyber-purple: #c084fc;
-      --glass-card: rgba(17, 24, 39, 0.75);
+      --glass-card: rgba(17, 24, 39, 0.78);
       --glass-border: rgba(56, 189, 248, 0.28);
     }
 
@@ -151,17 +151,18 @@
 
     .tab-btn {
       flex: 1;
-      padding: 11px 14px;
+      padding: 12px 14px;
       border: 1px solid transparent;
       background: transparent;
       color: #94a3b8;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       font-weight: 700;
       letter-spacing: 0.05em;
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s ease;
       text-align: center;
+      user-select: none;
     }
 
     .tab-btn.active {
@@ -277,16 +278,10 @@
       border-radius: 12px;
       margin-bottom: 14px;
       box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
-      animation: slideIn 0.3s ease-out;
     }
 
     .feed-item.solution-card {
       border-left-color: var(--cyber-purple);
-    }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .card-top {
@@ -410,23 +405,24 @@
     }
 
     .tab-content.active {
-      display: block;
+      display: block !important;
     }
   </style>
 
-  <!-- Reliable Global Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- Stable Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
 
   <div class="container">
     <div class="header-box">
-      <div class="status-bar">
+      <div class="status-bar" id="status-display">
         <span class="pulse-dot"></span>
-        <span>NETWORK: ONLINE</span>
+        <span id="status-text">NETWORK: ONLINE</span>
       </div>
       
+      <!-- Tech Monogram Vector Logo -->
       <div class="brand-logo-wrap">
         <svg viewBox="0 0 160 140" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -457,8 +453,8 @@
 
     <!-- Navigation Tabs -->
     <div class="tab-container">
-      <button class="tab-btn active" id="tab-btn-games" onclick="switchActiveTab('games')">🎮 Game Lobbies</button>
-      <button class="tab-btn" id="tab-btn-codes" onclick="switchActiveTab('codes')">💻 Lab Solutions</button>
+      <button type="button" class="tab-btn active" id="tab-btn-games">🎮 Game Lobbies</button>
+      <button type="button" class="tab-btn" id="tab-btn-codes">💻 Lab Solutions</button>
     </div>
 
     <!-- TAB 1: GAME HUB -->
@@ -470,8 +466,8 @@
         <input type="url" id="link" placeholder="Direct Link (optional)">
         
         <div class="btn-grid">
-          <button class="broadcast-btn" onclick="postGameUpdate()">Broadcast</button>
-          <button class="clear-btn" onclick="clearFeed('games')">Clear Feed</button>
+          <button type="button" class="broadcast-btn" id="btn-post-game">Broadcast</button>
+          <button type="button" class="clear-btn" id="btn-clear-games">Clear Feed</button>
         </div>
       </div>
 
@@ -497,8 +493,8 @@
         <textarea id="code-body" placeholder="// Paste complete working code solution here..."></textarea>
         
         <div class="btn-grid">
-          <button class="broadcast-btn" onclick="postCodeSolution()">Transmit Solution</button>
-          <button class="clear-btn" onclick="clearFeed('solutions')">Clear Feed</button>
+          <button type="button" class="broadcast-btn" id="btn-post-code">Transmit Solution</button>
+          <button type="button" class="clear-btn" id="btn-clear-codes">Clear Feed</button>
         </div>
       </div>
 
@@ -511,162 +507,167 @@
   </div>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyALuuDDM5SeC5_Ff5FNg1FofYfm06BxdY0",
-      authDomain: "lab-hub-318a2.firebaseapp.com",
-      databaseURL: "https://lab-hub-318a2-default-rtdb.firebaseio.com",
-      projectId: "lab-hub-318a2",
-      storageBucket: "lab-hub-318a2.firebasestorage.app",
-      messagingSenderId: "648359872715",
-      appId: "1:648359872715:web:3e9c545aa35d623ed8334e",
-      measurementId: "G-83NNL4613F"
+    // 1. Bulletproof Tab Switcher (Runs completely independent of Firebase)
+    const btnTabGames = document.getElementById("tab-btn-games");
+    const btnTabCodes = document.getElementById("tab-btn-codes");
+    const tabGameSection = document.getElementById("game-tab");
+    const tabCodeSection = document.getElementById("code-tab");
+
+    btnTabGames.onclick = function() {
+      btnTabGames.classList.add("active");
+      btnTabCodes.classList.remove("active");
+      tabGameSection.classList.add("active");
+      tabCodeSection.classList.remove("active");
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const gamesRef = db.ref('lab-games');
-    const solutionsRef = db.ref('lab-solutions');
+    btnTabCodes.onclick = function() {
+      btnTabCodes.classList.add("active");
+      btnTabGames.classList.remove("active");
+      tabCodeSection.classList.add("active");
+      tabGameSection.classList.remove("active");
+    };
 
-    const EXPIRY_TIME_MS = 5 * 60 * 1000;
-
-    window.switchActiveTab = function(type) {
-      const tabGamesBtn = document.getElementById("tab-btn-games");
-      const tabCodesBtn = document.getElementById("tab-btn-codes");
-      const gameTab = document.getElementById("game-tab");
-      const codeTab = document.getElementById("code-tab");
-
-      if (type === 'games') {
-        tabGamesBtn.classList.add("active");
-        tabCodesBtn.classList.remove("active");
-        gameTab.classList.add("active");
-        codeTab.classList.remove("active");
+    // 2. Clipboard copy handler
+    function copyToClipboard(text, el) {
+      if (!navigator.clipboard) {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
       } else {
-        tabCodesBtn.classList.add("active");
-        tabGamesBtn.classList.remove("active");
-        codeTab.classList.add("active");
-        gameTab.classList.remove("active");
+        navigator.clipboard.writeText(text);
       }
-    };
+      const prev = el.innerText;
+      el.innerText = "COPIED ✓";
+      el.style.background = "#22c55e";
+      el.style.color = "#020617";
+      setTimeout(function() {
+        el.innerText = prev;
+        el.style.background = "rgba(51, 65, 85, 0.85)";
+        el.style.color = "#f8fafc";
+      }, 1500);
+    }
 
-    window.triggerCopy = function(text, btnElement) {
-      navigator.clipboard.writeText(text).then(() => {
-        const original = btnElement.innerText;
-        btnElement.innerText = "COPIED ✓";
-        btnElement.style.background = "#22c55e";
-        btnElement.style.color = "#020617";
-        setTimeout(() => {
-          btnElement.innerText = original;
-          btnElement.style.background = "rgba(51, 65, 85, 0.85)";
-          btnElement.style.color = "#f8fafc";
-        }, 1500);
-      });
-    };
+    // 3. Firebase Connection & Realtime Engine
+    const EXPIRY_TIME_MS = 5 * 60 * 1000; // 5 mins
 
-    window.postGameUpdate = function() {
-      const game = document.getElementById("game").value.trim();
-      const code = document.getElementById("code").value.trim();
-      const link = document.getElementById("link").value.trim();
+    try {
+      const firebaseConfig = {
+        apiKey: "AIzaSyALuuDDM5SeC5_Ff5FNg1FofYfm06BxdY0",
+        authDomain: "lab-hub-318a2.firebaseapp.com",
+        databaseURL: "https://lab-hub-318a2-default-rtdb.firebaseio.com",
+        projectId: "lab-hub-318a2",
+        storageBucket: "lab-hub-318a2.firebasestorage.app",
+        messagingSenderId: "648359872715",
+        appId: "1:648359872715:web:3e9c545aa35d623ed8334e",
+        measurementId: "G-83NNL4613F"
+      };
 
-      if (!game && !code && !link) {
-        alert("Enter at least a game name or room code!");
-        return;
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
       }
+      const db = firebase.database();
+      const gamesRef = db.ref('lab-games');
+      const solutionsRef = db.ref('lab-solutions');
 
-      gamesRef.push({
-        game: game || "Game",
-        code: code || "",
-        link: link || "",
-        timeString: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        createdAt: Date.now()
-      });
+      // Post Game
+      document.getElementById("btn-post-game").onclick = function() {
+        const game = document.getElementById("game").value.trim();
+        const code = document.getElementById("code").value.trim();
+        const link = document.getElementById("link").value.trim();
 
-      document.getElementById("game").value = "";
-      document.getElementById("code").value = "";
-      document.getElementById("link").value = "";
-    };
-
-    window.postCodeSolution = function() {
-      const lang = document.getElementById("code-lang").value;
-      const title = document.getElementById("code-title").value.trim();
-      const body = document.getElementById("code-body").value.trim();
-
-      if (!body) {
-        alert("Please paste your code solution before broadcasting!");
-        return;
-      }
-
-      solutionsRef.push({
-        lang: lang,
-        title: title || "Code Solution",
-        codeBody: body,
-        timeString: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        createdAt: Date.now()
-      });
-
-      document.getElementById("code-title").value = "";
-      document.getElementById("code-body").value = "";
-    };
-
-    window.clearFeed = function(type) {
-      if (confirm(`Wipe all active ${type} broadcasts?`)) {
-        if (type === 'games') gamesRef.remove();
-        if (type === 'solutions') solutionsRef.remove();
-      }
-    };
-
-    setInterval(() => {
-      const elements = document.querySelectorAll("[data-created]");
-      const now = Date.now();
-
-      elements.forEach(el => {
-        const created = parseInt(el.getAttribute("data-created"), 10);
-        const remaining = Math.max(0, EXPIRY_TIME_MS - (now - created));
-
-        if (remaining <= 0) {
-          el.innerText = "EXPIRING...";
-        } else {
-          const m = Math.floor(remaining / 60000);
-          const s = Math.floor((remaining % 60000) / 1000);
-          el.innerText = `TTL: ${m}:${s < 10 ? '0' : ''}${s}`;
-        }
-      });
-    }, 1000);
-
-    gamesRef.on('value', (snapshot) => {
-      const feed = document.getElementById("feed");
-      feed.innerHTML = "";
-      const data = snapshot.val();
-
-      if (!data) {
-        feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE SIGNALS]</p>";
-        return;
-      }
-
-      const now = Date.now();
-      const entries = Object.entries(data).reverse();
-      let count = 0;
-
-      entries.forEach(([key, item]) => {
-        if (item.createdAt && (now - item.createdAt > EXPIRY_TIME_MS)) {
-          db.ref(`lab-games/${key}`).remove();
+        if (!game && !code && !link) {
+          alert("Enter at least a game name or room code!");
           return;
         }
 
-        count++;
-        const card = document.createElement("div");
-        card.className = "feed-item";
+        gamesRef.push({
+          game: game || "Game",
+          code: code || "",
+          link: link || "",
+          timeString: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          createdAt: Date.now()
+        }, function(error) {
+          if (error) {
+            alert("Database write error: " + error.message);
+          } else {
+            document.getElementById("game").value = "";
+            document.getElementById("code").value = "";
+            document.getElementById("link").value = "";
+          }
+        });
+      };
 
-        const topRow = document.createElement("div");
-        topRow.className = "card-top";
-        topRow.innerHTML = `
-          <span class="game-name">${item.game}</span>
-          <span class="countdown-tag" data-created="${item.createdAt}">CALCULATING...</span>
-        `;
-        card.appendChild(topRow);
+      // Clear Games
+      document.getElementById("btn-clear-games").onclick = function() {
+        if (confirm("Wipe all active game broadcasts?")) {
+          gamesRef.remove();
+        }
+      };
 
-        if (item.code) {
-          const row = document.createElement("div");
-          row.className = "row-group";
-          const span = document.createElement("span");
-          span.className = "code-box";
-   
+      // Post Solution
+      document.getElementById("btn-post-code").onclick = function() {
+        const lang = document.getElementById("code-lang").value;
+        const title = document.getElementById("code-title").value.trim();
+        const body = document.getElementById("code-body").value.trim();
+
+        if (!body) {
+          alert("Please paste your code solution!");
+          return;
+        }
+
+        solutionsRef.push({
+          lang: lang,
+          title: title || "Code Solution",
+          codeBody: body,
+          timeString: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          createdAt: Date.now()
+        }, function(error) {
+          if (error) {
+            alert("Database write error: " + error.message);
+          } else {
+            document.getElementById("code-title").value = "";
+            document.getElementById("code-body").value = "";
+          }
+        });
+      };
+
+      // Clear Solutions
+      document.getElementById("btn-clear-codes").onclick = function() {
+        if (confirm("Wipe all active code solutions?")) {
+          solutionsRef.remove();
+        }
+      };
+
+      // Realtime listener: Games
+      gamesRef.on('value', function(snapshot) {
+        const feed = document.getElementById("feed");
+        feed.innerHTML = "";
+        const data = snapshot.val();
+
+        if (!data) {
+          feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE SIGNALS]</p>";
+          return;
+        }
+
+        const now = Date.now();
+        const entries = Object.entries(data).reverse();
+        let count = 0;
+
+        entries.forEach(function(pair) {
+          const key = pair[0];
+          const item = pair[1];
+
+          if (item.createdAt && (now - item.createdAt > EXPIRY_TIME_MS)) {
+            db.ref('lab-games/' + key).remove();
+            return;
+          }
+
+          count++;
+          const card = document.createElement("div");
+          card.className = "feed-item";
+
+          let html = `
+            <div 
