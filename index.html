@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lab Game Hub</title>
+  <title>GAME HUB | Naught Kansari Limited</title>
   <style>
     :root {
       --cyber-blue: #38bdf8;
-      --cyber-neon: #22d3ee;
-      --cyber-green: #4ade80;
-      --cyber-red: #f43f5e;
-      --glass-bg: rgba(15, 23, 42, 0.72);
-      --glass-card: rgba(30, 41, 59, 0.65);
-      --glass-border: rgba(56, 189, 248, 0.25);
+      --cyber-neon: #06b6d4;
+      --cyber-green: #22c55e;
+      --cyber-red: #ef4444;
+      --glass-bg: rgba(10, 15, 29, 0.78);
+      --glass-card: rgba(17, 24, 39, 0.72);
+      --glass-border: rgba(56, 189, 248, 0.28);
     }
 
     * {
@@ -24,9 +24,8 @@
     body {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       background: 
-        radial-gradient(ellipse at top, rgba(30, 58, 138, 0.45), transparent 70%),
-        radial-gradient(ellipse at bottom, rgba(15, 23, 42, 0.95), #020617),
-        url("https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070&auto=format&fit=crop");
+        linear-gradient(180deg, rgba(3, 7, 18, 0.88) 0%, rgba(10, 15, 29, 0.82) 50%, rgba(3, 7, 18, 0.94) 100%),
+        url("https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop");
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -43,7 +42,6 @@
       max-width: 520px;
     }
 
-    /* Live Network Status Pill */
     .status-bar {
       display: inline-flex;
       align-items: center;
@@ -56,9 +54,9 @@
       font-family: monospace;
       letter-spacing: 0.08em;
       color: var(--cyber-green);
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       backdrop-filter: blur(10px);
-      box-shadow: 0 0 12px rgba(74, 222, 128, 0.2);
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.2);
     }
 
     .pulse-dot {
@@ -72,43 +70,62 @@
 
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.8); }
+      50% { opacity: 0.4; transform: scale(0.85); }
     }
 
     .header-box {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
 
     h1 {
-      font-size: 1.85rem;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      background: linear-gradient(135deg, #38bdf8, #818cf8, #a855f7);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 30px rgba(56, 189, 248, 0.35);
+      text-shadow: 0 0 35px rgba(56, 189, 248, 0.4);
     }
 
-    /* Glassmorphic Cards */
+    .sub-brand {
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-top: 5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .sub-brand::before, .sub-brand::after {
+      content: "";
+      width: 24px;
+      height: 1px;
+      background: rgba(148, 163, 184, 0.45);
+    }
+
     .card {
       background: var(--glass-card);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      padding: 20px;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      padding: 22px;
       border-radius: 16px;
       margin-bottom: 24px;
       border: 1px solid var(--glass-border);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.55);
     }
 
     input {
       width: 100%;
       padding: 12px 14px;
-      margin: 8px 0;
+      margin: 7px 0;
       border-radius: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: rgba(10, 15, 29, 0.85);
       color: #f8fafc;
       font-size: 14px;
       outline: none;
@@ -117,15 +134,15 @@
 
     input:focus {
       border-color: var(--cyber-blue);
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
-      background: rgba(15, 23, 42, 0.9);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+      background: rgba(15, 23, 42, 0.95);
     }
 
     .btn-grid {
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 8px;
-      margin-top: 10px;
+      gap: 10px;
+      margin-top: 12px;
     }
 
     button {
@@ -138,24 +155,25 @@
 
     button.broadcast-btn {
       background: linear-gradient(135deg, #0284c7, #38bdf8);
-      color: #041324;
+      color: #030712;
       padding: 12px;
       font-size: 15px;
-      letter-spacing: 0.03em;
-      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.35);
+      letter-spacing: 0.04em;
+      box-shadow: 0 4px 18px rgba(56, 189, 248, 0.38);
     }
 
     button.broadcast-btn:hover {
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
+      box-shadow: 0 0 22px rgba(56, 189, 248, 0.65);
       transform: translateY(-1px);
     }
 
     button.clear-btn {
-      background: rgba(244, 63, 94, 0.15);
-      border: 1px solid rgba(244, 63, 94, 0.4);
-      color: #fda4af;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.45);
+      color: #fca5a5;
       padding: 12px 16px;
       font-size: 13px;
+      letter-spacing: 0.03em;
     }
 
     button.clear-btn:hover {
@@ -164,21 +182,21 @@
     }
 
     .section-title {
-      font-size: 1rem;
-      letter-spacing: 0.06em;
+      font-size: 0.95rem;
+      letter-spacing: 0.09em;
       text-transform: uppercase;
       color: #94a3b8;
       margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-weight: 600;
     }
 
-    /* Cyber Feed Items */
     .feed-item {
-      background: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border-left: 4px solid var(--cyber-neon);
       border-top: 1px solid rgba(255, 255, 255, 0.08);
       border-right: 1px solid rgba(255, 255, 255, 0.05);
@@ -186,7 +204,7 @@
       padding: 14px 16px;
       border-radius: 12px;
       margin-bottom: 14px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
       animation: slideIn 0.3s ease-out;
     }
 
@@ -213,9 +231,9 @@
       font-family: monospace;
       font-size: 0.75rem;
       color: var(--cyber-neon);
-      background: rgba(34, 211, 238, 0.1);
-      border: 1px solid rgba(34, 211, 238, 0.25);
-      padding: 2px 8px;
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      padding: 3px 8px;
       border-radius: 6px;
     }
 
@@ -228,16 +246,16 @@
     }
 
     .code-box {
-      background: rgba(2, 6, 23, 0.8);
+      background: rgba(2, 6, 23, 0.85);
       padding: 6px 14px;
       border-radius: 8px;
       font-family: 'SF Mono', Monaco, Consolas, monospace;
       font-size: 1.15rem;
       font-weight: 700;
       color: var(--cyber-green);
-      border: 1px solid rgba(74, 222, 128, 0.3);
-      letter-spacing: 0.05em;
-      box-shadow: 0 0 10px rgba(74, 222, 128, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      letter-spacing: 0.06em;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.18);
     }
 
     .link-text {
@@ -249,9 +267,9 @@
     }
 
     .copy-pill {
-      background: rgba(51, 65, 85, 0.8);
+      background: rgba(51, 65, 85, 0.85);
       color: #f8fafc;
-      border: 1px solid rgba(148, 163, 184, 0.25);
+      border: 1px solid rgba(148, 163, 184, 0.3);
       border-radius: 8px;
       padding: 6px 12px;
       font-size: 0.8rem;
@@ -281,23 +299,24 @@
         <span class="pulse-dot"></span>
         <span>NETWORK: ONLINE</span>
       </div>
-      <h1>COMMAND HUB</h1>
+      <h1>GAME HUB</h1>
+      <div class="sub-brand">By Naught Kansari Limited</div>
     </div>
 
     <div class="card">
-      <h3 style="margin-bottom: 8px; font-size: 1rem; color: #cbd5e1;">Transmit Lobby</h3>
+      <h3 style="margin-bottom: 8px; font-size: 1rem; color: #cbd5e1;">Broadcast Lobby</h3>
       <input type="text" id="game" placeholder="Game Name (e.g. BGMI, Skribbl)">
       <input type="text" id="code" placeholder="Room Code / Match Key">
-      <input type="url" id="link" placeholder="Lobby URL (optional)">
+      <input type="url" id="link" placeholder="Direct Link (optional)">
       
       <div class="btn-grid">
-        <button class="broadcast-btn" onclick="postUpdate()">Transmit Code</button>
-        <button class="clear-btn" onclick="clearAllGames()">Wipe</button>
+        <button class="broadcast-btn" onclick="postUpdate()">Broadcast</button>
+        <button class="clear-btn" onclick="clearAllGames()">Clear Feed</button>
       </div>
     </div>
 
     <div class="section-title">
-      <span>Incoming Transmissions</span>
+      <span>Active Broadcast</span>
     </div>
     <div id="feed">Connecting to network...</div>
   </div>
@@ -321,7 +340,7 @@
     const db = getDatabase(app);
     const gamesRef = ref(db, 'lab-games');
 
-    const EXPIRY_TIME_MS = 10 * 60 * 1000; // 10 minutes
+    const EXPIRY_TIME_MS = 10 * 60 * 1000;
 
     window.copyText = function(text, btnElement) {
       navigator.clipboard.writeText(text).then(() => {
@@ -331,7 +350,7 @@
         btnElement.style.color = "#020617";
         setTimeout(() => {
           btnElement.innerText = prev;
-          btnElement.style.background = "rgba(51, 65, 85, 0.8)";
+          btnElement.style.background = "rgba(51, 65, 85, 0.85)";
           btnElement.style.color = "#f8fafc";
         }, 1500);
       });
@@ -343,12 +362,12 @@
       const link = document.getElementById("link").value.trim();
 
       if (!game && !code && !link) {
-        alert("Payload empty. Enter at least a game or room code.");
+        alert("Please provide at least a game name or room code.");
         return;
       }
 
       push(gamesRef, {
-        game: game || "Unknown Target",
+        game: game || "Game",
         code: code || "",
         link: link || "",
         timeString: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
@@ -361,12 +380,11 @@
     };
 
     window.clearAllGames = function() {
-      if (confirm("Wipe all transmissions across all terminals?")) {
+      if (confirm("Wipe all active broadcasts across all systems?")) {
         remove(gamesRef);
       }
     };
 
-    // Live second-by-second countdown handler
     setInterval(() => {
       const countdownElements = document.querySelectorAll("[data-created]");
       const now = Date.now();
@@ -420,7 +438,7 @@
           html += `
             <div class="row-group">
               <span class="code-box">${item.code}</span>
-              <button class="copy-pill" onclick="copyText('${item.code}', this)">Copy Key</button>
+              <button class="copy-pill" onclick="copyText('${item.code}', this)">Copy Code</button>
             </div>
           `;
         }
@@ -429,7 +447,7 @@
           html += `
             <div class="row-group">
               <a class="link-text" href="${item.link}" target="_blank">Access Link</a>
-              <button class="copy-pill" onclick="copyText('${item.link}', this)">Copy URL</button>
+              <button class="copy-pill" onclick="copyText('${item.link}', this)">Copy Link</button>
             </div>
           `;
         }
