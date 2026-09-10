@@ -1,1077 +1,735 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GAME HUB | Naughty Kansari Limited</title>
-  <style>
-    :root {
-      --cyber-blue: #38bdf8;
-      --cyber-neon: #06b6d4;
-      --cyber-green: #22c55e;
-      --cyber-red: #ef4444;
-      --cyber-purple: #c084fc;
-      --glass-bg: rgba(10, 15, 29, 0.78);
-      --glass-card: rgba(17, 24, 39, 0.72);
-      --glass-border: rgba(56, 189, 248, 0.28);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: 
-        linear-gradient(180deg, rgba(3, 7, 18, 0.88) 0%, rgba(10, 15, 29, 0.82) 50%, rgba(3, 7, 18, 0.94) 100%),
-        url("https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop");
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      color: #f8fafc;
-      min-height: 100vh;
-      padding: 24px 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 540px;
-    }
-
-    .status-bar {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(74, 222, 128, 0.35);
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-family: monospace;
-      letter-spacing: 0.08em;
-      color: var(--cyber-green);
-      margin-bottom: 16px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 14px rgba(34, 197, 94, 0.2);
-    }
-
-    .pulse-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--cyber-green);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--cyber-green);
-      animation: pulse 1.5s infinite ease-in-out;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
-    }
-
-    .header-box {
-      text-align: center;
-      margin-bottom: 18px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .brand-logo {
-      width: 64px;
-      height: 64px;
-      margin-bottom: 8px;
-      filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.55));
-      animation: float 4s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-5px); }
-    }
-
-    h1 {
-      font-size: 2.2rem;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      background: linear-gradient(135deg, #38bdf8, #818cf8, #a855f7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 35px rgba(56, 189, 248, 0.4);
-    }
-
-    .sub-brand {
-      font-size: 0.82rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: #94a3b8;
-      margin-top: 6px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-    }
-
-    .sub-brand::before, .sub-brand::after {
-      content: "";
-      width: 28px;
-      height: 1px;
-      background: rgba(148, 163, 184, 0.4);
-    }
-
-    /* Tab Switcher */
-    .tab-container {
-      display: flex;
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      border-radius: 12px;
-      padding: 4px;
-      margin-bottom: 18px;
-      gap: 6px;
-      backdrop-filter: blur(12px);
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 10px 14px;
-      border: none;
-      background: transparent;
-      color: #94a3b8;
-      font-size: 0.88rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .tab-btn.active {
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(129, 140, 248, 0.25));
-      color: var(--cyber-blue);
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
-    }
-
-    .card {
-      background: var(--glass-card);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      padding: 22px;
-      border-radius: 16px;
-      margin-bottom: 24px;
-      border: 1px solid var(--glass-border);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.55);
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 12px 14px;
-      margin: 7px 0;
-      border-radius: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.25);
-      background: rgba(10, 15, 29, 0.85);
-      color: #f8fafc;
-      font-size: 14px;
-      outline: none;
-      transition: all 0.2s ease;
-      font-family: inherit;
-    }
-
-    textarea {
-      font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace;
-      font-size: 0.85rem;
-      min-height: 120px;
-      resize: vertical;
-      line-height: 1.45;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--cyber-blue);
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
-      background: rgba(15, 23, 42, 0.95);
-    }
-
-    .btn-grid {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    button {
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      font-weight: 700;
-      transition: all 0.2s ease;
-    }
-
-    button.broadcast-btn {
-      background: linear-gradient(135deg, #0284c7, #38bdf8);
-      color: #030712;
-      padding: 12px;
-      font-size: 15px;
-      letter-spacing: 0.04em;
-      box-shadow: 0 4px 18px rgba(56, 189, 248, 0.38);
-    }
-
-    button.broadcast-btn:hover {
-      box-shadow: 0 0 22px rgba(56, 189, 248, 0.65);
-      transform: translateY(-1px);
-    }
-
-    button.clear-btn {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.45);
-      color: #fca5a5;
-      padding: 12px 16px;
-      font-size: 13px;
-      letter-spacing: 0.03em;
-    }
-
-    button.clear-btn:hover {
-      background: var(--cyber-red);
-      color: #ffffff;
-    }
-
-    .section-title {
-      font-size: 0.95rem;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-      color: #94a3b8;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-    }
-
-    .feed-item {
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-left: 4px solid var(--cyber-neon);
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      border-right: 1px solid rgba(255, 255, 255, 0.05);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      padding: 14px 16px;
-      border-radius: 12px;
-      margin-bottom: 14px;
-      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
-      animation: slideIn 0.3s ease-out;
-    }
-
-    .feed-item.solution-card {
-      border-left-color: var(--cyber-purple);
-    }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .game-name {
-      font-weight: 800;
-      color: #fde047;
-      font-size: 1.15rem;
-      letter-spacing: 0.04em;
-    }
-
-    .lang-badge {
-      background: rgba(192, 132, 252, 0.18);
-      border: 1px solid rgba(192, 132, 252, 0.4);
-      color: #e9d5ff;
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-family: monospace;
-      font-weight: bold;
-    }
-
-    .countdown-tag {
-      font-family: monospace;
-      font-size: 0.75rem;
-      color: var(--cyber-neon);
-      background: rgba(6, 182, 212, 0.12);
-      border: 1px solid rgba(6, 182, 212, 0.3);
-      padding: 3px 8px;
-      border-radius: 6px;
-    }
-
-    .row-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 8px;
-      flex-wrap: wrap;
-    }
-
-    .code-box {
-      background: rgba(2, 6, 23, 0.85);
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-family: 'SF Mono', Monaco, Consolas, monospace;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--cyber-green);
-      border: 1px solid rgba(34, 197, 94, 0.35);
-      letter-spacing: 0.06em;
-      box-shadow: 0 0 10px rgba(34, 197, 94, 0.18);
-    }
-
-    /* Solution Terminal Box */
-    .code-snippet-box {
-      background: #090d16;
-      border: 1px solid rgba(56, 189, 248, 0.2);
-      border-radius: 8px;
-      padding: 10px 12px;
-      margin-top: 8px;
-      position: relative;
-    }
-
-    .code-snippet-box pre {
-      font-family: 'SF Mono', Monaco, Consolas, monospace;
-      font-size: 0.82rem;
-      color: #a7f3d0;
-      white-space: pre-wrap;
-      word-break: break-all;
-      max-height: 220px;
-      overflow-y: auto;
-      margin: 0;
-    }
-
-    .code-header-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .link-text {
-      color: var(--cyber-blue);
-      word-break: break-all;
-      text-decoration: underline;
-      font-size: 0.9rem;
-      max-width: 300px;
-    }
-
-    .copy-pill {
-      background: rgba(51, 65, 85, 0.85);
-      color: #f8fafc;
-      border: 1px solid rgba(148, 163, 184, 0.3);
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .copy-pill:active {
-      background: var(--cyber-green);
-      color: #020617;
-      transform: scale(0.96);
-    }
-
-    .time {
-      font-size: 0.72rem;
-      color: #64748b;
-      margin-top: 10px;
-      font-family: monospace;
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    /* Floating Chat Bot Widget Styles */
-    .chatbot-fab {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-      z-index: 9999;
-      transition: transform 0.2s ease;
-      user-select: none;
-    }
-
-    .chatbot-fab:hover {
-      transform: scale(1.08);
-    }
-
-    .chatbot-fab-btn {
-      width: 62px;
-      height: 62px;
-      border-radius: 50%;
-      background: rgba(15, 23, 42, 0.9);
-      border: 2px solid var(--cyber-blue);
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.5), inset 0 0 10px rgba(6, 182, 212, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(10px);
-    }
-
-    .chatbot-fab-label {
-      margin-top: 6px;
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #38bdf8;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      padding: 2px 8px;
-      border-radius: 8px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.5);
-    }
-
-    /* Popup Modal Window */
-    .chat-modal {
-      position: fixed;
-      bottom: 106px;
-      right: 24px;
-      width: 360px;
-      max-width: calc(100vw - 40px);
-      height: 480px;
-      background: rgba(10, 15, 29, 0.94);
-      border: 1px solid var(--cyber-blue);
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(56, 189, 248, 0.25);
-      backdrop-filter: blur(20px);
-      display: none;
-      flex-direction: column;
-      z-index: 9999;
-      overflow: hidden;
-      animation: popUp 0.25s ease-out;
-    }
-
-    .chat-modal.open {
-      display: flex;
-    }
-
-    @keyframes popUp {
-      from { opacity: 0; transform: translateY(12px) scale(0.96); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .chat-header {
-      padding: 12px 14px;
-      background: rgba(15, 23, 42, 0.9);
-      border-bottom: 1px solid rgba(56, 189, 248, 0.25);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .chat-title-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .chat-title {
-      font-size: 0.92rem;
-      font-weight: 800;
-      color: #38bdf8;
-      letter-spacing: 0.05em;
-    }
-
-    .chat-close-btn {
-      background: transparent;
-      border: none;
-      color: #94a3b8;
-      font-size: 1.2rem;
-      cursor: pointer;
-      padding: 2px 6px;
-      border-radius: 6px;
-    }
-
-    .chat-close-btn:hover {
-      color: #f8fafc;
-      background: rgba(239, 68, 68, 0.3);
-    }
-
-    /* API Key Config Bar */
-    .api-key-bar {
-      padding: 6px 12px;
-      background: rgba(2, 6, 23, 0.85);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .api-key-bar input {
-      margin: 0;
-      padding: 4px 8px;
-      font-size: 0.75rem;
-      border-radius: 6px;
-      border: 1px solid rgba(56, 189, 248, 0.2);
-    }
-
-    .api-key-bar button {
-      padding: 4px 10px;
-      font-size: 0.72rem;
-      background: #0284c7;
-      color: white;
-      border-radius: 6px;
-    }
-
-    .chat-messages {
-      flex: 1;
-      padding: 14px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      font-size: 0.85rem;
-    }
-
-    .chat-msg {
-      max-width: 85%;
-      padding: 8px 12px;
-      border-radius: 10px;
-      line-height: 1.4;
-      word-break: break-word;
-    }
-
-    .chat-msg.user {
-      align-self: flex-end;
-      background: linear-gradient(135deg, #0284c7, #0369a1);
-      color: #ffffff;
-      border-bottom-right-radius: 2px;
-    }
-
-    .chat-msg.bot {
-      align-self: flex-start;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      color: #e2e8f0;
-      border-bottom-left-radius: 2px;
-    }
-
-    .chat-msg pre {
-      background: #020617;
-      padding: 8px;
-      border-radius: 6px;
-      margin-top: 6px;
-      margin-bottom: 6px;
-      overflow-x: auto;
-      font-family: monospace;
-      font-size: 0.78rem;
-      color: #a7f3d0;
-      border: 1px solid rgba(56, 189, 248, 0.2);
-      white-space: pre-wrap;
-    }
-
-    .chat-input-area {
-      padding: 10px 12px;
-      background: rgba(15, 23, 42, 0.95);
-      border-top: 1px solid rgba(56, 189, 248, 0.25);
-      display: flex;
-      gap: 8px;
-    }
-
-    .chat-input-area input {
-      margin: 0;
-      padding: 8px 10px;
-      font-size: 0.85rem;
-    }
-
-    .chat-input-area button {
-      background: linear-gradient(135deg, #0284c7, #38bdf8);
-      color: #020617;
-      padding: 8px 14px;
-      font-size: 0.85rem;
-      white-space: nowrap;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAME HUB | Naughty Kansari Limited</title>
+<style>
+:root {
+--cyber-blue: #38bdf8;
+--cyber-neon: #06b6d4;
+--cyber-green: #22c55e;
+--cyber-red: #ef4444;
+--cyber-purple: #c084fc;
+--glass-bg: rgba(10, 15, 29, 0.78);
+--glass-card: rgba(17, 24, 39, 0.72);
+--glass-border: rgba(56, 189, 248, 0.28);
+}
+
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+}
+
+body {
+font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+background:
+linear-gradient(180deg, rgba(3, 7, 18, 0.88) 0%, rgba(10, 15, 29, 0.82) 50%, rgba(3, 7, 18, 0.94) 100%),
+url("https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop");
+background-size: cover;
+background-position: center;
+background-attachment: fixed;
+color: #f8fafc;
+min-height: 100vh;
+padding: 24px 16px;
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.container {
+width: 100%;
+max-width: 540px;
+}
+
+.status-bar {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+padding: 6px 14px;
+background: rgba(15, 23, 42, 0.85);
+border: 1px solid rgba(74, 222, 128, 0.35);
+border-radius: 999px;
+font-size: 0.75rem;
+font-family: monospace;
+letter-spacing: 0.08em;
+color: var(--cyber-green);
+margin-bottom: 16px;
+backdrop-filter: blur(10px);
+box-shadow: 0 0 14px rgba(34, 197, 94, 0.2);
+}
+
+.pulse-dot {
+width: 8px;
+height: 8px;
+background: var(--cyber-green);
+border-radius: 50%;
+box-shadow: 0 0 8px var(--cyber-green);
+animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+0%, 100% { opacity: 1; transform: scale(1); }
+50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.header-box {
+text-align: center;
+margin-bottom: 18px;
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.brand-logo {
+width: 90px;
+height: 70px;
+margin-bottom: 8px;
+filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.6));
+animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+0%, 100% {
+transform: translateY(0px);
+filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.55));
+}
+50% {
+transform: translateY(-5px);
+filter: drop-shadow(0 0 26px rgba(6, 182, 212, 0.85));
+}
+}
+
+h1 {
+font-size: 2.2rem;
+font-weight: 900;
+letter-spacing: 0.12em;
+background: linear-gradient(135deg, #38bdf8, #818cf8, #a855f7);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+text-shadow: 0 0 35px rgba(56, 189, 248, 0.4);
+}
+
+.sub-brand {
+font-size: 0.82rem;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: #94a3b8;
+margin-top: 6px;
+font-weight: 700;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 12px;
+}
+
+.sub-brand::before, .sub-brand::after {
+content: "";
+width: 28px;
+height: 1px;
+background: rgba(148, 163, 184, 0.4);
+}
+
+/* Tab Switcher */
+.tab-container {
+display: flex;
+background: rgba(15, 23, 42, 0.8);
+border: 1px solid rgba(56, 189, 248, 0.25);
+border-radius: 12px;
+padding: 4px;
+margin-bottom: 18px;
+gap: 6px;
+backdrop-filter: blur(12px);
+}
+
+.tab-btn {
+flex: 1;
+padding: 10px 14px;
+border: none;
+background: transparent;
+color: #94a3b8;
+font-size: 0.88rem;
+font-weight: 700;
+letter-spacing: 0.05em;
+border-radius: 8px;
+cursor: pointer;
+transition: all 0.25s ease;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+}
+
+.tab-btn.active {
+background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(129, 140, 248, 0.25));
+color: var(--cyber-blue);
+border: 1px solid rgba(56, 189, 248, 0.4);
+box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+}
+
+.card {
+background: var(--glass-card);
+backdrop-filter: blur(18px);
+-webkit-backdrop-filter: blur(18px);
+padding: 22px;
+border-radius: 16px;
+margin-bottom: 24px;
+border: 1px solid var(--glass-border);
+box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.55);
+}
+
+input, select, textarea {
+width: 100%;
+padding: 12px 14px;
+margin: 7px 0;
+border-radius: 10px;
+border: 1px solid rgba(148, 163, 184, 0.25);
+background: rgba(10, 15, 29, 0.85);
+color: #f8fafc;
+font-size: 14px;
+outline: none;
+transition: all 0.2s ease;
+font-family: inherit;
+}
+
+textarea {
+font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace;
+font-size: 0.85rem;
+min-height: 120px;
+resize: vertical;
+line-height: 1.45;
+}
+
+input:focus, select:focus, textarea:focus {
+border-color: var(--cyber-blue);
+box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+background: rgba(15, 23, 42, 0.95);
+}
+
+.btn-grid {
+display: grid;
+grid-template-columns: 1fr auto;
+gap: 10px;
+margin-top: 12px;
+}
+
+button {
+border-radius: 10px;
+border: none;
+cursor: pointer;
+font-weight: 700;
+transition: all 0.2s ease;
+}
+
+button.broadcast-btn {
+background: linear-gradient(135deg, #0284c7, #38bdf8);
+color: #030712;
+padding: 12px;
+font-size: 15px;
+letter-spacing: 0.04em;
+box-shadow: 0 4px 18px rgba(56, 189, 248, 0.38);
+}
+
+button.broadcast-btn:hover {
+box-shadow: 0 0 22px rgba(56, 189, 248, 0.65);
+transform: translateY(-1px);
+}
+
+button.clear-btn {
+background: rgba(239, 68, 68, 0.15);
+border: 1px solid rgba(239, 68, 68, 0.45);
+color: #fca5a5;
+padding: 12px 16px;
+font-size: 13px;
+letter-spacing: 0.03em;
+}
+
+button.clear-btn:hover {
+background: var(--cyber-red);
+color: #ffffff;
+}
+
+.section-title {
+font-size: 0.95rem;
+letter-spacing: 0.09em;
+text-transform: uppercase;
+color: #94a3b8;
+margin-bottom: 12px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-weight: 600;
+}
+
+.feed-item {
+background: rgba(15, 23, 42, 0.75);
+backdrop-filter: blur(14px);
+-webkit-backdrop-filter: blur(14px);
+border-left: 4px solid var(--cyber-neon);
+border-top: 1px solid rgba(255, 255, 255, 0.08);
+border-right: 1px solid rgba(255, 255, 255, 0.05);
+border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+padding: 14px 16px;
+border-radius: 12px;
+margin-bottom: 14px;
+box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+animation: slideIn 0.3s ease-out;
+}
+
+.feed-item.solution-card {
+border-left-color: var(--cyber-purple);
+}
+
+@keyframes slideIn {
+from { opacity: 0; transform: translateY(-10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.card-top {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 8px;
+}
+
+.game-name {
+font-weight: 800;
+color: #fde047;
+font-size: 1.15rem;
+letter-spacing: 0.04em;
+}
+
+.lang-badge {
+background: rgba(192, 132, 252, 0.18);
+border: 1px solid rgba(192, 132, 252, 0.4);
+color: #e9d5ff;
+padding: 2px 8px;
+border-radius: 6px;
+font-size: 0.75rem;
+font-family: monospace;
+font-weight: bold;
+}
+
+.countdown-tag {
+font-family: monospace;
+font-size: 0.75rem;
+color: var(--cyber-neon);
+background: rgba(6, 182, 212, 0.12);
+border: 1px solid rgba(6, 182, 212, 0.3);
+padding: 3px 8px;
+border-radius: 6px;
+}
+
+.row-group {
+display: flex;
+align-items: center;
+gap: 10px;
+margin-top: 8px;
+flex-wrap: wrap;
+}
+
+.code-box {
+background: rgba(2, 6, 23, 0.85);
+padding: 6px 14px;
+border-radius: 8px;
+font-family: 'SF Mono', Monaco, Consolas, monospace;
+font-size: 1.15rem;
+font-weight: 700;
+color: var(--cyber-green);
+border: 1px solid rgba(34, 197, 94, 0.35);
+letter-spacing: 0.06em;
+box-shadow: 0 0 10px rgba(34, 197, 94, 0.18);
+}
+
+/* Solution Terminal Box */
+.code-snippet-box {
+background: #090d16;
+border: 1px solid rgba(56, 189, 248, 0.2);
+border-radius: 8px;
+padding: 10px 12px;
+margin-top: 8px;
+position: relative;
+}
+
+.code-snippet-box pre {
+font-family: 'SF Mono', Monaco, Consolas, monospace;
+font-size: 0.82rem;
+color: #a7f3d0;
+white-space: pre-wrap;
+word-break: break-all;
+max-height: 220px;
+overflow-y: auto;
+margin: 0;
+}
+
+.code-header-bar {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 6px;
+padding-bottom: 6px;
+border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.link-text {
+color: var(--cyber-blue);
+word-break: break-all;
+text-decoration: underline;
+font-size: 0.9rem;
+max-width: 300px;
+}
+
+.copy-pill {
+background: rgba(51, 65, 85, 0.85);
+color: #f8fafc;
+border: 1px solid rgba(148, 163, 184, 0.3);
+border-radius: 8px;
+padding: 6px 12px;
+font-size: 0.8rem;
+cursor: pointer;
+transition: all 0.2s ease;
+}
+
+.copy-pill:active {
+background: var(--cyber-green);
+color: #020617;
+transform: scale(0.96);
+}
+
+.time {
+font-size: 0.72rem;
+color: #64748b;
+margin-top: 10px;
+font-family: monospace;
+}
+
+.tab-content {
+display: none;
+}
+
+.tab-content.active {
+display: block;
+}
+</style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="header-box">
-      <div class="status-bar">
-        <span class="pulse-dot"></span>
-        <span>NETWORK: ONLINE</span>
-      </div>
-      
-      <!-- YOUR EXACT ORIGINAL LOGO -->
-      <svg class="brand-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="cyberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#38bdf8"/>
-            <stop offset="50%" stop-color="#818cf8"/>
-            <stop offset="100%" stop-color="#06b6d4"/>
-          </linearGradient>
-          <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.2"/>
-            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.05"/>
-          </linearGradient>
-        </defs>
-        <polygon points="50,4 92,24 92,72 50,96 8,72 8,24" stroke="url(#cyberGrad)" stroke-width="3.5" fill="url(#glowGrad)"/>
-        <circle cx="50" cy="24" r="3.5" fill="#38bdf8"/>
-        <circle cx="28" cy="62" r="3.5" fill="#22c55e"/>
-        <circle cx="72" cy="62" r="3.5" fill="#22c55e"/>
-        <path d="M50 27 L28 59 M50 27 L72 59 M28 62 L72 62" stroke="rgba(56, 189, 248, 0.4)" stroke-width="2"/>
-        <path d="M38 48 H62 M50 36 V60" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
-      </svg>
-
-      <h1>GAME HUB</h1>
-      <div class="sub-brand">By Naughty Kansari Limited</div>
-    </div>
-
-    <!-- Navigation Tabs -->
-    <div class="tab-container">
-      <button class="tab-btn active" onclick="switchTab('game-tab')">🎮 Game Lobbies</button>
-      <button class="tab-btn" onclick="switchTab('code-tab')">💻 Lab Solutions</button>
-    </div>
-
-    <!-- TAB 1: GAME HUB -->
-    <div id="game-tab" class="tab-content active">
-      <div class="card">
-        <h3 style="margin-bottom: 8px; font-size: 1rem; color: #cbd5e1;">Broadcast Lobby</h3>
-        <input type="text" id="game" placeholder="Game Name (e.g. BGMI, Skribbl)">
-        <input type="text" id="code" placeholder="Room Code / Match Key">
-        <input type="url" id="link" placeholder="Direct Link (optional)">
-        
-        <div class="btn-grid">
-          <button class="broadcast-btn" onclick="postGameUpdate()">Broadcast</button>
-          <button class="clear-btn" onclick="clearFeed('games')">Clear Feed</button>
-        </div>
-      </div>
-
-      <div class="section-title">
-        <span>Active Broadcast</span>
-      </div>
-      <div id="feed">Connecting to network...</div>
-    </div>
-
-    <!-- TAB 2: CODING SOLUTIONS -->
-    <div id="code-tab" class="tab-content">
-      <div class="card">
-        <h3 style="margin-bottom: 8px; font-size: 1rem; color: #cbd5e1;">Broadcast Code Solution</h3>
-        <select id="code-lang">
-          <option value="C/C++">C / C++</option>
-          <option value="Java">Java</option>
-          <option value="Python">Python</option>
-          <option value="Web/HTML/JS">Web (HTML/CSS/JS)</option>
-          <option value="SQL">SQL</option>
-          <option value="Other">Other</option>
-        </select>
-        <input type="text" id="code-title" placeholder="Question Title (e.g. Matrix Multiplication, Reverse String)">
-        <textarea id="code-body" placeholder="// Paste complete working code solution here..."></textarea>
-        
-        <div class="btn-grid">
-          <button class="broadcast-btn" onclick="postCodeSolution()">Transmit Solution</button>
-          <button class="clear-btn" onclick="clearFeed('solutions')">Clear Feed</button>
-        </div>
-      </div>
-
-      <div class="section-title">
-        <span>Active Lab Solutions</span>
-      </div>
-      <div id="code-feed">Connecting to network...</div>
-    </div>
-
-  </div>
-
-  <!-- FLOATING CHAT BOT WIDGET WITH YOUR EXACT LOGO -->
-  <div class="chatbot-fab" onclick="toggleChatModal()">
-    <div class="chatbot-fab-btn">
-      <svg viewBox="0 0 100 100" fill="none" style="width:36px; height:36px;">
-        <polygon points="50,4 92,24 92,72 50,96 8,72 8,24" stroke="#38bdf8" stroke-width="4" fill="rgba(6, 182, 212, 0.15)"/>
-        <circle cx="50" cy="24" r="3.5" fill="#38bdf8"/>
-        <circle cx="28" cy="62" r="3.5" fill="#22c55e"/>
-        <circle cx="72" cy="62" r="3.5" fill="#22c55e"/>
-        <path d="M50 27 L28 59 M50 27 L72 59 M28 62 L72 62" stroke="rgba(56, 189, 248, 0.4)" stroke-width="2"/>
-        <path d="M38 48 H62 M50 36 V60" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <div class="chatbot-fab-label">Chat Bot</div>
-  </div>
-
-  <!-- CHAT POPUP WINDOW -->
-  <div class="chat-modal" id="chat-modal">
-    <div class="chat-header">
-      <div class="chat-title-group">
-        <span class="pulse-dot" style="width:6px; height:6px;"></span>
-        <span class="chat-title">NaughtBot Qi</span>
-      </div>
-      <button class="chat-close-btn" onclick="toggleChatModal()">✕</button>
-    </div>
-
-    <!-- Gemini Key Config -->
-    <div class="api-key-bar">
-      <input type="password" id="gemini-key-input" placeholder="Gemini API Key (optional)">
-      <button onclick="saveApiKey()">Save</button>
-    </div>
-
-    <div class="chat-messages" id="chat-messages">
-      <div class="chat-msg bot">
-        ⚡ <strong>NaughtBot Qi Online.</strong><br>
-        Ask me any coding question or paste your lab problem here to generate instant solutions.
-      </div>
-    </div>
-
-    <div class="chat-input-area">
-      <input type="text" id="chat-query" placeholder="Ask a code question..." onkeydown="if(event.key==='Enter') sendChatMessage()">
-      <button onclick="sendChatMessage()">Send</button>
-    </div>
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyALuuDDM5SeC5_Ff5FNg1FofYfm06BxdY0",
-      authDomain: "lab-hub-318a2.firebaseapp.com",
-      databaseURL: "https://lab-hub-318a2-default-rtdb.firebaseio.com",
-      projectId: "lab-hub-318a2",
-      storageBucket: "lab-hub-318a2.firebasestorage.app",
-      messagingSenderId: "648359872715",
-      appId: "1:648359872715:web:3e9c545aa35d623ed8334e",
-      measurementId: "G-83NNL4613F"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const gamesRef = ref(db, 'lab-games');
-    const solutionsRef = ref(db, 'lab-solutions');
-
-    const EXPIRY_TIME_MS = 5 * 60 * 1000; // 5 minutes
-
-    // Tab Switcher
-    window.switchTab = function(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      
-      document.getElementById(tabId).classList.add('active');
-      if (tabId === 'game-tab') {
-        document.querySelectorAll('.tab-btn')[0].classList.add('active');
-      } else {
-        document.querySelectorAll('.tab-btn')[1].classList.add('active');
-      }
-    };
-
-    window.copyText = function(text, btnElement) {
-      navigator.clipboard.writeText(text).then(() => {
-        const prev = btnElement.innerText;
-        btnElement.innerText = "COPIED ✓";
-        btnElement.style.background = "#22c55e";
-        btnElement.style.color = "#020617";
-        setTimeout(() => {
-          btnElement.innerText = prev;
-          btnElement.style.background = "rgba(51, 65, 85, 0.85)";
-          btnElement.style.color = "#f8fafc";
-        }, 1500);
-      });
-    };
-
-    // Broadcast Game
-    window.postGameUpdate = function() {
-      const game = document.getElementById("game").value.trim();
-      const code = document.getElementById("code").value.trim();
-      const link = document.getElementById("link").value.trim();
-
-      if (!game && !code && !link) {
-        alert("Please provide at least a game name or room code.");
-        return;
-      }
-
-      push(gamesRef, {
-        game: game || "Game",
-        code: code || "",
-        link: link || "",
-        timeString: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-        createdAt: Date.now()
-      });
-
-      document.getElementById("game").value = "";
-      document.getElementById("code").value = "";
-      document.getElementById("link").value = "";
-    };
-
-    // Broadcast Coding Solution
-    window.postCodeSolution = function() {
-      const lang = document.getElementById("code-lang").value;
-      const title = document.getElementById("code-title").value.trim();
-      const body = document.getElementById("code-body").value.trim();
-
-      if (!body) {
-        alert("Please paste your code solution before transmitting!");
-        return;
-      }
-
-      push(solutionsRef, {
-        lang: lang,
-        title: title || "Lab Problem Solution",
-        codeBody: body,
-        timeString: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-        createdAt: Date.now()
-      });
-
-      document.getElementById("code-title").value = "";
-      document.getElementById("code-body").value = "";
-    };
-
-    window.clearFeed = function(type) {
-      if (confirm(`Wipe all active ${type} broadcasts across all systems?`)) {
-        if (type === 'games') remove(gamesRef);
-        if (type === 'solutions') remove(solutionsRef);
-      }
-    };
-
-    // 5-minute countdown ticker
-    setInterval(() => {
-      const countdownElements = document.querySelectorAll("[data-created]");
-      const now = Date.now();
-
-      countdownElements.forEach(el => {
-        const created = parseInt(el.getAttribute("data-created"), 10);
-        const remaining = Math.max(0, EXPIRY_TIME_MS - (now - created));
-
-        if (remaining <= 0) {
-          el.innerText = "EXPIRING...";
-        } else {
-          const m = Math.floor(remaining / 60000);
-          const s = Math.floor((remaining % 60000) / 1000);
-          el.innerText = `TTL: ${m}:${s < 10 ? '0' : ''}${s}`;
-        }
-      });
-    }, 1000);
-
-    // Sync Game Lobbies
-    onValue(gamesRef, (snapshot) => {
-      const feed = document.getElementById("feed");
-      feed.innerHTML = "";
-      const data = snapshot.val();
-
-      if (!data) {
-        feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE SIGNALS]</p>";
-        return;
-      }
-
-      const now = Date.now();
-      const entries = Object.entries(data).reverse();
-      let activeCount = 0;
-
-      entries.forEach(([key, item]) => {
-        if (item.createdAt && (now - item.createdAt > EXPIRY_TIME_MS)) {
-          remove(ref(db, `lab-games/${key}`));
-          return;
-        }
-
-        activeCount++;
-        const div = document.createElement("div");
-        div.className = "feed-item";
-
-        let html = `
-          <div class="card-top">
-            <span class="game-name">${item.game}</span>
-            <span class="countdown-tag" data-created="${item.createdAt}">CALCULATING...</span>
-          </div>
-        `;
-
-        if (item.code) {
-          html += `
-            <div class="row-group">
-              <span class="code-box">${item.code}</span>
-              <button class="copy-pill" onclick="copyText('${item.code}', this)">Copy Code</button>
-            </div>
-          `;
-        }
-
-        if (item.link) {
-          html += `
-            <div class="row-group">
-              <a class="link-text" href="${item.link}" target="_blank">Access Link</a>
-              <button class="copy-pill" onclick="copyText('${item.link}', this)">Copy Link</button>
-            </div>
-          `;
-        }
-
-        html += `<div class="time">TRANSMITTED: ${item.timeString || "RECENT"}</div>`;
-
-        div.innerHTML = html;
-        feed.appendChild(div);
-      });
-
-      if (activeCount === 0) {
-        feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE SIGNALS]</p>";
-      }
-    });
-
-    // Sync Coding Solutions
-    onValue(solutionsRef, (snapshot) => {
-      const feed = document.getElementById("code-feed");
-      feed.innerHTML = "";
-      const data = snapshot.val();
-
-      if (!data) {
-        feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE CODE SOLUTIONS]</p>";
-        return;
-      }
-
-      const now = Date.now();
-      const entries = Object.entries(data).reverse();
-      let activeCount = 0;
-
-      entries.forEach(([key, item]) => {
-        if (item.createdAt && (now - item.createdAt > EXPIRY_TIME_MS)) {
-          remove(ref(db, `lab-solutions/${key}`));
-          return;
-        }
-
-        activeCount++;
-        const div = document.createElement("div");
-        div.className = "feed-item solution-card";
-
-        const escapedCode = encodeURIComponent(item.codeBody);
-
-        let html = `
-          <div class="card-top">
-            <span class="game-name" style="color: #a7f3d0;">${item.title}</span>
-            <div style="display: flex; gap: 6px; align-items: center;">
-              <span class="lang-badge">${item.lang}</span>
-              <span class="countdown-tag" data-created="${item.createdAt}">CALCULATING...</span>
-            </div>
-          </div>
-
-          <div class="code-snippet-box">
-            <div class="code-header-bar">
-              <span style="font-size:0.75rem; color:#94a3b8; font-family:monospace;">Source Code</span>
-              <button class="copy-pill" onclick="copyText(decodeURIComponent('${escapedCode}'), this)">Copy Solution</button>
-            </div>
-            <pre><code>${item.codeBody.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>
-          </div>
-
-          <div class="time">SHARED: ${item.timeString || "RECENT"}</div>
-        `;
-
-        div.innerHTML = html;
-        feed.appendChild(div);
-      });
-
-      if (activeCount === 0) {
-        feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE CODE SOLUTIONS]</p>";
-      }
-    });
-
-    // ============================================
-    // NAUGHTBOT QI CHAT ENGINE (Gemini Integration)
-    // ============================================
-    window.toggleChatModal = function() {
-      const modal = document.getElementById("chat-modal");
-      modal.classList.toggle("open");
-    };
-
-    window.saveApiKey = function() {
-      const key = document.getElementById("gemini-key-input").value.trim();
-      if (key) {
-        localStorage.setItem("nkl_gemini_key", key);
-        alert("API Key saved securely in your browser!");
-      }
-    };
-
-    // Preload saved API key if present
-    const savedKey = localStorage.getItem("nkl_gemini_key");
-    if (savedKey) {
-      document.getElementById("gemini-key-input").value = savedKey;
-    }
-
-    window.sendChatMessage = async function() {
-      const input = document.getElementById("chat-query");
-      const query = input.value.trim();
-      if (!query) return;
-
-      const chatBox = document.getElementById("chat-messages");
-
-      // Append User message
-      const userDiv = document.createElement("div");
-      userDiv.className = "chat-msg user";
-      userDiv.innerText = query;
-      chatBox.appendChild(userDiv);
-      input.value = "";
-      chatBox.scrollTop = chatBox.scrollHeight;
-
-      // Append temporary Thinking status
-      const botDiv = document.createElement("div");
-      botDiv.className = "chat-msg bot";
-      botDiv.innerText = "Analyzing question & writing code...";
-      chatBox.appendChild(botDiv);
-      chatBox.scrollTop = chatBox.scrollHeight;
-
-      const apiKey = localStorage.getItem("nkl_gemini_key") || document.getElementById("gemini-key-input").value.trim();
-
-      if (!apiKey) {
-        botDiv.innerHTML = "⚠️ <strong>No API Key found.</strong><br>Please enter your free Gemini API key in the top bar of this window to enable answers.";
-        return;
-      }
-
-      try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{
-              parts: [{
-                text: `You are NaughtBot Qi, a competitive programming and lab assistant for Naughty Kansari Limited. Provide a direct, clean, and working code solution. Be concise. Question: ${query}`
-              }]
-            }]
-          })
-        });
-
-        const data = await response.json();
-        if (data.error) {
-          botDiv.innerText = `Error: ${data.error.message}`;
-          return;
-        }
-
-        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
-        
-        // Render markdown-like blocks cleanly
-        const formatted = reply
-          .replace(/```([\s\S]*?)```/g, (match, p1) => {
-            const cleanCode = p1.replace(/^[a-zA-Z]+\n/, '');
-            const encoded = encodeURIComponent(cleanCode);
-            return `<div style="margin-top:6px;"><button class="copy-pill" style="font-size:0.7rem; margin-bottom:4px;" onclick="copyText(decodeURIComponent('${encoded}'), this)">Copy Code</button><pre><code>${cleanCode.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre></div>`;
-          })
-          .replace(/\n/g, "<br>");
-
-        botDiv.innerHTML = formatted;
-        chatBox.scrollTop = chatBox.scrollHeight;
-      } catch (err) {
-        botDiv.innerText = "Connection failed. Please verify network connectivity or API key.";
-      }
-    };
-  </script>
+<div class="container">
+<div class="header-box">
+<div class="status-bar">
+<span class="pulse-dot"></span>
+<span>NETWORK: ONLINE</span>
+</div>
+
+<!-- Custom Tech Logo (Naught Kansari Limited) -->
+<svg class="brand-logo" viewBox="0 0 150 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="cyberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#38bdf8"/>
+<stop offset="50%" stop-color="#06b6d4"/>
+<stop offset="100%" stop-color="#0284c7"/>
+</linearGradient>
+</defs>
+<!-- Coding Brackets < and > -->
+<path d="M 22 55 L 34 38 M 22 55 L 34 72" stroke="#38bdf8" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 128 55 L 116 38 M 128 55 L 116 72" stroke="#38bdf8" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- Top Small Tag </ -->
+<text x="75" y="16" font-family="monospace" font-size="11" font-weight="900" fill="#22d3ee" text-anchor="middle"></></text>
+<!-- Connected 'NK' Circuit Lines -->
+<path d="M 44 26 L 44 84 M 44 26 L 75 84 M 75 26 L 75 84" stroke="url(#cyberGrad)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 75 55 L 106 26 M 75 55 L 106 84" stroke="url(#cyberGrad)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- Cyber Node Points -->
+<circle cx="44" cy="26" r="4.5" fill="#38bdf8"/>
+<circle cx="44" cy="84" r="4.5" fill="#06b6d4"/>
+<circle cx="75" cy="26" r="4.5" fill="#e0f2fe"/>
+<circle cx="75" cy="84" r="4.5" fill="#0284c7"/>
+<circle cx="106" cy="26" r="4.5" fill="#38bdf8"/>
+<circle cx="106" cy="84" r="4.5" fill="#06b6d4"/>
+<circle cx="75" cy="55" r="3.5" fill="#ffffff"/>
+</svg>
+
+<h1>GAME HUB</h1>
+<div class="sub-brand">By Naughty Kansari Limited</div>
+</div>
+
+<!-- Navigation Tabs -->
+<div class="tab-container">
+<button class="tab-btn active" onclick="switchTab('game-tab')">🎮 Game Lobbies</button>
+<button class="tab-btn" onclick="switchTab('code-tab')">💻 Lab Solutions</button>
+</div>
+
+<!-- TAB 1: GAME HUB -->
+<div id="game-tab" class="tab-content active">
+<div class="card">
+<h3 style="margin-bottom: 8px; font-size: 1rem; color: #cbd5e1;">Broadcast Lobby</h3>
+<input type="text" id="game" placeholder="Game Name (e.g. BGMI, Skribbl)">
+<input type="text" id="code" placeholder="Room Code / Match Key">
+<input type="url" id="link" placeholder="Direct Link (optional)">
+
+<div class="btn-grid">
+<button class="broadcast-btn" onclick="postGameUpdate()">Broadcast</button>
+<button class="clear-btn" onclick="clearFeed('games')">Clear Feed</button>
+</div>
+</div>
+
+<div class="section-title">
+<span>Active Broadcast</span>
+</div>
+<div id="feed">Connecting to network...</div>
+</div>
+
+<!-- TAB 2: CODING SOLUTIONS -->
+<div id="code-tab" class="tab-content">
+<div class="card">
+<h3 style="margin-bottom: 8px; font-size: 1rem; color: #cbd5e1;">Broadcast Code Solution</h3>
+<select id="code-lang">
+<option value="C/C++">C / C++</option>
+<option value="Java">Java</option>
+<option value="Python">Python</option>
+<option value="Web/HTML/JS">Web (HTML/CSS/JS)</option>
+<option value="SQL">SQL</option>
+<option value="Other">Other</option>
+</select>
+<input type="text" id="code-title" placeholder="Question Title (e.g. Matrix Multiplication, Reverse String)">
+<textarea id="code-body" placeholder="// Paste complete working code solution here..."></textarea>
+
+<div class="btn-grid">
+<button class="broadcast-btn" onclick="postCodeSolution()">Transmit Solution</button>
+<button class="clear-btn" onclick="clearFeed('solutions')">Clear Feed</button>
+</div>
+</div>
+
+<div class="section-title">
+<span>Active Lab Solutions</span>
+</div>
+<div id="code-feed">Connecting to network...</div>
+</div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyALuuDDM5SeC5_Ff5FNg1FofYfm06BxdY0",
+authDomain: "lab-hub-318a2.firebaseapp.com",
+databaseURL: "https://lab-hub-318a2-default-rtdb.firebaseio.com",
+projectId: "lab-hub-318a2",
+storageBucket: "lab-hub-318a2.firebasestorage.app",
+messagingSenderId: "648359872715",
+appId: "1:648359872715:web:3e9c545aa35d623ed8334e",
+measurementId: "G-83NNL4613F"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const gamesRef = ref(db, 'lab-games');
+const solutionsRef = ref(db, 'lab-solutions');
+
+const EXPIRY_TIME_MS = 5 * 60 * 1000; // 5 minutes
+
+// Tab Switcher
+window.switchTab = function(tabId) {
+document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+document.getElementById(tabId).classList.add('active');
+if (tabId === 'game-tab') {
+document.querySelectorAll('.tab-btn')[0].classList.add('active');
+} else {
+document.querySelectorAll('.tab-btn')[1].classList.add('active');
+}
+};
+
+window.copyText = function(text, btnElement) {
+navigator.clipboard.writeText(text).then(() => {
+const prev = btnElement.innerText;
+btnElement.innerText = "COPIED ✓";
+btnElement.style.background = "#22c55e";
+btnElement.style.color = "#020617";
+setTimeout(() => {
+btnElement.innerText = prev;
+btnElement.style.background = "rgba(51, 65, 85, 0.85)";
+btnElement.style.color = "#f8fafc";
+}, 1500);
+});
+};
+
+// Broadcast Game
+window.postGameUpdate = function() {
+const game = document.getElementById("game").value.trim();
+const code = document.getElementById("code").value.trim();
+const link = document.getElementById("link").value.trim();
+
+if (!game && !code && !link) {
+alert("Please provide at least a game name or room code.");
+return;
+}
+
+push(gamesRef, {
+game: game || "Game",
+code: code || "",
+link: link || "",
+timeString: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+createdAt: Date.now()
+});
+
+document.getElementById("game").value = "";
+document.getElementById("code").value = "";
+document.getElementById("link").value = "";
+};
+
+// Broadcast Coding Solution
+window.postCodeSolution = function() {
+const lang = document.getElementById("code-lang").value;
+const title = document.getElementById("code-title").value.trim();
+const body = document.getElementById("code-body").value.trim();
+
+if (!body) {
+alert("Please paste your code solution before transmitting!");
+return;
+}
+
+push(solutionsRef, {
+lang: lang,
+title: title || "Lab Problem Solution",
+codeBody: body,
+timeString: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+createdAt: Date.now()
+});
+
+document.getElementById("code-title").value = "";
+document.getElementById("code-body").value = "";
+};
+
+window.clearFeed = function(type) {
+if (confirm(Wipe all active ${type} broadcasts across all systems?`)) {
+if (type === 'games') remove(gamesRef);
+if (type === 'solutions') remove(solutionsRef);
+}
+};
+
+// 5-minute countdown ticker
+setInterval(() => {
+const countdownElements = document.querySelectorAll("[data-created]");
+const now = Date.now();
+
+countdownElements.forEach(el => {
+const created = parseInt(el.getAttribute("data-created"), 10);
+const remaining = Math.max(0, EXPIRY_TIME_MS - (now - created));
+
+if (remaining <= 0) {
+el.innerText = "EXPIRING...";
+} else {
+const m = Math.floor(remaining / 60000);
+const s = Math.floor((remaining % 60000) / 1000);
+el.innerText = TTL:${m}: {s}`;
+}
+});
+}, 1000);
+
+// Sync Game Lobbies
+onValue(gamesRef, (snapshot) => {
+const feed = document.getElementById("feed");
+feed.innerHTML = "";
+const data = snapshot.val();
+
+if (!data) {
+feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE SIGNALS]</p>";
+return;
+}
+
+const now = Date.now();
+const entries = Object.entries(data).reverse();
+let activeCount = 0;
+
+entries.forEach(([key, item]) => {
+if (item.createdAt && (now - item.createdAt > EXPIRY_TIME_MS)) {
+remove(ref(db, lab-games/${key}`));
+return;
+}
+
+activeCount++;
+const div = document.createElement("div");
+div.className = "feed-item";
+
+let html = &lt;div class="card-top"&gt; &lt;span class="game-name"&gt;${item.game}</span>
+<span class="countdown-tag" data-created="${item.createdAt}"&gt;CALCULATING...&lt;/span&gt; &lt;/div&gt;;
+
+if (item.code) {
+html += &lt;div class="row-group"&gt; &lt;span class="code-box"&gt;${item.code}</span>
+<button class="copy-pill" onclick="copyText('${item.code}', this)"&gt;Copy Code&lt;/button&gt; &lt;/div&gt;;
+}
+
+if (item.link) {
+html += &lt;div class="row-group"&gt; &lt;a class="link-text" href="${item.link}" target="_blank">Access Link</a>
+<button class="copy-pill" onclick="copyText('${item.link}', this)"&gt;Copy Link&lt;/button&gt; &lt;/div&gt;;
+}
+
+html += <div class="time"&gt;TRANSMITTED:${item.timeString || "RECENT"}</div>`;
+
+div.innerHTML = html;
+feed.appendChild(div);
+});
+
+if (activeCount === 0) {
+feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE SIGNALS]</p>";
+}
+});
+
+// Sync Coding Solutions
+onValue(solutionsRef, (snapshot) => {
+const feed = document.getElementById("code-feed");
+feed.innerHTML = "";
+const data = snapshot.val();
+
+if (!data) {
+feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE CODE SOLUTIONS]</p>";
+return;
+}
+
+const now = Date.now();
+const entries = Object.entries(data).reverse();
+let activeCount = 0;
+
+entries.forEach(([key, item]) => {
+if (item.createdAt && (now - item.createdAt > EXPIRY_TIME_MS)) {
+remove(ref(db, lab-solutions/${key}`));
+return;
+}
+
+activeCount++;
+const div = document.createElement("div");
+div.className = "feed-item solution-card";
+
+// Safe JSON stringification for clipboard passing
+const escapedCode = encodeURIComponent(item.codeBody);
+
+let html = &lt;div class="card-top"&gt; &lt;span class="game-name" style="color: #a7f3d0;"&gt;${item.title}</span>
+<div style="display: flex; gap: 6px; align-items: center;">
+<span class="lang-badge"> {item.createdAt}">CALCULATING...</span>
+</div>
+</div>
+
+<div class="code-snippet-box">
+<div class="code-header-bar">
+<span style="font-size:0.75rem; color:#94a3b8; font-family:monospace;">Source Code</span>
+<button class="copy-pill" onclick="copyText(decodeURIComponent(' {item.codeBody.replace(/</g, "<").replace(/>/g, ">")}</code></pre>
+</div>
+
+<div class="time">SHARED: ${item.timeString || "RECENT"}</div>
+`;
+
+div.innerHTML = html;
+feed.appendChild(div);
+});
+
+if (activeCount === 0) {
+feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE CODE SOLUTIONS]</p>";
+}
+});
+</script>
 </body>
 </html>
