@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GAME HUB | Naughty Kansari Limited</title>
+  <!-- PeerJS WebRTC Audio Engine -->
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <style>
     :root {
       --cyber-blue: #38bdf8;
@@ -456,8 +458,8 @@
       box-shadow: 0 0 8px rgba(0,0,0,0.5);
     }
 
-    /* LEFT FAB (VOICE HUB) */
-    .voice-fab {
+    /* LEFT FAB (CHAT ROOM) */
+    .room-fab {
       position: fixed;
       bottom: 24px;
       left: 24px;
@@ -470,11 +472,11 @@
       user-select: none;
     }
 
-    .voice-fab:hover {
+    .room-fab:hover {
       transform: scale(1.08);
     }
 
-    .voice-fab-btn {
+    .room-fab-btn {
       width: 62px;
       height: 62px;
       border-radius: 50%;
@@ -487,7 +489,7 @@
       backdrop-filter: blur(10px);
     }
 
-    .voice-fab-label {
+    .room-fab-label {
       margin-top: 6px;
       font-size: 0.72rem;
       font-weight: 800;
@@ -501,7 +503,7 @@
       box-shadow: 0 0 8px rgba(0,0,0,0.5);
     }
 
-    /* RIGHT MODAL (CHAT BOT) */
+    /* RIGHT MODAL (AI CHAT BOT) */
     .chat-modal {
       position: fixed;
       bottom: 106px;
@@ -525,15 +527,15 @@
       display: flex;
     }
 
-    /* LEFT MODAL (VOICE HUB) */
-    .voice-modal {
+    /* LEFT MODAL (CYBER CHAT ROOM) */
+    .room-modal {
       position: fixed;
       bottom: 106px;
       left: 24px;
-      width: 360px;
+      width: 390px;
       max-width: calc(100vw - 40px);
-      height: 490px;
-      background: rgba(10, 15, 29, 0.95);
+      height: 540px;
+      background: rgba(10, 15, 29, 0.96);
       border: 1px solid var(--cyber-neon);
       border-radius: 16px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(6, 182, 212, 0.25);
@@ -545,7 +547,7 @@
       animation: popUp 0.25s ease-out;
     }
 
-    .voice-modal.open {
+    .room-modal.open {
       display: flex;
     }
 
@@ -554,26 +556,13 @@
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    .chat-header, .voice-header {
+    .chat-header, .room-header {
       padding: 12px 14px;
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.95);
       border-bottom: 1px solid rgba(56, 189, 248, 0.25);
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-
-    .chat-title-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .chat-title {
-      font-size: 0.92rem;
-      font-weight: 800;
-      color: #38bdf8;
-      letter-spacing: 0.05em;
     }
 
     .chat-close-btn {
@@ -660,7 +649,7 @@
       white-space: nowrap;
     }
 
-    /* AVATAR GRID */
+    /* GATE SCREEN (AVATAR & CODENAME PICKER BEFORE ENTERING) */
     .avatar-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -694,7 +683,99 @@
       box-shadow: 0 0 12px rgba(6, 182, 212, 0.5);
     }
 
-    /* ACTIVE VOICE ROOM MEMBER GRID */
+    /* CHAT ROOM INTERNAL TABS (TEXT CHAT vs VOICE CHAT) */
+    .room-subtabs {
+      display: flex;
+      background: rgba(15, 23, 42, 0.9);
+      border-bottom: 1px solid rgba(6, 182, 212, 0.25);
+      padding: 4px 8px;
+      gap: 6px;
+    }
+
+    .room-tab-btn {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .room-tab-btn.active {
+      background: rgba(6, 182, 212, 0.25);
+      color: var(--cyber-neon);
+      border: 1px solid rgba(6, 182, 212, 0.4);
+    }
+
+    /* CYBER TEXT CHAT FEED */
+    .room-text-feed {
+      flex: 1;
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .msg-bubble-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: 90%;
+    }
+
+    .msg-bubble-group.self {
+      align-self: flex-end;
+      align-items: flex-end;
+    }
+
+    .msg-author-header {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--cyber-blue);
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      letter-spacing: 0.04em;
+    }
+
+    .msg-bubble-group.self .msg-author-header {
+      color: var(--cyber-neon);
+    }
+
+    .msg-bubble-content {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 10px;
+      padding: 8px 12px;
+      color: #f8fafc;
+      font-size: 0.85rem;
+      line-height: 1.35;
+      word-break: break-word;
+      border-top-left-radius: 2px;
+    }
+
+    .msg-bubble-group.self .msg-bubble-content {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.5), rgba(6, 182, 212, 0.4));
+      border-color: rgba(6, 182, 212, 0.45);
+      border-top-left-radius: 10px;
+      border-top-right-radius: 2px;
+    }
+
+    .msg-timestamp {
+      font-size: 0.65rem;
+      color: #64748b;
+      font-family: monospace;
+      margin-left: 6px;
+      font-weight: normal;
+    }
+
+    /* VOICE TAB LAYOUT */
     .voice-members-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -713,7 +794,6 @@
       flex-direction: column;
       align-items: center;
       gap: 6px;
-      transition: all 0.2s ease;
       position: relative;
     }
 
@@ -734,681 +814,4 @@
     .voice-member-card.speaking .voice-avatar-icon {
       border-color: var(--cyber-green);
       box-shadow: 0 0 22px var(--cyber-green);
-      transform: scale(1.06);
-    }
-
-    .voice-name-tag {
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: #f8fafc;
-      letter-spacing: 0.03em;
-      max-width: 110px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .voice-controls-bar {
-      padding: 12px;
-      background: rgba(15, 23, 42, 0.95);
-      border-top: 1px solid rgba(6, 182, 212, 0.25);
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    .ctrl-btn {
-      padding: 10px 18px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-    }
-
-    .ctrl-btn.mute {
-      background: rgba(56, 189, 248, 0.2);
-      border: 1px solid var(--cyber-blue);
-      color: var(--cyber-blue);
-    }
-
-    .ctrl-btn.leave {
-      background: rgba(239, 68, 68, 0.2);
-      border: 1px solid var(--cyber-red);
-      color: #fca5a5;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="container">
-    <div class="header-box">
-      <div class="status-bar">
-        <span class="pulse-dot"></span>
-        <span>NETWORK: ONLINE</span>
-      </div>
-      
-      <!-- Custom Tech Logo (Naught Kansari Limited) -->
-      <svg class="brand-logo" viewBox="0 0 150 110" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="cyberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#38bdf8"/>
-            <stop offset="50%" stop-color="#06b6d4"/>
-            <stop offset="100%" stop-color="#0284c7"/>
-          </linearGradient>
-        </defs>
-        <!-- Coding Brackets < and > -->
-        <path d="M 22 55 L 34 38 M 22 55 L 34 72" stroke="#38bdf8" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M 128 55 L 116 38 M 128 55 L 116 72" stroke="#38bdf8" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <!-- Top Small Tag </ -->
-        <text x="75" y="16" font-family="monospace" font-size="11" font-weight="900" fill="#22d3ee" text-anchor="middle">&lt;/&gt;</text>
-        <!-- Connected 'NK' Circuit Lines -->
-        <path d="M 44 26 L 44 84 M 44 26 L 75 84 M 75 26 L 75 84" stroke="url(#cyberGrad)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M 75 55 L 106 26 M 75 55 L 106 84" stroke="url(#cyberGrad)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <!-- Cyber Node Points -->
-        <circle cx="44" cy="26" r="4.5" fill="#38bdf8"/>
-        <circle cx="44" cy="84" r="4.5" fill="#06b6d4"/>
-        <circle cx="75" cy="26" r="4.5" fill="#e0f2fe"/>
-        <circle cx="75" cy="84" r="4.5" fill="#0284c7"/>
-        <circle cx="106" cy="26" r="4.5" fill="#38bdf8"/>
-        <circle cx="106" cy="84" r="4.5" fill="#06b6d4"/>
-        <circle cx="75" cy="55" r="3.5" fill="#ffffff"/>
-      </svg>
-
-      <h1>GAME HUB</h1>
-      <div class="sub-brand">By Naughty Kansari Limited</div>
-    </div>
-
-    <!-- Navigation Tabs -->
-    <div class="tab-container">
-      <button class="tab-btn active" onclick="switchTab('game-tab')">🎮 Game Lobbies</button>
-      <button class="tab-btn" onclick="switchTab('code-tab')">💻 Lab Solutions</button>
-    </div>
-
-    <!-- TAB 1: GAME HUB -->
-    <div id="game-tab" class="tab-content active">
-      <div class="card">
-        <h3 style="margin-bottom: 8px; font-size: 1rem; color: #cbd5e1;">Broadcast Lobby</h3>
-        <input type="text" id="game" placeholder="Game Name (e.g. BGMI, Skribbl)">
-        <input type="text" id="code" placeholder="Room Code / Match Key">
-        <input type="url" id="link" placeholder="Direct Link (optional)">
-        
-        <div class="btn-grid">
-          <button class="broadcast-btn" onclick="postGameUpdate()">Broadcast</button>
-          <button class="clear-btn" onclick="clearFeed('games')">Clear Feed</button>
-        </div>
-      </div>
-
-      <div class="section-title">
-        <span>Active Broadcast</span>
-      </div>
-      <div id="feed">Connecting to network...</div>
-    </div>
-
-    <!-- TAB 2: CODING SOLUTIONS -->
-    <div id="code-tab" class="tab-content">
-      <div class="card">
-        <h3 style="margin-bottom: 8px; font-size: 1rem; color: #cbd5e1;">Broadcast Code Solution</h3>
-        <select id="code-lang">
-          <option value="C/C++">C / C++</option>
-          <option value="Java">Java</option>
-          <option value="Python">Python</option>
-          <option value="Web/HTML/JS">Web (HTML/CSS/JS)</option>
-          <option value="SQL">SQL</option>
-          <option value="Other">Other</option>
-        </select>
-        <input type="text" id="code-title" placeholder="Question Title (e.g. Matrix Multiplication, Reverse String)">
-        <textarea id="code-body" placeholder="// Paste complete working code solution here..."></textarea>
-        
-        <div class="btn-grid">
-          <button class="broadcast-btn" onclick="postCodeSolution()">Transmit Solution</button>
-          <button class="clear-btn" onclick="clearFeed('solutions')">Clear Feed</button>
-        </div>
-      </div>
-
-      <div class="section-title">
-        <span>Active Lab Solutions</span>
-      </div>
-      <div id="code-feed">Connecting to network...</div>
-    </div>
-
-  </div>
-
-  <!-- FLOATING VOICE HUB BUTTON (BOTTOM LEFT) -->
-  <div class="voice-fab" onclick="toggleVoiceModal()">
-    <div class="voice-fab-btn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:28px; height:28px;">
-        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-        <line x1="12" y1="19" x2="12" y2="23"/>
-        <line x1="8" y1="23" x2="16" y2="23"/>
-      </svg>
-    </div>
-    <div class="voice-fab-label">Voice Hub</div>
-  </div>
-
-  <!-- VOICE HUB MODAL (BOTTOM LEFT) -->
-  <div class="voice-modal" id="voice-modal">
-    <div class="voice-header">
-      <div style="display:flex; align-items:center; gap:8px;">
-        <span class="pulse-dot" style="background:#06b6d4; box-shadow:0 0 8px #06b6d4;"></span>
-        <span style="font-size:0.92rem; font-weight:800; color:var(--cyber-neon);">Virtual Voice Room</span>
-      </div>
-      <button class="chat-close-btn" onclick="toggleVoiceModal()">✕</button>
-    </div>
-
-    <!-- VIEW 1: JOIN LOBBY SETUP -->
-    <div id="voice-setup-view" style="padding:16px; display:flex; flex-direction:column; height:calc(100% - 50px);">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-        <span style="font-size:0.75rem; color:#94a3b8; font-weight:700;">Choose Avatar</span>
-        <span id="voice-active-count" style="font-size:0.75rem; color:#06b6d4; font-family:monospace; font-weight:bold;">0 ONLINE</span>
-      </div>
-
-      <div class="avatar-grid">
-        <div class="avatar-opt selected" onclick="selectAvatar(this, '🦊')">🦊</div>
-        <div class="avatar-opt" onclick="selectAvatar(this, '🤖')">🤖</div>
-        <div class="avatar-opt" onclick="selectAvatar(this, '⚡')">⚡</div>
-        <div class="avatar-opt" onclick="selectAvatar(this, '🥷')">🥷</div>
-        <div class="avatar-opt" onclick="selectAvatar(this, '💀')">💀</div>
-        <div class="avatar-opt" onclick="selectAvatar(this, '👾')">👾</div>
-      </div>
-
-      <label style="font-size:0.75rem; color:#94a3b8; font-weight:700; margin-top:6px;">Your Codename</label>
-      <input type="text" id="voice-username" placeholder="Enter handle..." value="Agent_404" maxlength="15">
-
-      <button class="broadcast-btn" style="margin-top:auto; padding:12px;" onclick="joinVoiceRoom()">
-        🎙️ Join Virtual Room
-      </button>
-    </div>
-
-    <!-- VIEW 2: ACTIVE VOICE ROOM -->
-    <div id="voice-room-view" style="display:none; flex-direction:column; height:calc(100% - 50px);">
-      <div class="voice-members-grid" id="voice-members-grid"></div>
-
-      <div class="voice-controls-bar">
-        <button class="ctrl-btn mute" id="voice-mute-btn" onclick="toggleMute()">🎙️ Mute</button>
-        <button class="ctrl-btn leave" onclick="leaveVoiceRoom()">Leave Room</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- FLOATING CHAT BOT WIDGET (BOTTOM RIGHT) -->
-  <div class="chatbot-fab" onclick="toggleChatModal()">
-    <div class="chatbot-fab-btn">
-      <svg viewBox="0 0 150 110" fill="none" style="width:42px; height:32px;">
-        <defs>
-          <linearGradient id="fabCyberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#38bdf8"/>
-            <stop offset="50%" stop-color="#06b6d4"/>
-            <stop offset="100%" stop-color="#0284c7"/>
-          </linearGradient>
-        </defs>
-        <path d="M 22 55 L 34 38 M 22 55 L 34 72" stroke="#38bdf8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M 128 55 L 116 38 M 128 55 L 116 72" stroke="#38bdf8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M 44 26 L 44 84 M 44 26 L 75 84 M 75 26 L 75 84" stroke="url(#fabCyberGrad)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M 75 55 L 106 26 M 75 55 L 106 84" stroke="url(#fabCyberGrad)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="44" cy="26" r="6" fill="#38bdf8"/>
-        <circle cx="44" cy="84" r="6" fill="#06b6d4"/>
-        <circle cx="75" cy="26" r="4.5" fill="#e0f2fe"/>
-        <circle cx="75" cy="84" r="4.5" fill="#0284c7"/>
-        <circle cx="106" cy="26" r="6" fill="#38bdf8"/>
-        <circle cx="106" cy="84" r="6" fill="#06b6d4"/>
-        <circle cx="75" cy="55" r="4.5" fill="#ffffff"/>
-      </svg>
-    </div>
-    <div class="chatbot-fab-label">Chat Bot</div>
-  </div>
-
-  <!-- CHAT POPUP WINDOW (BOTTOM RIGHT) -->
-  <div class="chat-modal" id="chat-modal">
-    <div class="chat-header">
-      <div class="chat-title-group">
-        <span class="pulse-dot" style="width:6px; height:6px;"></span>
-        <span class="chat-title">NaughtBot Qi</span>
-      </div>
-      <button class="chat-close-btn" onclick="toggleChatModal()">✕</button>
-    </div>
-
-    <div class="chat-messages" id="chat-messages">
-      <div class="chat-msg bot">
-        ⚡ <strong>NaughtBot Qi Online.</strong><br>
-        Ask me any coding question or paste your lab problem here to generate instant solutions.
-      </div>
-    </div>
-
-    <div class="chat-input-area">
-      <input type="text" id="chat-query" placeholder="Ask a code question..." onkeydown="if(event.key==='Enter') sendChatMessage()">
-      <button onclick="sendChatMessage()">Send</button>
-    </div>
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove, set, update, onDisconnect } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyALuuDDM5SeC5_Ff5FNg1FofYfm06BxdY0",
-      authDomain: "lab-hub-318a2.firebaseapp.com",
-      databaseURL: "https://lab-hub-318a2-default-rtdb.firebaseio.com",
-      projectId: "lab-hub-318a2",
-      storageBucket: "lab-hub-318a2.firebasestorage.app",
-      messagingSenderId: "648359872715",
-      appId: "1:648359872715:web:3e9c545aa35d623ed8334e",
-      measurementId: "G-83NNL4613F"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const gamesRef = ref(db, 'lab-games');
-    const solutionsRef = ref(db, 'lab-solutions');
-    const voiceRef = ref(db, 'voice-lobby');
-
-    const EXPIRY_TIME_MS = 5 * 60 * 1000; // 5 minutes
-
-    // Tab Switcher
-    window.switchTab = function(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      
-      document.getElementById(tabId).classList.add('active');
-      if (tabId === 'game-tab') {
-        document.querySelectorAll('.tab-btn')[0].classList.add('active');
-      } else {
-        document.querySelectorAll('.tab-btn')[1].classList.add('active');
-      }
-    };
-
-    window.copyText = function(text, btnElement) {
-      navigator.clipboard.writeText(text).then(() => {
-        const prev = btnElement.innerText;
-        btnElement.innerText = "COPIED ✓";
-        btnElement.style.background = "#22c55e";
-        btnElement.style.color = "#020617";
-        setTimeout(() => {
-          btnElement.innerText = prev;
-          btnElement.style.background = "rgba(51, 65, 85, 0.85)";
-          btnElement.style.color = "#f8fafc";
-        }, 1500);
-      });
-    };
-
-    // Broadcast Game
-    window.postGameUpdate = function() {
-      const game = document.getElementById("game").value.trim();
-      const code = document.getElementById("code").value.trim();
-      const link = document.getElementById("link").value.trim();
-
-      if (!game && !code && !link) {
-        alert("Please provide at least a game name or room code.");
-        return;
-      }
-
-      push(gamesRef, {
-        game: game || "Game",
-        code: code || "",
-        link: link || "",
-        timeString: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-        createdAt: Date.now()
-      });
-
-      document.getElementById("game").value = "";
-      document.getElementById("code").value = "";
-      document.getElementById("link").value = "";
-    };
-
-    // Broadcast Coding Solution
-    window.postCodeSolution = function() {
-      const lang = document.getElementById("code-lang").value;
-      const title = document.getElementById("code-title").value.trim();
-      const body = document.getElementById("code-body").value.trim();
-
-      if (!body) {
-        alert("Please paste your code solution before transmitting!");
-        return;
-      }
-
-      push(solutionsRef, {
-        lang: lang,
-        title: title || "Lab Problem Solution",
-        codeBody: body,
-        timeString: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-        createdAt: Date.now()
-      });
-
-      document.getElementById("code-title").value = "";
-      document.getElementById("code-body").value = "";
-    };
-
-    window.clearFeed = function(type) {
-      if (confirm(`Wipe all active ${type} broadcasts across all systems?`)) {
-        if (type === 'games') remove(gamesRef);
-        if (type === 'solutions') remove(solutionsRef);
-      }
-    };
-
-    // 5-minute countdown ticker
-    setInterval(() => {
-      const countdownElements = document.querySelectorAll("[data-created]");
-      const now = Date.now();
-
-      countdownElements.forEach(el => {
-        const created = parseInt(el.getAttribute("data-created"), 10);
-        const remaining = Math.max(0, EXPIRY_TIME_MS - (now - created));
-
-        if (remaining <= 0) {
-          el.innerText = "EXPIRING...";
-        } else {
-          const m = Math.floor(remaining / 60000);
-          const s = Math.floor((remaining % 60000) / 1000);
-          el.innerText = `TTL: ${m}:${s < 10 ? '0' : ''}${s}`;
-        }
-      });
-    }, 1000);
-
-    // Sync Game Lobbies
-    onValue(gamesRef, (snapshot) => {
-      const feed = document.getElementById("feed");
-      feed.innerHTML = "";
-      const data = snapshot.val();
-
-      if (!data) {
-        feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE SIGNALS]</p>";
-        return;
-      }
-
-      const now = Date.now();
-      const entries = Object.entries(data).reverse();
-      let activeCount = 0;
-
-      entries.forEach(([key, item]) => {
-        if (item.createdAt && (now - item.createdAt > EXPIRY_TIME_MS)) {
-          remove(ref(db, `lab-games/${key}`));
-          return;
-        }
-
-        activeCount++;
-        const div = document.createElement("div");
-        div.className = "feed-item";
-
-        let html = `
-          <div class="card-top">
-            <span class="game-name">${item.game}</span>
-            <span class="countdown-tag" data-created="${item.createdAt}">CALCULATING...</span>
-          </div>
-        `;
-
-        if (item.code) {
-          html += `
-            <div class="row-group">
-              <span class="code-box">${item.code}</span>
-              <button class="copy-pill" onclick="copyText('${item.code}', this)">Copy Code</button>
-            </div>
-          `;
-        }
-
-        if (item.link) {
-          html += `
-            <div class="row-group">
-              <a class="link-text" href="${item.link}" target="_blank">Access Link</a>
-              <button class="copy-pill" onclick="copyText('${item.link}', this)">Copy Link</button>
-            </div>
-          `;
-        }
-
-        html += `<div class="time">TRANSMITTED: ${item.timeString || "RECENT"}</div>`;
-
-        div.innerHTML = html;
-        feed.appendChild(div);
-      });
-
-      if (activeCount === 0) {
-        feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE SIGNALS]</p>";
-      }
-    });
-
-    // Sync Coding Solutions
-    onValue(solutionsRef, (snapshot) => {
-      const feed = document.getElementById("code-feed");
-      feed.innerHTML = "";
-      const data = snapshot.val();
-
-      if (!data) {
-        feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE CODE SOLUTIONS]</p>";
-        return;
-      }
-
-      const now = Date.now();
-      const entries = Object.entries(data).reverse();
-      let activeCount = 0;
-
-      entries.forEach(([key, item]) => {
-        if (item.createdAt && (now - item.createdAt > EXPIRY_TIME_MS)) {
-          remove(ref(db, `lab-solutions/${key}`));
-          return;
-        }
-
-        activeCount++;
-        const div = document.createElement("div");
-        div.className = "feed-item solution-card";
-
-        const escapedCode = encodeURIComponent(item.codeBody);
-
-        let html = `
-          <div class="card-top">
-            <span class="game-name" style="color: #a7f3d0;">${item.title}</span>
-            <div style="display: flex; gap: 6px; align-items: center;">
-              <span class="lang-badge">${item.lang}</span>
-              <span class="countdown-tag" data-created="${item.createdAt}">CALCULATING...</span>
-            </div>
-          </div>
-
-          <div class="code-snippet-box">
-            <div class="code-header-bar">
-              <span style="font-size:0.75rem; color:#94a3b8; font-family:monospace;">Source Code</span>
-              <button class="copy-pill" onclick="copyText(decodeURIComponent('${escapedCode}'), this)">Copy Solution</button>
-            </div>
-            <pre><code>${item.codeBody.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>
-          </div>
-
-          <div class="time">SHARED: ${item.timeString || "RECENT"}</div>
-        `;
-
-        div.innerHTML = html;
-        feed.appendChild(div);
-      });
-
-      if (activeCount === 0) {
-        feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO ACTIVE CODE SOLUTIONS]</p>";
-      }
-    });
-
-    // ============================================
-    // VIRTUAL VOICE ROOM & ACTIVE SPEAKER ENGINE
-    // ============================================
-    let localStream = null;
-    let audioContext = null;
-    let analyser = null;
-    const myVoiceId = 'peer_' + Math.random().toString(36).substr(2, 9);
-    let selectedAvatar = '🦊';
-    let isMuted = false;
-
-    window.toggleVoiceModal = function() {
-      document.getElementById('voice-modal').classList.toggle('open');
-    };
-
-    window.selectAvatar = function(el, icon) {
-      document.querySelectorAll('.avatar-opt').forEach(opt => opt.classList.remove('selected'));
-      el.classList.add('selected');
-      selectedAvatar = icon;
-    };
-
-    // Live Voice Lobby Counter & Member Grid Sync
-    onValue(voiceRef, (snapshot) => {
-      const data = snapshot.val() || {};
-      const count = Object.keys(data).length;
-      const countTag = document.getElementById('voice-active-count');
-      if (countTag) countTag.innerText = `${count} ONLINE`;
-
-      const grid = document.getElementById('voice-members-grid');
-      if (grid) {
-        grid.innerHTML = '';
-        Object.entries(data).forEach(([id, member]) => {
-          const card = document.createElement('div');
-          card.className = `voice-member-card ${member.speaking ? 'speaking' : ''}`;
-          card.id = `member-${id}`;
-          card.innerHTML = `
-            <div class="voice-avatar-icon">${member.avatar || '🤖'}</div>
-            <span class="voice-name-tag">${member.name || 'User'}</span>
-          `;
-          grid.appendChild(card);
-        });
-      }
-    });
-
-    window.joinVoiceRoom = async function() {
-      const name = document.getElementById('voice-username').value.trim() || 'Agent';
-
-      try {
-        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      } catch (err) {
-        alert("Microphone permission is required to chat verbally.");
-        return;
-      }
-
-      // Transition Views
-      document.getElementById('voice-setup-view').style.display = 'none';
-      document.getElementById('voice-room-view').style.display = 'flex';
-
-      // Register presence with Firebase auto-disconnect cleanup
-      const myRef = ref(db, `voice-lobby/${myVoiceId}`);
-      set(myRef, {
-        name: name,
-        avatar: selectedAvatar,
-        speaking: false,
-        joinedAt: Date.now()
-      });
-      onDisconnect(myRef).remove();
-
-      // Audio analysis for Google Meet speaking detection
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      analyser = audioContext.createAnalyser();
-      const source = audioContext.createMediaStreamSource(localStream);
-      source.connect(analyser);
-      analyser.fftSize = 256;
-
-      const bufferLength = analyser.frequencyBinCount;
-      const dataArray = new Uint8Array(bufferLength);
-      let wasSpeaking = false;
-
-      setInterval(() => {
-        if (isMuted || !localStream) return;
-        analyser.getByteFrequencyData(dataArray);
-        let sum = 0;
-        for (let i = 0; i < bufferLength; i++) sum += dataArray[i];
-        let average = sum / bufferLength;
-
-        const isSpeaking = average > 20; // Sensitivity threshold
-        if (isSpeaking !== wasSpeaking) {
-          wasSpeaking = isSpeaking;
-          update(ref(db, `voice-lobby/${myVoiceId}`), { speaking: isSpeaking });
-        }
-      }, 140);
-    };
-
-    window.toggleMute = function() {
-      if (!localStream) return;
-      isMuted = !isMuted;
-      localStream.getAudioTracks().forEach(track => track.enabled = !isMuted);
-      const btn = document.getElementById('voice-mute-btn');
-      btn.innerText = isMuted ? '🔇 Unmuted' : '🎙️ Mute';
-      btn.style.color = isMuted ? '#ef4444' : 'var(--cyber-blue)';
-    };
-
-    window.leaveVoiceRoom = function() {
-      if (localStream) {
-        localStream.getTracks().forEach(t => t.stop());
-        localStream = null;
-      }
-      if (audioContext) {
-        audioContext.close();
-        audioContext = null;
-      }
-      remove(ref(db, `voice-lobby/${myVoiceId}`));
-
-      document.getElementById('voice-room-view').style.display = 'none';
-      document.getElementById('voice-setup-view').style.display = 'flex';
-    };
-
-    // ============================================
-    // NAUGHTBOT QI CHAT ENGINE (Gemini Integration)
-    // ============================================
-    window.toggleChatModal = function() {
-      const modal = document.getElementById("chat-modal");
-      modal.classList.toggle("open");
-    };
-
-    window.sendChatMessage = async function() {
-      const input = document.getElementById("chat-query");
-      const query = input.value.trim();
-      if (!query) return;
-
-      const chatBox = document.getElementById("chat-messages");
-
-      const userDiv = document.createElement("div");
-      userDiv.className = "chat-msg user";
-      userDiv.innerText = query;
-      chatBox.appendChild(userDiv);
-      input.value = "";
-      chatBox.scrollTop = chatBox.scrollHeight;
-
-      const botDiv = document.createElement("div");
-      botDiv.className = "chat-msg bot";
-      botDiv.innerText = "Analyzing question & writing code...";
-      chatBox.appendChild(botDiv);
-      chatBox.scrollTop = chatBox.scrollHeight;
-
-      const token = ["AQ.Ab8RN6KFGbBgDXW7", "YhncMY4AOsbIewV54FYuemc10FkrgarTZg"].join("");
-
-      try {
-        const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            contents: [{
-              parts: [{
-                text: `You are NaughtBot Qi, a competitive programming and lab assistant for Naughty Kansari Limited. Provide a direct, clean, and working code solution. Be concise. Question: ${query}`
-              }]
-            }]
-          })
-        });
-
-        const data = await response.json();
-        if (data.error) {
-          botDiv.innerText = `Error: ${data.error.message}`;
-          return;
-        }
-
-        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
-        
-        const formatted = reply
-          .replace(/```([\s\S]*?)```/g, (match, p1) => {
-            const cleanCode = p1.replace(/^[a-zA-Z]+\n/, '');
-            const encoded = encodeURIComponent(cleanCode);
-            return `<div style="margin-top:6px;"><button class="copy-pill" style="font-size:0.7rem; margin-bottom:4px;" onclick="copyText(decodeURIComponent('${encoded}'), this)">Copy Code</button><pre><code>${cleanCode.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre></div>`;
-          })
-          .replace(/\n/g, "<br>");
-
-        botDiv.innerHTML = formatted;
-        chatBox.scrollTop = chatBox.scrollHeight;
-      } catch (err) {
-        botDiv.innerText = "Connection failed. Please verify network connectivity.";
-      }
-    };
-  </script>
-</body>
-</html>
+      tr
