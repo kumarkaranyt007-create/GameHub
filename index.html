@@ -44,7 +44,7 @@
 
     .container {
       width: 100% !important;
-      max-width: 100% !important;
+      max-width: 900px !important;
       margin: 0 auto;
     }
 
@@ -416,6 +416,7 @@
       display: block;
     }
 
+    /* RIGHT FAB (CHAT BOT) */
     .chatbot-fab {
       position: fixed;
       bottom: 24px;
@@ -460,50 +461,6 @@
       box-shadow: 0 0 8px rgba(0,0,0,0.5);
     }
 
-    .room-fab {
-      position: fixed;
-      bottom: 24px;
-      left: 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-      z-index: 9999;
-      transition: transform 0.2s ease;
-      user-select: none;
-    }
-
-    .room-fab:hover {
-      transform: scale(1.08);
-    }
-
-    .room-fab-btn {
-      width: 62px;
-      height: 62px;
-      border-radius: 50%;
-      background: rgba(15, 23, 42, 0.9);
-      border: 2px solid var(--cyber-neon);
-      box-shadow: 0 0 20px rgba(6, 182, 212, 0.5), inset 0 0 10px rgba(56, 189, 248, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(10px);
-    }
-
-    .room-fab-label {
-      margin-top: 6px;
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--cyber-neon);
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(6, 182, 212, 0.3);
-      padding: 2px 8px;
-      border-radius: 8px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.5);
-    }
-
     .chat-modal {
       position: fixed;
       bottom: 106px;
@@ -527,35 +484,12 @@
       display: flex;
     }
 
-    .room-modal {
-      position: fixed;
-      bottom: 106px;
-      left: 24px;
-      width: 390px;
-      max-width: calc(100vw - 40px);
-      height: 540px;
-      background: rgba(10, 15, 29, 0.96);
-      border: 1px solid var(--cyber-neon);
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(6, 182, 212, 0.25);
-      backdrop-filter: blur(20px);
-      display: none;
-      flex-direction: column;
-      z-index: 9999;
-      overflow: hidden;
-      animation: popUp 0.25s ease-out;
-    }
-
-    .room-modal.open {
-      display: flex;
-    }
-
     @keyframes popUp {
       from { opacity: 0; transform: translateY(12px) scale(0.96); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    .chat-header, .room-header {
+    .chat-header {
       padding: 12px 14px;
       background: rgba(15, 23, 42, 0.95);
       border-bottom: 1px solid rgba(56, 189, 248, 0.25);
@@ -652,14 +586,14 @@
     .avatar-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
+      gap: 10px;
       margin: 12px 0;
-      padding: 2px;
+      padding: 4px;
     }
 
     .avatar-opt {
-      width: 58px;
-      height: 58px;
+      width: 62px;
+      height: 62px;
       border-radius: 50%;
       border: 2px solid rgba(148, 163, 184, 0.25);
       background: rgba(15, 23, 42, 0.8);
@@ -700,8 +634,8 @@
       display: flex;
       background: rgba(15, 23, 42, 0.9);
       border-bottom: 1px solid rgba(6, 182, 212, 0.25);
-      padding: 4px 8px;
-      gap: 6px;
+      padding: 6px 8px;
+      gap: 8px;
     }
 
     .room-tab-btn {
@@ -710,7 +644,7 @@
       border: none;
       background: transparent;
       color: #94a3b8;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       font-weight: 700;
       border-radius: 6px;
       cursor: pointer;
@@ -725,11 +659,12 @@
 
     .room-text-feed {
       flex: 1;
-      padding: 12px;
+      padding: 14px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      min-height: 260px;
     }
 
     .msg-bubble-group {
@@ -751,7 +686,7 @@
       margin-bottom: 3px;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       letter-spacing: 0.04em;
     }
 
@@ -788,7 +723,7 @@
 
     .voice-members-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
       gap: 12px;
       padding: 14px;
       overflow-y: auto;
@@ -913,11 +848,13 @@
       <div class="sub-brand">By Naughty Kansari Limited</div>
     </div>
 
+    <!-- MAIN 3 TABS -->
     <div class="tab-container">
       <button class="tab-btn active" onclick="switchTab('game-tab')">🎮 Game Lobbies</button>
       <button class="tab-btn" onclick="switchTab('code-tab')">💻 Lab Solutions</button>
+      <button class="tab-btn" onclick="switchTab('room-tab')">💬 Chat Room</button>
     </div>
-
+    <!-- TAB 1: GAME LOBBIES -->
     <div id="game-tab" class="tab-content active">
       <div class="card">
         <h3 style="margin-bottom: 8px; font-size: 1rem; color: #cbd5e1;">Broadcast Lobby</h3>
@@ -937,6 +874,7 @@
       <div id="feed">Connecting to network...</div>
     </div>
 
+    <!-- TAB 2: LAB SOLUTIONS -->
     <div id="code-tab" class="tab-content">
       <div class="card">
         <h3 style="margin-bottom: 8px; font-size: 1rem; color: #cbd5e1;">Broadcast Code Solution</h3>
@@ -963,105 +901,94 @@
       <div id="code-feed">Connecting to network...</div>
     </div>
 
-  </div>
-  <!-- FLOATING CHAT ROOM BUTTON (BOTTOM LEFT) -->
-  <div class="room-fab" onclick="toggleRoomModal()">
-    <div class="room-fab-btn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:28px; height:28px;">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-      </svg>
-    </div>
-    <div class="room-fab-label">Chat Room</div>
-  </div>
-
-  <!-- CYBER CHAT ROOM MODAL (BOTTOM LEFT) -->
-  <div class="room-modal" id="room-modal">
-    <div class="room-header">
-      <div style="display:flex; align-items:center; gap:8px;">
-        <span class="pulse-dot" style="background:#06b6d4; box-shadow:0 0 8px #06b6d4;"></span>
-        <span style="font-size:0.92rem; font-weight:800; color:var(--cyber-neon);">Cyber Chat Room</span>
-      </div>
-      <button class="chat-close-btn" onclick="toggleRoomModal()">✕</button>
-    </div>
-
-    <!-- GATEWAY: 5 AVATARS & USERNAME PICKER -->
-    <div id="room-gate-view" style="padding:16px; display:flex; flex-direction:column; height:calc(100% - 50px);">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-        <span style="font-size:0.75rem; color:#94a3b8; font-weight:700;">Select Identity</span>
-        <span id="room-online-tag" style="font-size:0.75rem; color:#06b6d4; font-family:monospace; font-weight:bold;">0 ONLINE</span>
-      </div>
-
-      <div class="avatar-grid">
-        <!-- Smile / Troll Face Meme -->
-        <div class="avatar-opt selected" onclick="selectRoomAvatar(this, 'smilefacemene.jpg')">
-          <img class="crop-cat-face" src="smilefacemene.jpg" alt="Troll Face">
+    <!-- TAB 3: CYBER CHAT ROOM (FULL-WIDTH EMBEDDED TAB) -->
+    <div id="room-tab" class="tab-content">
+      <div class="card" style="min-height: 580px; display: flex; flex-direction: column; padding: 18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px; border-bottom: 1px solid rgba(56, 189, 248, 0.2); padding-bottom: 8px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="pulse-dot" style="background:#06b6d4; box-shadow:0 0 8px #06b6d4;"></span>
+            <span style="font-size:1rem; font-weight:800; color:var(--cyber-neon);">Cyber Chat Room</span>
+          </div>
+          <span id="room-online-tag" style="font-size:0.75rem; color:#06b6d4; font-family:monospace; font-weight:bold;">0 ONLINE</span>
         </div>
 
-        <!-- Orange Selfie Cat -->
-        <div class="avatar-opt" onclick="selectRoomAvatar(this, 'ORANGEselfieCAT.jpg')">
-          <img class="crop-cat-face" src="ORANGEselfieCAT.jpg" alt="Orange Cat">
+        <!-- GATEWAY: 5 AVATARS & CODENAME -->
+        <div id="room-gate-view" style="display:flex; flex-direction:column; justify-content:center; flex:1; max-width:480px; margin: 0 auto; width: 100%;">
+          <label style="font-size:0.8rem; color:#94a3b8; font-weight:700; margin-bottom: 6px;">Select Identity</label>
+          <div class="avatar-grid">
+            <!-- Smile / Troll Face Meme -->
+            <div class="avatar-opt selected" onclick="selectRoomAvatar(this, 'smilefacemene.jpg')">
+              <img class="crop-cat-face" src="smilefacemene.jpg" alt="Troll Face">
+            </div>
+
+            <!-- Orange Selfie Cat -->
+            <div class="avatar-opt" onclick="selectRoomAvatar(this, 'ORANGEselfieCAT.jpg')">
+              <img class="crop-cat-face" src="ORANGEselfieCAT.jpg" alt="Orange Cat">
+            </div>
+
+            <!-- Baby Standing Kitten -->
+            <div class="avatar-opt" onclick="selectRoomAvatar(this, 'babycat.jpg')">
+              <img class="crop-kitten" src="babycat.jpg" alt="Baby Kitten">
+            </div>
+
+            <!-- Billu OG Cat -->
+            <div class="avatar-opt" onclick="selectRoomAvatar(this, 'billuOG.jpg')">
+              <img class="crop-cat-face" src="billuOG.jpg" alt="Billu OG">
+            </div>
+
+            <!-- Olli Polite Cat -->
+            <div class="avatar-opt" onclick="selectRoomAvatar(this, 'olli-the-polite-cat.jpg')">
+              <img class="crop-cat-face" src="olli-the-polite-cat.jpg" alt="Polite Cat">
+            </div>
+          </div>
+
+          <label style="font-size:0.8rem; color:#94a3b8; font-weight:700; margin-top:12px;">Codename / Handle</label>
+          <input type="text" id="room-user-name" placeholder="Enter codename..." value="Ghost_NK" maxlength="15">
+
+          <button class="broadcast-btn" style="margin-top:16px; padding:12px;" onclick="enterChatRoom()">
+            ⚡ Connect to Chat Room
+          </button>
         </div>
 
-        <!-- Baby Standing Kitten -->
-        <div class="avatar-opt" onclick="selectRoomAvatar(this, 'babycat.jpg')">
-          <img class="crop-kitten" src="babycat.jpg" alt="Baby Kitten">
-        </div>
+        <!-- ACTIVE ROOM (TEXT & VOICE) -->
+        <div id="room-active-view" style="display:none; flex-direction:column; flex:1;">
+          <div class="room-subtabs">
+            <button class="room-tab-btn active" id="tab-btn-text" onclick="switchRoomTab('text')">💬 Text Chat</button>
+            <button class="room-tab-btn" id="tab-btn-voice" onclick="switchRoomTab('voice')">🎙️ Voice Chat</button>
+          </div>
 
-        <!-- Billu OG Cat -->
-        <div class="avatar-opt" onclick="selectRoomAvatar(this, 'billuOG.jpg')">
-          <img class="crop-cat-face" src="billuOG.jpg" alt="Billu OG">
-        </div>
+          <!-- SUBTAB: TEXT -->
+          <div id="subtab-text-content" style="display:flex; flex-direction:column; flex:1;">
+            <div class="room-text-feed" id="room-text-feed"></div>
 
-        <!-- Olli Polite Cat -->
-        <div class="avatar-opt" onclick="selectRoomAvatar(this, 'olli-the-polite-cat.jpg')">
-          <img class="crop-cat-face" src="olli-the-polite-cat.jpg" alt="Polite Cat">
-        </div>
-      </div>
+            <div class="chat-input-area" style="border-radius: 8px;">
+              <input type="text" id="room-text-input" placeholder="Transmit a message..." onkeydown="if(event.key==='Enter') sendRoomMessage()">
+              <button onclick="sendRoomMessage()">Send</button>
+            </div>
+          </div>
 
-      <label style="font-size:0.75rem; color:#94a3b8; font-weight:700; margin-top:6px;">Handle / Codename</label>
-      <input type="text" id="room-user-name" placeholder="Enter codename..." value="Ghost_NK" maxlength="15">
+          <!-- SUBTAB: VOICE -->
+          <div id="subtab-voice-content" style="display:none; flex-direction:column; flex:1;">
+            <div id="voice-connect-prompt" style="padding:40px 20px; text-align:center; margin:auto;">
+              <p style="color:#94a3b8; font-size:0.9rem; margin-bottom:16px;">Connect with everyone in real time using your microphone.</p>
+              <button class="ctrl-btn join" onclick="joinVoiceRoom()">🎙️ Connect Microphone</button>
+            </div>
 
-      <button class="broadcast-btn" style="margin-top:auto; padding:12px;" onclick="enterChatRoom()">
-        ⚡ Connect to Chat Room
-      </button>
-    </div>
+            <div id="voice-live-grid" style="display:none; flex-direction:column; flex:1;">
+              <div class="voice-members-grid" id="voice-members-grid"></div>
 
-    <!-- ACTIVE ROOM (TEXT + VOICE SUBTABS) -->
-    <div id="room-active-view" style="display:none; flex-direction:column; height:calc(100% - 50px);">
-      <div class="room-subtabs">
-        <button class="room-tab-btn active" id="tab-btn-text" onclick="switchRoomTab('text')">💬 Text Chat</button>
-        <button class="room-tab-btn" id="tab-btn-voice" onclick="switchRoomTab('voice')">🎙️ Voice Chat</button>
-      </div>
-
-      <!-- TAB A: REALTIME TEXT CHAT -->
-      <div id="subtab-text-content" style="display:flex; flex-direction:column; flex:1; overflow:hidden;">
-        <div class="room-text-feed" id="room-text-feed"></div>
-
-        <div class="chat-input-area">
-          <input type="text" id="room-text-input" placeholder="Transmit a message..." onkeydown="if(event.key==='Enter') sendRoomMessage()">
-          <button onclick="sendRoomMessage()">Send</button>
-        </div>
-      </div>
-
-      <!-- TAB B: VIRTUAL VOICE ROOM WITH PEERJS -->
-      <div id="subtab-voice-content" style="display:none; flex-direction:column; flex:1; overflow:hidden;">
-        <div id="voice-connect-prompt" style="padding:20px; text-align:center; margin:auto;">
-          <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:14px;">Connect with other users verbally using your microphone.</p>
-          <button class="ctrl-btn join" onclick="joinVoiceRoom()">🎙️ Connect Microphone</button>
-        </div>
-
-        <div id="voice-live-grid" style="display:none; flex-direction:column; flex:1; overflow:hidden;">
-          <div class="voice-members-grid" id="voice-members-grid"></div>
-
-          <div class="voice-controls-bar">
-            <button class="ctrl-btn mute" id="voice-mute-btn" onclick="toggleMute()">🎙️ Mute</button>
-            <button class="ctrl-btn leave" onclick="leaveVoiceRoom()">Disconnect</button>
+              <div class="voice-controls-bar">
+                <button class="ctrl-btn mute" id="voice-mute-btn" onclick="toggleMute()">🎙️ Mute</button>
+                <button class="ctrl-btn leave" onclick="leaveVoiceRoom()">Disconnect</button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
+      </div>
     </div>
-  </div>
+
+  </div> <!-- End container -->
 
   <!-- FLOATING CHAT BOT WIDGET (BOTTOM RIGHT) -->
   <div class="chatbot-fab" onclick="toggleChatModal()">
@@ -1090,7 +1017,7 @@
     <div class="chatbot-fab-label">Chat Bot</div>
   </div>
 
-  <!-- CHAT POPUP WINDOW (BOTTOM RIGHT) -->
+  <!-- CHAT POPUP WINDOW -->
   <div class="chat-modal" id="chat-modal">
     <div class="chat-header">
       <div style="display:flex; align-items:center; gap:8px;">
@@ -1141,11 +1068,13 @@
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       
-      document.getElementById(tabId).classList.add('active');
-      if (tabId === 'game-tab') {
-        document.querySelectorAll('.tab-btn')[0].classList.add('active');
-      } else {
-        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+
+      const tabs = ['game-tab', 'code-tab', 'room-tab'];
+      const index = tabs.indexOf(tabId);
+      if (index !== -1) {
+        document.querySelectorAll('.tab-btn')[index].classList.add('active');
       }
     };
 
@@ -1348,7 +1277,7 @@
     });
 
     // ============================================
-    // CYBER CHAT ROOM & PEERJS VOICE ENGINE
+    // EMBEDDED CHAT ROOM & PEERJS VOICE ENGINE
     // ============================================
     let myRoomUserId = 'usr_' + Math.random().toString(36).substr(2, 9);
     let myAvatar = 'smilefacemene.jpg';
@@ -1360,10 +1289,6 @@
     const calls = {};
     const remoteAudios = {};
     let isMuted = false;
-
-    window.toggleRoomModal = function() {
-      document.getElementById('room-modal').classList.toggle('open');
-    };
 
     window.selectRoomAvatar = function(el, imgPath) {
       document.querySelectorAll('.avatar-opt').forEach(opt => opt.classList.remove('selected'));
