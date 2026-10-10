@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>GAME HUB | Naughty Kansari Limited</title>
   <!-- PeerJS WebRTC Audio Engine -->
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
@@ -24,7 +24,7 @@
       padding: 0;
     }
 
-        body {
+    body {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       background: 
         linear-gradient(180deg, rgba(3, 7, 18, 0.88) 0%, rgba(10, 15, 29, 0.82) 50%, rgba(3, 7, 18, 0.94) 100%),
@@ -34,24 +34,18 @@
       background-attachment: fixed;
       color: #f8fafc;
       min-height: 100vh;
-      padding: 24px 20px;
+      width: 100%;
+      margin: 0;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      align-items: stretch;
-      width: 100%;
+      align-items: center;
     }
 
     .container {
-      width: 100%;
-      max-width: 100%;
+      width: 100% !important;
+      max-width: 100% !important;
       margin: 0 auto;
-    }
-
-
-        .container {
-      width: 100%;
-      max-width: 1200px;
-      padding: 0 16px;
     }
 
     .status-bar {
@@ -187,6 +181,7 @@
       margin-bottom: 24px;
       border: 1px solid var(--glass-border);
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.55);
+      width: 100%;
     }
 
     input, select, textarea {
@@ -421,7 +416,6 @@
       display: block;
     }
 
-    /* RIGHT FAB (CHAT BOT) */
     .chatbot-fab {
       position: fixed;
       bottom: 24px;
@@ -466,7 +460,6 @@
       box-shadow: 0 0 8px rgba(0,0,0,0.5);
     }
 
-    /* LEFT FAB (CHAT ROOM) */
     .room-fab {
       position: fixed;
       bottom: 24px;
