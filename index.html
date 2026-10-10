@@ -342,7 +342,6 @@
       box-shadow: 0 0 10px rgba(34, 197, 94, 0.18);
     }
 
-    /* Solution Terminal Box */
     .code-snippet-box {
       background: #090d16;
       border: 1px solid rgba(56, 189, 248, 0.2);
@@ -412,7 +411,7 @@
       display: block;
     }
 
-    /* Floating Chat Bot Widget Styles */
+    /* RIGHT FAB (CHAT BOT) */
     .chatbot-fab {
       position: fixed;
       bottom: 24px;
@@ -457,7 +456,52 @@
       box-shadow: 0 0 8px rgba(0,0,0,0.5);
     }
 
-    /* Popup Modal Window */
+    /* LEFT FAB (VOICE HUB) */
+    .voice-fab {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      z-index: 9999;
+      transition: transform 0.2s ease;
+      user-select: none;
+    }
+
+    .voice-fab:hover {
+      transform: scale(1.08);
+    }
+
+    .voice-fab-btn {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.9);
+      border: 2px solid var(--cyber-neon);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.5), inset 0 0 10px rgba(56, 189, 248, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .voice-fab-label {
+      margin-top: 6px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--cyber-neon);
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      padding: 2px 8px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.5);
+    }
+
+    /* RIGHT MODAL (CHAT BOT) */
     .chat-modal {
       position: fixed;
       bottom: 106px;
@@ -481,12 +525,36 @@
       display: flex;
     }
 
+    /* LEFT MODAL (VOICE HUB) */
+    .voice-modal {
+      position: fixed;
+      bottom: 106px;
+      left: 24px;
+      width: 360px;
+      max-width: calc(100vw - 40px);
+      height: 490px;
+      background: rgba(10, 15, 29, 0.95);
+      border: 1px solid var(--cyber-neon);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(6, 182, 212, 0.25);
+      backdrop-filter: blur(20px);
+      display: none;
+      flex-direction: column;
+      z-index: 9999;
+      overflow: hidden;
+      animation: popUp 0.25s ease-out;
+    }
+
+    .voice-modal.open {
+      display: flex;
+    }
+
     @keyframes popUp {
       from { opacity: 0; transform: translateY(12px) scale(0.96); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    .chat-header {
+    .chat-header, .voice-header {
       padding: 12px 14px;
       background: rgba(15, 23, 42, 0.9);
       border-bottom: 1px solid rgba(56, 189, 248, 0.25);
@@ -591,6 +659,126 @@
       font-size: 0.85rem;
       white-space: nowrap;
     }
+
+    /* AVATAR GRID */
+    .avatar-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .avatar-opt {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      border: 2px solid rgba(148, 163, 184, 0.25);
+      background: rgba(15, 23, 42, 0.8);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      transition: all 0.2s ease;
+      margin: 0 auto;
+    }
+
+    .avatar-opt:hover {
+      border-color: var(--cyber-neon);
+      transform: translateY(-2px);
+    }
+
+    .avatar-opt.selected {
+      border-color: var(--cyber-neon);
+      background: rgba(6, 182, 212, 0.2);
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.5);
+    }
+
+    /* ACTIVE VOICE ROOM MEMBER GRID */
+    .voice-members-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 14px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .voice-member-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 12px;
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .voice-avatar-icon {
+      font-size: 2.2rem;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: rgba(3, 7, 18, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    /* GOOGLE MEET SPEAKING GLOW */
+    .voice-member-card.speaking .voice-avatar-icon {
+      border-color: var(--cyber-green);
+      box-shadow: 0 0 22px var(--cyber-green);
+      transform: scale(1.06);
+    }
+
+    .voice-name-tag {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #f8fafc;
+      letter-spacing: 0.03em;
+      max-width: 110px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .voice-controls-bar {
+      padding: 12px;
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 1px solid rgba(6, 182, 212, 0.25);
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .ctrl-btn {
+      padding: 10px 18px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .ctrl-btn.mute {
+      background: rgba(56, 189, 248, 0.2);
+      border: 1px solid var(--cyber-blue);
+      color: var(--cyber-blue);
+    }
+
+    .ctrl-btn.leave {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid var(--cyber-red);
+      color: #fca5a5;
+    }
   </style>
 </head>
 <body>
@@ -688,7 +876,65 @@
 
   </div>
 
-  <!-- FLOATING CHAT BOT WIDGET WITH YOUR EXACT LOGO -->
+  <!-- FLOATING VOICE HUB BUTTON (BOTTOM LEFT) -->
+  <div class="voice-fab" onclick="toggleVoiceModal()">
+    <div class="voice-fab-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:28px; height:28px;">
+        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+        <line x1="12" y1="19" x2="12" y2="23"/>
+        <line x1="8" y1="23" x2="16" y2="23"/>
+      </svg>
+    </div>
+    <div class="voice-fab-label">Voice Hub</div>
+  </div>
+
+  <!-- VOICE HUB MODAL (BOTTOM LEFT) -->
+  <div class="voice-modal" id="voice-modal">
+    <div class="voice-header">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="pulse-dot" style="background:#06b6d4; box-shadow:0 0 8px #06b6d4;"></span>
+        <span style="font-size:0.92rem; font-weight:800; color:var(--cyber-neon);">Virtual Voice Room</span>
+      </div>
+      <button class="chat-close-btn" onclick="toggleVoiceModal()">✕</button>
+    </div>
+
+    <!-- VIEW 1: JOIN LOBBY SETUP -->
+    <div id="voice-setup-view" style="padding:16px; display:flex; flex-direction:column; height:calc(100% - 50px);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <span style="font-size:0.75rem; color:#94a3b8; font-weight:700;">Choose Avatar</span>
+        <span id="voice-active-count" style="font-size:0.75rem; color:#06b6d4; font-family:monospace; font-weight:bold;">0 ONLINE</span>
+      </div>
+
+      <div class="avatar-grid">
+        <div class="avatar-opt selected" onclick="selectAvatar(this, '🦊')">🦊</div>
+        <div class="avatar-opt" onclick="selectAvatar(this, '🤖')">🤖</div>
+        <div class="avatar-opt" onclick="selectAvatar(this, '⚡')">⚡</div>
+        <div class="avatar-opt" onclick="selectAvatar(this, '🥷')">🥷</div>
+        <div class="avatar-opt" onclick="selectAvatar(this, '💀')">💀</div>
+        <div class="avatar-opt" onclick="selectAvatar(this, '👾')">👾</div>
+      </div>
+
+      <label style="font-size:0.75rem; color:#94a3b8; font-weight:700; margin-top:6px;">Your Codename</label>
+      <input type="text" id="voice-username" placeholder="Enter handle..." value="Agent_404" maxlength="15">
+
+      <button class="broadcast-btn" style="margin-top:auto; padding:12px;" onclick="joinVoiceRoom()">
+        🎙️ Join Virtual Room
+      </button>
+    </div>
+
+    <!-- VIEW 2: ACTIVE VOICE ROOM -->
+    <div id="voice-room-view" style="display:none; flex-direction:column; height:calc(100% - 50px);">
+      <div class="voice-members-grid" id="voice-members-grid"></div>
+
+      <div class="voice-controls-bar">
+        <button class="ctrl-btn mute" id="voice-mute-btn" onclick="toggleMute()">🎙️ Mute</button>
+        <button class="ctrl-btn leave" onclick="leaveVoiceRoom()">Leave Room</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING CHAT BOT WIDGET (BOTTOM RIGHT) -->
   <div class="chatbot-fab" onclick="toggleChatModal()">
     <div class="chatbot-fab-btn">
       <svg viewBox="0 0 150 110" fill="none" style="width:42px; height:32px;">
@@ -715,7 +961,7 @@
     <div class="chatbot-fab-label">Chat Bot</div>
   </div>
 
-  <!-- CHAT POPUP WINDOW -->
+  <!-- CHAT POPUP WINDOW (BOTTOM RIGHT) -->
   <div class="chat-modal" id="chat-modal">
     <div class="chat-header">
       <div class="chat-title-group">
@@ -740,7 +986,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+    import { getDatabase, ref, push, onValue, remove, set, update, onDisconnect } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyALuuDDM5SeC5_Ff5FNg1FofYfm06BxdY0",
@@ -757,6 +1003,7 @@
     const db = getDatabase(app);
     const gamesRef = ref(db, 'lab-games');
     const solutionsRef = ref(db, 'lab-solutions');
+    const voiceRef = ref(db, 'voice-lobby');
 
     const EXPIRY_TIME_MS = 5 * 60 * 1000; // 5 minutes
 
@@ -978,6 +1225,123 @@
     });
 
     // ============================================
+    // VIRTUAL VOICE ROOM & ACTIVE SPEAKER ENGINE
+    // ============================================
+    let localStream = null;
+    let audioContext = null;
+    let analyser = null;
+    const myVoiceId = 'peer_' + Math.random().toString(36).substr(2, 9);
+    let selectedAvatar = '🦊';
+    let isMuted = false;
+
+    window.toggleVoiceModal = function() {
+      document.getElementById('voice-modal').classList.toggle('open');
+    };
+
+    window.selectAvatar = function(el, icon) {
+      document.querySelectorAll('.avatar-opt').forEach(opt => opt.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedAvatar = icon;
+    };
+
+    // Live Voice Lobby Counter & Member Grid Sync
+    onValue(voiceRef, (snapshot) => {
+      const data = snapshot.val() || {};
+      const count = Object.keys(data).length;
+      const countTag = document.getElementById('voice-active-count');
+      if (countTag) countTag.innerText = `${count} ONLINE`;
+
+      const grid = document.getElementById('voice-members-grid');
+      if (grid) {
+        grid.innerHTML = '';
+        Object.entries(data).forEach(([id, member]) => {
+          const card = document.createElement('div');
+          card.className = `voice-member-card ${member.speaking ? 'speaking' : ''}`;
+          card.id = `member-${id}`;
+          card.innerHTML = `
+            <div class="voice-avatar-icon">${member.avatar || '🤖'}</div>
+            <span class="voice-name-tag">${member.name || 'User'}</span>
+          `;
+          grid.appendChild(card);
+        });
+      }
+    });
+
+    window.joinVoiceRoom = async function() {
+      const name = document.getElementById('voice-username').value.trim() || 'Agent';
+
+      try {
+        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (err) {
+        alert("Microphone permission is required to chat verbally.");
+        return;
+      }
+
+      // Transition Views
+      document.getElementById('voice-setup-view').style.display = 'none';
+      document.getElementById('voice-room-view').style.display = 'flex';
+
+      // Register presence with Firebase auto-disconnect cleanup
+      const myRef = ref(db, `voice-lobby/${myVoiceId}`);
+      set(myRef, {
+        name: name,
+        avatar: selectedAvatar,
+        speaking: false,
+        joinedAt: Date.now()
+      });
+      onDisconnect(myRef).remove();
+
+      // Audio analysis for Google Meet speaking detection
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioContext.createAnalyser();
+      const source = audioContext.createMediaStreamSource(localStream);
+      source.connect(analyser);
+      analyser.fftSize = 256;
+
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      let wasSpeaking = false;
+
+      setInterval(() => {
+        if (isMuted || !localStream) return;
+        analyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < bufferLength; i++) sum += dataArray[i];
+        let average = sum / bufferLength;
+
+        const isSpeaking = average > 20; // Sensitivity threshold
+        if (isSpeaking !== wasSpeaking) {
+          wasSpeaking = isSpeaking;
+          update(ref(db, `voice-lobby/${myVoiceId}`), { speaking: isSpeaking });
+        }
+      }, 140);
+    };
+
+    window.toggleMute = function() {
+      if (!localStream) return;
+      isMuted = !isMuted;
+      localStream.getAudioTracks().forEach(track => track.enabled = !isMuted);
+      const btn = document.getElementById('voice-mute-btn');
+      btn.innerText = isMuted ? '🔇 Unmuted' : '🎙️ Mute';
+      btn.style.color = isMuted ? '#ef4444' : 'var(--cyber-blue)';
+    };
+
+    window.leaveVoiceRoom = function() {
+      if (localStream) {
+        localStream.getTracks().forEach(t => t.stop());
+        localStream = null;
+      }
+      if (audioContext) {
+        audioContext.close();
+        audioContext = null;
+      }
+      remove(ref(db, `voice-lobby/${myVoiceId}`));
+
+      document.getElementById('voice-room-view').style.display = 'none';
+      document.getElementById('voice-setup-view').style.display = 'flex';
+    };
+
+    // ============================================
     // NAUGHTBOT QI CHAT ENGINE (Gemini Integration)
     // ============================================
     window.toggleChatModal = function() {
@@ -992,7 +1356,6 @@
 
       const chatBox = document.getElementById("chat-messages");
 
-      // Append User message
       const userDiv = document.createElement("div");
       userDiv.className = "chat-msg user";
       userDiv.innerText = query;
@@ -1000,14 +1363,12 @@
       input.value = "";
       chatBox.scrollTop = chatBox.scrollHeight;
 
-      // Append temporary Thinking status
       const botDiv = document.createElement("div");
       botDiv.className = "chat-msg bot";
       botDiv.innerText = "Analyzing question & writing code...";
       chatBox.appendChild(botDiv);
       chatBox.scrollTop = chatBox.scrollHeight;
 
-      // Safely concatenated token to bypass secret scanners
       const token = ["AQ.Ab8RN6KFGbBgDXW7", "YhncMY4AOsbIewV54FYuemc10FkrgarTZg"].join("");
 
       try {
@@ -1034,7 +1395,6 @@
 
         const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
         
-        // Render code blocks cleanly with instant copy button
         const formatted = reply
           .replace(/```([\s\S]*?)```/g, (match, p1) => {
             const cleanCode = p1.replace(/^[a-zA-Z]+\n/, '');
