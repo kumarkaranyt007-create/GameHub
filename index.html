@@ -96,14 +96,8 @@
     }
 
     @keyframes float {
-      0%, 100% { 
-        transform: translateY(0px); 
-        filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.55));
-      }
-      50% { 
-        transform: translateY(-5px); 
-        filter: drop-shadow(0 0 26px rgba(6, 182, 212, 0.85));
-      }
+      0%, 100% { transform: translateY(0px); filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.55)); }
+      50% { transform: translateY(-5px); filter: drop-shadow(0 0 26px rgba(6, 182, 212, 0.85)); }
     }
 
     h1 {
@@ -199,7 +193,7 @@
     }
 
     textarea {
-      font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace;
+      font-family: 'SF Mono', Monaco, Consolas, monospace;
       font-size: 0.85rem;
       min-height: 120px;
       resize: vertical;
@@ -854,6 +848,7 @@
       <button class="tab-btn" onclick="switchTab('code-tab')">💻 Lab Solutions</button>
       <button class="tab-btn" onclick="switchTab('room-tab')">💬 Chat Room</button>
     </div>
+
     <!-- TAB 1: GAME LOBBIES -->
     <div id="game-tab" class="tab-content active">
       <div class="card">
@@ -901,7 +896,7 @@
       <div id="code-feed">Connecting to network...</div>
     </div>
 
-    <!-- TAB 3: CYBER CHAT ROOM (FULL-WIDTH EMBEDDED TAB) -->
+    <!-- TAB 3: CYBER CHAT ROOM -->
     <div id="room-tab" class="tab-content">
       <div class="card" style="min-height: 580px; display: flex; flex-direction: column; padding: 18px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px; border-bottom: 1px solid rgba(56, 189, 248, 0.2); padding-bottom: 8px;">
@@ -912,31 +907,22 @@
           <span id="room-online-tag" style="font-size:0.75rem; color:#06b6d4; font-family:monospace; font-weight:bold;">0 ONLINE</span>
         </div>
 
-        <!-- GATEWAY: 5 AVATARS & CODENAME -->
+        <!-- GATEWAY: 5 AVATARS & USERNAME -->
         <div id="room-gate-view" style="display:flex; flex-direction:column; justify-content:center; flex:1; max-width:480px; margin: 0 auto; width: 100%;">
           <label style="font-size:0.8rem; color:#94a3b8; font-weight:700; margin-bottom: 6px;">Select Identity</label>
           <div class="avatar-grid">
-            <!-- Smile / Troll Face Meme -->
             <div class="avatar-opt selected" onclick="selectRoomAvatar(this, 'smilefacemene.jpg')">
               <img class="crop-cat-face" src="smilefacemene.jpg" alt="Troll Face">
             </div>
-
-            <!-- Orange Selfie Cat -->
             <div class="avatar-opt" onclick="selectRoomAvatar(this, 'ORANGEselfieCAT.jpg')">
               <img class="crop-cat-face" src="ORANGEselfieCAT.jpg" alt="Orange Cat">
             </div>
-
-            <!-- Baby Standing Kitten -->
             <div class="avatar-opt" onclick="selectRoomAvatar(this, 'babycat.jpg')">
               <img class="crop-kitten" src="babycat.jpg" alt="Baby Kitten">
             </div>
-
-            <!-- Billu OG Cat -->
             <div class="avatar-opt" onclick="selectRoomAvatar(this, 'billuOG.jpg')">
               <img class="crop-cat-face" src="billuOG.jpg" alt="Billu OG">
             </div>
-
-            <!-- Olli Polite Cat -->
             <div class="avatar-opt" onclick="selectRoomAvatar(this, 'olli-the-polite-cat.jpg')">
               <img class="crop-cat-face" src="olli-the-polite-cat.jpg" alt="Polite Cat">
             </div>
@@ -950,7 +936,7 @@
           </button>
         </div>
 
-        <!-- ACTIVE ROOM (TEXT & VOICE) -->
+        <!-- ACTIVE ROOM VIEW -->
         <div id="room-active-view" style="display:none; flex-direction:column; flex:1;">
           <div class="room-subtabs">
             <button class="room-tab-btn active" id="tab-btn-text" onclick="switchRoomTab('text')">💬 Text Chat</button>
@@ -960,7 +946,6 @@
           <!-- SUBTAB: TEXT -->
           <div id="subtab-text-content" style="display:flex; flex-direction:column; flex:1;">
             <div class="room-text-feed" id="room-text-feed"></div>
-
             <div class="chat-input-area" style="border-radius: 8px;">
               <input type="text" id="room-text-input" placeholder="Transmit a message..." onkeydown="if(event.key==='Enter') sendRoomMessage()">
               <button onclick="sendRoomMessage()">Send</button>
@@ -976,7 +961,6 @@
 
             <div id="voice-live-grid" style="display:none; flex-direction:column; flex:1;">
               <div class="voice-members-grid" id="voice-members-grid"></div>
-
               <div class="voice-controls-bar">
                 <button class="ctrl-btn mute" id="voice-mute-btn" onclick="toggleMute()">🎙️ Mute</button>
                 <button class="ctrl-btn leave" onclick="leaveVoiceRoom()">Disconnect</button>
@@ -990,7 +974,7 @@
 
   </div> <!-- End container -->
 
-  <!-- FLOATING CHAT BOT WIDGET (BOTTOM RIGHT) -->
+  <!-- FLOATING CHAT BOT -->
   <div class="chatbot-fab" onclick="toggleChatModal()">
     <div class="chatbot-fab-btn">
       <svg viewBox="0 0 150 110" fill="none" style="width:42px; height:32px;">
@@ -1017,7 +1001,7 @@
     <div class="chatbot-fab-label">Chat Bot</div>
   </div>
 
-  <!-- CHAT POPUP WINDOW -->
+  <!-- CHAT BOT MODAL -->
   <div class="chat-modal" id="chat-modal">
     <div class="chat-header">
       <div style="display:flex; align-items:center; gap:8px;">
@@ -1039,7 +1023,7 @@
       <button onclick="sendChatMessage()">Send</button>
     </div>
   </div>
-  <script type="module">
+    <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { getDatabase, ref, push, onValue, remove, set, update, onDisconnect, limitToLast, query as fbQuery } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
@@ -1304,7 +1288,7 @@
     });
 
     window.enterChatRoom = function() {
-      myUserName = document.getElementById('room-user-name').value.trim() || 'Ghost';
+      myUserName = document.getElementById('room-user-name').value.trim() || 'Ghost_NK';
 
       const userPresRef = ref(db, `chat-room-presence/${myRoomUserId}`);
       set(userPresRef, {
@@ -1349,15 +1333,17 @@
 
         Object.values(data).forEach(msg => {
           const isSelf = msg.senderId === myRoomUserId;
+          const safeAvatar = msg.avatar || 'smilefacemene.jpg';
+          const safeSender = msg.sender || 'Ghost_NK';
           const group = document.createElement('div');
           group.className = `msg-bubble-group ${isSelf ? 'self' : ''}`;
           group.innerHTML = `
             <div class="msg-author-header">
-              <img src="${msg.avatar}" style="width:20px; height:20px; border-radius:50%; object-fit:cover;">
-              <span>${msg.sender}</span>
+              <img src="${safeAvatar}" onerror="this.src='smilefacemene.jpg'" style="width:20px; height:20px; border-radius:50%; object-fit:cover;">
+              <span>${safeSender}</span>
               <span class="msg-timestamp">${msg.time}</span>
             </div>
-            <div class="msg-bubble-content">${msg.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+            <div class="msg-bubble-content">${(msg.text || '').replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
           `;
           feed.appendChild(group);
         });
@@ -1391,6 +1377,7 @@
       remoteAudios[peerId] = audio;
     }
 
+    // Voice grid listener with auto-fallback and ghost filter
     onValue(voiceRef, (snapshot) => {
       const grid = document.getElementById('voice-members-grid');
       if (!grid) return;
@@ -1398,13 +1385,24 @@
       const data = snapshot.val() || {};
 
       Object.entries(data).forEach(([id, member]) => {
+        if (!member || typeof member !== 'object') return;
+        
+        // Auto-remove empty ghost records without names
+        if (!member.name || member.name === 'undefined') {
+          remove(ref(db, `voice-lobby/${id}`));
+          return;
+        }
+
+        const avatarSrc = member.avatar || 'smilefacemene.jpg';
+        const displayName = member.name || 'Ghost_NK';
+
         const card = document.createElement('div');
         card.className = `voice-member-card ${member.speaking ? 'speaking' : ''}`;
         card.innerHTML = `
           <div class="voice-avatar-icon">
-            <img src="${member.avatar}" style="width:100%; height:100%; object-fit:cover;">
+            <img src="${avatarSrc}" onerror="this.src='smilefacemene.jpg'" style="width:100%; height:100%; object-fit:cover;">
           </div>
-          <span class="voice-name-tag">${member.name}</span>
+          <span class="voice-name-tag">${displayName}</span>
         `;
         grid.appendChild(card);
       });
