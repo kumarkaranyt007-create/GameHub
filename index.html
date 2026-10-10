@@ -412,6 +412,7 @@
       display: block;
     }
 
+    /* RIGHT FAB (CHAT BOT) */
     .chatbot-fab {
       position: fixed;
       bottom: 24px;
@@ -456,6 +457,7 @@
       box-shadow: 0 0 8px rgba(0,0,0,0.5);
     }
 
+    /* LEFT FAB (CHAT ROOM) */
     .room-fab {
       position: fixed;
       bottom: 24px;
@@ -644,37 +646,52 @@
       white-space: nowrap;
     }
 
+    /* 5 IMAGE AVATAR SELECTOR GRID */
     .avatar-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
       margin: 12px 0;
+      padding: 2px;
     }
 
     .avatar-opt {
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
       border: 2px solid rgba(148, 163, 184, 0.25);
       background: rgba(15, 23, 42, 0.8);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.8rem;
-      transition: all 0.2s ease;
+      overflow: hidden;
+      transition: all 0.25s ease;
       margin: 0 auto;
+      padding: 0;
     }
+
+    .avatar-opt img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    .avatar-opt img.crop-kitten { object-position: center 25%; transform: scale(1.1); }
+    .avatar-opt img.crop-cat-face { object-position: center center; }
 
     .avatar-opt:hover {
       border-color: var(--cyber-neon);
-      transform: translateY(-2px);
+      transform: scale(1.08);
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
     }
 
     .avatar-opt.selected {
       border-color: var(--cyber-neon);
-      background: rgba(6, 182, 212, 0.2);
-      box-shadow: 0 0 12px rgba(6, 182, 212, 0.5);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.8);
+      transform: scale(1.05);
     }
 
     .room-subtabs {
@@ -789,16 +806,22 @@
     }
 
     .voice-avatar-icon {
-      font-size: 2.2rem;
       width: 58px;
       height: 58px;
       border-radius: 50%;
+      overflow: hidden;
       background: rgba(3, 7, 18, 0.6);
       display: flex;
       align-items: center;
       justify-content: center;
       border: 2px solid transparent;
       transition: all 0.2s ease;
+    }
+
+    .voice-avatar-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .voice-member-card.speaking .voice-avatar-icon {
@@ -959,7 +982,7 @@
       <button class="chat-close-btn" onclick="toggleRoomModal()">✕</button>
     </div>
 
-    <!-- GATEWAY: PICK AVATAR & HANDLE -->
+    <!-- GATEWAY: 5 AVATARS & USERNAME PICKER -->
     <div id="room-gate-view" style="padding:16px; display:flex; flex-direction:column; height:calc(100% - 50px);">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
         <span style="font-size:0.75rem; color:#94a3b8; font-weight:700;">Select Identity</span>
@@ -967,12 +990,30 @@
       </div>
 
       <div class="avatar-grid">
-        <div class="avatar-opt selected" onclick="selectRoomAvatar(this, '🦊')">🦊</div>
-        <div class="avatar-opt" onclick="selectRoomAvatar(this, '🤖')">🤖</div>
-        <div class="avatar-opt" onclick="selectRoomAvatar(this, '⚡')">⚡</div>
-        <div class="avatar-opt" onclick="selectRoomAvatar(this, '🥷')">🥷</div>
-        <div class="avatar-opt" onclick="selectRoomAvatar(this, '💀')">💀</div>
-        <div class="avatar-opt" onclick="selectRoomAvatar(this, '👾')">👾</div>
+        <!-- Smile / Troll Face Meme -->
+        <div class="avatar-opt selected" onclick="selectRoomAvatar(this, 'smilefacemene.jpg')">
+          <img class="crop-cat-face" src="smilefacemene.jpg" alt="Troll Face">
+        </div>
+
+        <!-- Orange Selfie Cat -->
+        <div class="avatar-opt" onclick="selectRoomAvatar(this, 'ORANGEselfieCAT.jpg')">
+          <img class="crop-cat-face" src="ORANGEselfieCAT.jpg" alt="Orange Cat">
+        </div>
+
+        <!-- Baby Standing Kitten -->
+        <div class="avatar-opt" onclick="selectRoomAvatar(this, 'babycat.jpg')">
+          <img class="crop-kitten" src="babycat.jpg" alt="Baby Kitten">
+        </div>
+
+        <!-- Billu OG Cat -->
+        <div class="avatar-opt" onclick="selectRoomAvatar(this, 'billuOG.jpg')">
+          <img class="crop-cat-face" src="billuOG.jpg" alt="Billu OG">
+        </div>
+
+        <!-- Olli Polite Cat -->
+        <div class="avatar-opt" onclick="selectRoomAvatar(this, 'olli-the-polite-cat.jpg')">
+          <img class="crop-cat-face" src="olli-the-polite-cat.jpg" alt="Polite Cat">
+        </div>
       </div>
 
       <label style="font-size:0.75rem; color:#94a3b8; font-weight:700; margin-top:6px;">Handle / Codename</label>
@@ -990,7 +1031,7 @@
         <button class="room-tab-btn" id="tab-btn-voice" onclick="switchRoomTab('voice')">🎙️ Voice Chat</button>
       </div>
 
-      <!-- TEXT CHAT TAB -->
+      <!-- TAB A: REALTIME TEXT CHAT -->
       <div id="subtab-text-content" style="display:flex; flex-direction:column; flex:1; overflow:hidden;">
         <div class="room-text-feed" id="room-text-feed"></div>
 
@@ -1000,10 +1041,10 @@
         </div>
       </div>
 
-      <!-- VOICE CHAT TAB -->
+      <!-- TAB B: VIRTUAL VOICE ROOM WITH PEERJS -->
       <div id="subtab-voice-content" style="display:none; flex-direction:column; flex:1; overflow:hidden;">
         <div id="voice-connect-prompt" style="padding:20px; text-align:center; margin:auto;">
-          <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:14px;">Connect with others verbally using your microphone.</p>
+          <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:14px;">Connect with other users verbally using your microphone.</p>
           <button class="ctrl-btn join" onclick="joinVoiceRoom()">🎙️ Connect Microphone</button>
         </div>
 
@@ -1069,7 +1110,6 @@
       <button onclick="sendChatMessage()">Send</button>
     </div>
   </div>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { getDatabase, ref, push, onValue, remove, set, update, onDisconnect, limitToLast, query as fbQuery } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
@@ -1305,9 +1345,11 @@
       }
     });
 
-    // CHAT ROOM LOGIC
+    // ============================================
+    // CYBER CHAT ROOM & PEERJS VOICE ENGINE
+    // ============================================
     let myRoomUserId = 'usr_' + Math.random().toString(36).substr(2, 9);
-    let myAvatar = '🦊';
+    let myAvatar = 'smilefacemene.jpg';
     let myUserName = 'Ghost_NK';
     let localStream = null;
     let audioContext = null;
@@ -1321,10 +1363,10 @@
       document.getElementById('room-modal').classList.toggle('open');
     };
 
-    window.selectRoomAvatar = function(el, icon) {
+    window.selectRoomAvatar = function(el, imgPath) {
       document.querySelectorAll('.avatar-opt').forEach(opt => opt.classList.remove('selected'));
       el.classList.add('selected');
-      myAvatar = icon;
+      myAvatar = imgPath;
     };
 
     onValue(roomUsersRef, (snapshot) => {
@@ -1384,7 +1426,8 @@
           group.className = `msg-bubble-group ${isSelf ? 'self' : ''}`;
           group.innerHTML = `
             <div class="msg-author-header">
-              <span>${msg.avatar} ${msg.sender}</span>
+              <img src="${msg.avatar}" style="width:20px; height:20px; border-radius:50%; object-fit:cover;">
+              <span>${msg.sender}</span>
               <span class="msg-timestamp">${msg.time}</span>
             </div>
             <div class="msg-bubble-content">${msg.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
@@ -1431,7 +1474,9 @@
         const card = document.createElement('div');
         card.className = `voice-member-card ${member.speaking ? 'speaking' : ''}`;
         card.innerHTML = `
-          <div class="voice-avatar-icon">${member.avatar}</div>
+          <div class="voice-avatar-icon">
+            <img src="${member.avatar}" style="width:100%; height:100%; object-fit:cover;">
+          </div>
           <span class="voice-name-tag">${member.name}</span>
         `;
         grid.appendChild(card);
