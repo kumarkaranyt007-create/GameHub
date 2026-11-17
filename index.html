@@ -44,7 +44,7 @@
 
     .container {
       width: 100% !important;
-      max-width: 900px !important;
+      max-width: 960px !important;
       margin: 0 auto;
     }
 
@@ -132,6 +132,7 @@
 
     .tab-container {
       display: flex;
+      flex-wrap: wrap;
       background: rgba(15, 23, 42, 0.8);
       border: 1px solid rgba(56, 189, 248, 0.25);
       border-radius: 12px;
@@ -142,21 +143,21 @@
     }
 
     .tab-btn {
-      flex: 1;
-      padding: 10px 14px;
+      flex: 1 1 120px;
+      padding: 10px 10px;
       border: none;
       background: transparent;
       color: #94a3b8;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       font-weight: 700;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.25s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .tab-btn.active {
@@ -193,7 +194,7 @@
     }
 
     textarea {
-      font-family: 'SF Mono', Monaco, Consolas, monospace;
+      font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace;
       font-size: 0.85rem;
       min-height: 120px;
       resize: vertical;
@@ -290,12 +291,13 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 8px;
+      gap: 8px;
     }
 
     .game-name {
       font-weight: 800;
       color: #fde047;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       letter-spacing: 0.04em;
     }
 
@@ -308,6 +310,7 @@
       font-size: 0.75rem;
       font-family: monospace;
       font-weight: bold;
+      white-space: nowrap;
     }
 
     .countdown-tag {
@@ -318,6 +321,7 @@
       border: 1px solid rgba(6, 182, 212, 0.3);
       padding: 3px 8px;
       border-radius: 6px;
+      white-space: nowrap;
     }
 
     .row-group {
@@ -586,8 +590,8 @@
     }
 
     .avatar-opt {
-      width: 62px;
-      height: 62px;
+      width: 58px;
+      height: 58px;
       border-radius: 50%;
       border: 2px solid rgba(148, 163, 184, 0.25);
       background: rgba(15, 23, 42, 0.8);
@@ -842,11 +846,12 @@
       <div class="sub-brand">By Naughty Kansari Limited</div>
     </div>
 
-    <!-- MAIN 3 TABS -->
+    <!-- MAIN 4 TABS -->
     <div class="tab-container">
       <button class="tab-btn active" onclick="switchTab('game-tab')">🎮 Game Lobbies</button>
       <button class="tab-btn" onclick="switchTab('code-tab')">💻 Lab Solutions</button>
       <button class="tab-btn" onclick="switchTab('room-tab')">💬 Chat Room</button>
+      <button class="tab-btn" onclick="switchTab('vault-tab')">📂 File Vault</button>
     </div>
 
     <!-- TAB 1: GAME LOBBIES -->
@@ -972,6 +977,58 @@
       </div>
     </div>
 
+    <!-- TAB 4: GOOGLE DRIVE CLOUD VAULT -->
+    <div id="vault-tab" class="tab-content">
+      <div class="card" style="min-height: 580px; display: flex; flex-direction: column; padding: 18px;">
+        
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px; border-bottom: 1px solid rgba(56, 189, 248, 0.2); padding-bottom: 8px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="pulse-dot" style="background:#38bdf8;"></span>
+            <span style="font-size:1rem; font-weight:800; color:var(--cyber-blue);">Google Cloud Vault</span>
+          </div>
+          <button id="vault-admin-btn" class="copy-pill" onclick="handleAdminVaultAuth()">
+            🔒 Admin Access
+          </button>
+        </div>
+
+        <!-- ADMIN CONTROLS (Hidden until master key is entered) -->
+        <div id="vault-admin-panel" style="display:none; background:rgba(15, 23, 42, 0.85); padding:16px; border-radius:12px; border:1px solid rgba(56, 189, 248, 0.35); margin-bottom:16px;">
+          <div style="font-size:0.8rem; font-weight:800; color:var(--cyber-green); margin-bottom:8px;">
+            ⚡ ADMIN CLOUD UPLOAD CONSOLE
+          </div>
+          
+          <select id="vault-file-type">
+            <option value="APK">Android App (.apk)</option>
+            <option value="PDF">Notes / Document (.pdf)</option>
+            <option value="PPT">Presentation (.ppt / .pptx)</option>
+            <option value="IMG">Image / Diagram (.png / .jpg)</option>
+            <option value="PY/SQL">Lab Dataset / Code (.zip / .csv / .py)</option>
+            <option value="OTHER">Other File</option>
+          </select>
+
+          <input type="text" id="vault-file-title" placeholder="File Title (e.g. Class 12 CS Notes, Custom App v1.0)">
+          <input type="url" id="vault-drive-link" placeholder="Paste Google Drive Share Link (Anyone with link)">
+          <input type="text" id="vault-file-size" placeholder="File Size (e.g. 24 MB, 1.5 MB)">
+
+          <div style="display:flex; gap:10px; margin-top:10px;">
+            <button class="broadcast-btn" onclick="publishVaultFile()" style="flex:1;">
+              Publish to Vault
+            </button>
+            <button class="clear-btn" onclick="lockVaultAdmin()">Lock</button>
+          </div>
+        </div>
+
+        <!-- PUBLIC DOWNLOAD DIRECTORY -->
+        <div class="section-title">
+          <span>Available Cloud Files</span>
+        </div>
+        <div id="vault-feed" style="display:flex; flex-direction:column; gap:10px;">
+          Connecting to Google Cloud Vault...
+        </div>
+
+      </div>
+    </div>
+
   </div> <!-- End container -->
 
   <!-- FLOATING CHAT BOT -->
@@ -1023,7 +1080,7 @@
       <button onclick="sendChatMessage()">Send</button>
     </div>
   </div>
-    <script type="module">
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { getDatabase, ref, push, onValue, remove, set, update, onDisconnect, limitToLast, query as fbQuery } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
@@ -1045,8 +1102,13 @@
     const roomUsersRef = ref(db, 'chat-room-presence');
     const roomMsgsRef = ref(db, 'chat-room-messages');
     const voiceRef = ref(db, 'voice-lobby');
+    const vaultRef = ref(db, 'vault-files');
 
     const EXPIRY_TIME_MS = 5 * 60 * 1000;
+
+    // Master Admin Access Key for File Vault (Change this anytime)
+    const VAULT_ADMIN_KEY = "NK7007";
+    let isVaultAdmin = false;
 
     window.switchTab = function(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -1055,7 +1117,7 @@
       const target = document.getElementById(tabId);
       if (target) target.classList.add('active');
 
-      const tabs = ['game-tab', 'code-tab', 'room-tab'];
+      const tabs = ['game-tab', 'code-tab', 'room-tab', 'vault-tab'];
       const index = tabs.indexOf(tabId);
       if (index !== -1) {
         document.querySelectorAll('.tab-btn')[index].classList.add('active');
@@ -1076,6 +1138,140 @@
       });
     };
 
+    // ============================================
+    // GOOGLE DRIVE CLOUD VAULT ENGINE
+    // ============================================
+    function formatDriveDownloadUrl(rawUrl) {
+      if (!rawUrl) return "#";
+      const idMatch = rawUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || rawUrl.match(/id=([a-zA-Z0-9_-]+)/);
+      if (idMatch && idMatch[1]) {
+        return `https://drive.usercontent.google.com/download?id=${idMatch[1]}&export=download`;
+      }
+      return rawUrl;
+    }
+
+    window.handleAdminVaultAuth = function() {
+      if (isVaultAdmin) {
+        lockVaultAdmin();
+        return;
+      }
+      const pass = prompt("Enter Admin Access Key:");
+      if (pass === VAULT_ADMIN_KEY) {
+        isVaultAdmin = true;
+        document.getElementById("vault-admin-panel").style.display = "block";
+        const btn = document.getElementById("vault-admin-btn");
+        btn.innerText = "🔓 Admin Active";
+        btn.style.borderColor = "var(--cyber-green)";
+        btn.style.color = "var(--cyber-green)";
+        renderVaultList(lastVaultSnapshot);
+      } else if (pass !== null) {
+        alert("Access Denied: Invalid Admin Key.");
+      }
+    };
+
+    window.lockVaultAdmin = function() {
+      isVaultAdmin = false;
+      document.getElementById("vault-admin-panel").style.display = "none";
+      const btn = document.getElementById("vault-admin-btn");
+      btn.innerText = "🔒 Admin Access";
+      btn.style.borderColor = "";
+      btn.style.color = "";
+      renderVaultList(lastVaultSnapshot);
+    };
+
+    window.publishVaultFile = function() {
+      const title = document.getElementById("vault-file-title").value.trim();
+      const rawLink = document.getElementById("vault-drive-link").value.trim();
+      const type = document.getElementById("vault-file-type").value;
+      const size = document.getElementById("vault-file-size").value.trim() || "Cloud File";
+
+      if (!title || !rawLink) {
+        alert("Please enter both a File Title and a Google Drive Share Link.");
+        return;
+      }
+
+      push(vaultRef, {
+        title: title,
+        type: type,
+        rawLink: rawLink,
+        directLink: formatDriveDownloadUrl(rawLink),
+        size: size,
+        timeString: new Date().toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }),
+        createdAt: Date.now()
+      });
+
+      document.getElementById("vault-file-title").value = "";
+      document.getElementById("vault-drive-link").value = "";
+      document.getElementById("vault-file-size").value = "";
+    };
+
+    window.deleteVaultItem = function(itemId) {
+      if (confirm("Remove this file from the public vault?")) {
+        remove(ref(db, `vault-files/${itemId}`));
+      }
+    };
+
+    let lastVaultSnapshot = null;
+    onValue(vaultRef, (snapshot) => {
+      lastVaultSnapshot = snapshot.val();
+      renderVaultList(lastVaultSnapshot);
+    });
+
+    function renderVaultList(data) {
+      const feed = document.getElementById("vault-feed");
+      if (!feed) return;
+      feed.innerHTML = "";
+
+      if (!data) {
+        feed.innerHTML = "<p style='color:#64748b; font-family: monospace;'>[NO CLOUD FILES PUBLISHED YET]</p>";
+        return;
+      }
+
+      Object.entries(data).reverse().forEach(([id, item]) => {
+        const div = document.createElement("div");
+        div.className = "feed-item";
+
+        if (item.type === "APK") div.style.borderLeftColor = "var(--cyber-green)";
+        else if (item.type === "PDF") div.style.borderLeftColor = "var(--cyber-purple)";
+        else if (item.type === "PPT") div.style.borderLeftColor = "#f59e0b";
+        else div.style.borderLeftColor = "var(--cyber-blue)";
+
+        let deleteBtn = "";
+        if (isVaultAdmin) {
+          deleteBtn = `<button class="clear-btn" style="padding:6px 10px; font-size:0.75rem;" onclick="deleteVaultItem('${id}')">Delete</button>`;
+        }
+
+        div.innerHTML = `
+          <div class="card-top">
+            <span class="game-name" style="color:#f8fafc; font-size:1.05rem;">${item.title}</span>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <span class="lang-badge">${item.type}</span>
+              <span class="countdown-tag" style="color:#94a3b8; border-color:rgba(148,163,184,0.3); background:rgba(15,23,42,0.6);">${item.size}</span>
+            </div>
+          </div>
+
+          <div style="font-size:0.72rem; color:#64748b; font-family:monospace; margin-bottom:8px;">
+            UPLOADED: ${item.timeString || "RECENT"}
+          </div>
+
+          <div class="row-group">
+            <a href="${item.directLink}" target="_blank" class="broadcast-btn" style="text-decoration:none; display:inline-block; padding:8px 16px; font-size:0.82rem;">
+              ⬇️ Direct Download
+            </a>
+            <a href="${item.rawLink}" target="_blank" class="copy-pill" style="text-decoration:none; display:inline-block; font-size:0.8rem;">
+              👁️ Preview in Drive
+            </a>
+            <button class="copy-pill" onclick="copyText('${item.directLink}', this)">Copy Link</button>
+            ${deleteBtn}
+          </div>
+        `;
+        feed.appendChild(div);
+      });
+    }
+
+    // ============================================
+    // LOBBIES & LAB SOLUTIONS ENGINE
+    // ============================================
     window.postGameUpdate = function() {
       const game = document.getElementById("game").value.trim();
       const code = document.getElementById("code").value.trim();
@@ -1377,7 +1573,6 @@
       remoteAudios[peerId] = audio;
     }
 
-    // Voice grid listener with auto-fallback and ghost filter
     onValue(voiceRef, (snapshot) => {
       const grid = document.getElementById('voice-members-grid');
       if (!grid) return;
@@ -1386,8 +1581,6 @@
 
       Object.entries(data).forEach(([id, member]) => {
         if (!member || typeof member !== 'object') return;
-        
-        // Auto-remove empty ghost records without names
         if (!member.name || member.name === 'undefined') {
           remove(ref(db, `voice-lobby/${id}`));
           return;
