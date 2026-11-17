@@ -977,7 +977,7 @@
       </div>
     </div>
 
-    <!-- TAB 4: GOOGLE DRIVE CLOUD VAULT + INBUILT READER -->
+    <!-- TAB 4: GOOGLE DRIVE CLOUD VAULT + INBUILT READER & VIDEO PLAYER -->
     <div id="vault-tab" class="tab-content">
       <div class="card" style="min-height: 580px; display: flex; flex-direction: column; padding: 18px;">
         
@@ -1001,14 +1001,15 @@
             <option value="PDF">PDF Document (.pdf)</option>
             <option value="DOCX">Word Document (.docx / .doc)</option>
             <option value="PPT">Presentation (.ppt / .pptx)</option>
+            <option value="VIDEO">Video Lecture / Tutorial (.mp4 / .mkv / .webm)</option>
             <option value="APK">Android App (.apk)</option>
             <option value="IMG">Image / Diagram (.png / .jpg)</option>
             <option value="PY/SQL">Lab Dataset / Code (.zip / .csv / .py)</option>
           </select>
 
-          <input type="text" id="vault-file-title" placeholder="File Title (e.g. Class 12 CS Notes, Practical File)">
+          <input type="text" id="vault-file-title" placeholder="File Title (e.g. Class 12 CS Notes, Python Tutorial Video)">
           <input type="url" id="vault-drive-link" placeholder="Paste Google Drive Share Link (Anyone with link)">
-          <input type="text" id="vault-file-size" placeholder="File Size (e.g. 2.4 MB, 18 MB)">
+          <input type="text" id="vault-file-size" placeholder="File Size (e.g. 2.4 MB, 45 MB)">
 
           <div style="display:flex; gap:10px; margin-top:10px;">
             <button class="broadcast-btn" onclick="publishVaultFile()" style="flex:1;">
@@ -1018,17 +1019,17 @@
           </div>
         </div>
 
-        <!-- INBUILT DOCUMENT READER (PDF / DOCX / PPTX / IMG) -->
+        <!-- INBUILT READER & VIDEO PLAYER (Active file card hides from list below while open here) -->
         <div id="vault-reader-box" style="display:none; margin-bottom: 18px; border: 1px solid var(--cyber-blue); border-radius: 12px; overflow: hidden; background: #020617; box-shadow: 0 0 24px rgba(56, 189, 248, 0.25);">
-          <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 14px; background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid rgba(56, 189, 248, 0.25);">
-            <span id="vault-reader-title" style="font-size:0.85rem; font-weight:800; color:var(--cyber-blue); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:72%;">
-              Document Preview
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 8px 12px; background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid rgba(56, 189, 248, 0.25); gap: 8px;">
+            <span id="vault-reader-title" style="font-size:0.74rem; font-weight:700; color:#94a3b8; font-family:monospace; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:75%;">
+              Active File
             </span>
-            <button class="clear-btn" style="padding: 5px 10px; font-size: 0.75rem;" onclick="closeVaultReader()">
+            <button class="clear-btn" style="padding: 4px 10px; font-size: 0.72rem; white-space:nowrap;" onclick="closeVaultReader()">
               ✕ Close Reader
             </button>
           </div>
-          <iframe id="vault-reader-frame" src="" style="width: 100%; height: 520px; border: none; background: #0f172a;" allow="autoplay"></iframe>
+          <iframe id="vault-reader-frame" src="" style="width: 100%; height: 520px; border: none; background: #0f172a;" allow="autoplay; fullscreen" allowfullscreen></iframe>
         </div>
 
         <!-- PUBLIC DOWNLOAD DIRECTORY -->
@@ -1122,6 +1123,7 @@
     // Master Admin Access Key for File Vault (Change anytime)
     const VAULT_ADMIN_KEY = "NK7007";
     let isVaultAdmin = false;
+    let activeReaderItemId = null;
 
     window.switchTab = function(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -1152,7 +1154,7 @@
     };
 
     // ============================================
-    // GOOGLE DRIVE CLOUD VAULT + INBUILT READER
+    // GOOGLE DRIVE CLOUD VAULT + READER & VIDEO
     // ============================================
     function extractDriveFileId(rawUrl) {
       if (!rawUrl) return null;
@@ -1179,15 +1181,24 @@
       return rawUrl || "";
     }
 
-    window.openVaultReader = function(rawUrl, title) {
-      const previewUrl = formatDrivePreviewUrl(rawUrl);
+    window.openVaultReader = function(itemId) {
+      if (!lastVaultSnapshot || !lastVaultSnapshot[itemId]) return;
+      const item = lastVaultSnapshot[itemId];
+
+      activeReaderItemId = itemId;
+      const previewUrl = formatDrivePreviewUrl(item.rawLink);
       const box = document.getElementById("vault-reader-box");
       const frame = document.getElementById("vault-reader-frame");
       const titleEl = document.getElementById("vault-reader-title");
 
-      titleEl.innerText = "📖 " + title;
+      const icon = item.type === "VIDEO" ? "🎬" : "📖";
+      titleEl.innerText = `${icon} ${item.title}`;
+      frame.style.height = item.type === "VIDEO" ? "360px" : "520px";
       frame.src = previewUrl;
       box.style.display = "block";
+
+      // Re-render list so the currently open item disappears from Available Cloud Files
+      renderVaultList(lastVaultSnapshot);
       box.scrollIntoView({ behavior: "smooth", block: "nearest" });
     };
 
@@ -1196,6 +1207,10 @@
       const frame = document.getElementById("vault-reader-frame");
       frame.src = "";
       box.style.display = "none";
+      activeReaderItemId = null;
+
+      // Restore the closed item back into Available Cloud Files
+      renderVaultList(lastVaultSnapshot);
     };
 
     window.handleAdminVaultAuth = function() {
@@ -1255,6 +1270,9 @@
 
     window.deleteVaultItem = function(itemId) {
       if (confirm("Remove this file from the public vault?")) {
+        if (activeReaderItemId === itemId) {
+          closeVaultReader();
+        }
         remove(ref(db, `vault-files/${itemId}`));
       }
     };
@@ -1275,21 +1293,29 @@
         return;
       }
 
-      Object.entries(data).reverse().forEach(([id, item]) => {
+      const entries = Object.entries(data).reverse();
+      let visibleCount = 0;
+
+      entries.forEach(([id, item]) => {
+        // Hide the card that is currently open inside the reader/player above
+        if (id === activeReaderItemId) return;
+
+        visibleCount++;
         const div = document.createElement("div");
         div.className = "feed-item";
 
         if (item.type === "APK") div.style.borderLeftColor = "var(--cyber-green)";
+        else if (item.type === "VIDEO") div.style.borderLeftColor = "#f43f5e";
         else if (item.type === "PDF" || item.type === "DOCX") div.style.borderLeftColor = "var(--cyber-purple)";
         else if (item.type === "PPT") div.style.borderLeftColor = "#f59e0b";
         else div.style.borderLeftColor = "var(--cyber-blue)";
 
-        const safeTitle = (item.title || "Document").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
-        const safeRawLink = (item.rawLink || "").replace(/'/g, "\\'");
-
-        const readBtn = item.type !== "APK"
-          ? `<button class="copy-pill" style="border-color: var(--cyber-blue); color: var(--cyber-blue);" onclick="openVaultReader('${safeRawLink}', '${safeTitle}')">📖 Read Here</button>`
-          : "";
+        let actionBtn = "";
+        if (item.type === "VIDEO") {
+          actionBtn = `<button class="copy-pill" style="border-color: #f43f5e; color: #fda4af;" onclick="openVaultReader('${id}')">▶️ Watch Video</button>`;
+        } else if (item.type !== "APK") {
+          actionBtn = `<button class="copy-pill" style="border-color: var(--cyber-blue); color: var(--cyber-blue);" onclick="openVaultReader('${id}')">📖 Read Here</button>`;
+        }
 
         let deleteBtn = "";
         if (isVaultAdmin) {
@@ -1310,7 +1336,7 @@
           </div>
 
           <div class="row-group">
-            ${readBtn}
+            ${actionBtn}
             <a href="${item.directLink}" target="_blank" class="broadcast-btn" style="text-decoration:none; display:inline-block; padding:8px 16px; font-size:0.82rem;">
               ⬇️ Download
             </a>
@@ -1320,6 +1346,10 @@
         `;
         feed.appendChild(div);
       });
+
+      if (visibleCount === 0 && activeReaderItemId) {
+        feed.innerHTML = "<p style='color:#64748b; font-family: monospace; font-size:0.8rem;'>[CLOSE READER ABOVE TO RETURN FILE TO LIST]</p>";
+      }
     }
 
     // ============================================
@@ -1819,4 +1849,3 @@
   </script>
 </body>
 </html>
-
