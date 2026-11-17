@@ -977,7 +977,7 @@
       </div>
     </div>
 
-    <!-- TAB 4: GOOGLE DRIVE CLOUD VAULT -->
+    <!-- TAB 4: GOOGLE DRIVE CLOUD VAULT + INBUILT READER -->
     <div id="vault-tab" class="tab-content">
       <div class="card" style="min-height: 580px; display: flex; flex-direction: column; padding: 18px;">
         
@@ -998,17 +998,17 @@
           </div>
           
           <select id="vault-file-type">
-            <option value="APK">Android App (.apk)</option>
-            <option value="PDF">Notes / Document (.pdf)</option>
+            <option value="PDF">PDF Document (.pdf)</option>
+            <option value="DOCX">Word Document (.docx / .doc)</option>
             <option value="PPT">Presentation (.ppt / .pptx)</option>
+            <option value="APK">Android App (.apk)</option>
             <option value="IMG">Image / Diagram (.png / .jpg)</option>
             <option value="PY/SQL">Lab Dataset / Code (.zip / .csv / .py)</option>
-            <option value="OTHER">Other File</option>
           </select>
 
-          <input type="text" id="vault-file-title" placeholder="File Title (e.g. Class 12 CS Notes, Custom App v1.0)">
+          <input type="text" id="vault-file-title" placeholder="File Title (e.g. Class 12 CS Notes, Practical File)">
           <input type="url" id="vault-drive-link" placeholder="Paste Google Drive Share Link (Anyone with link)">
-          <input type="text" id="vault-file-size" placeholder="File Size (e.g. 24 MB, 1.5 MB)">
+          <input type="text" id="vault-file-size" placeholder="File Size (e.g. 2.4 MB, 18 MB)">
 
           <div style="display:flex; gap:10px; margin-top:10px;">
             <button class="broadcast-btn" onclick="publishVaultFile()" style="flex:1;">
@@ -1016,6 +1016,19 @@
             </button>
             <button class="clear-btn" onclick="lockVaultAdmin()">Lock</button>
           </div>
+        </div>
+
+        <!-- INBUILT DOCUMENT READER (PDF / DOCX / PPTX / IMG) -->
+        <div id="vault-reader-box" style="display:none; margin-bottom: 18px; border: 1px solid var(--cyber-blue); border-radius: 12px; overflow: hidden; background: #020617; box-shadow: 0 0 24px rgba(56, 189, 248, 0.25);">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 14px; background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid rgba(56, 189, 248, 0.25);">
+            <span id="vault-reader-title" style="font-size:0.85rem; font-weight:800; color:var(--cyber-blue); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:72%;">
+              Document Preview
+            </span>
+            <button class="clear-btn" style="padding: 5px 10px; font-size: 0.75rem;" onclick="closeVaultReader()">
+              ✕ Close Reader
+            </button>
+          </div>
+          <iframe id="vault-reader-frame" src="" style="width: 100%; height: 520px; border: none; background: #0f172a;" allow="autoplay"></iframe>
         </div>
 
         <!-- PUBLIC DOWNLOAD DIRECTORY -->
@@ -1106,7 +1119,7 @@
 
     const EXPIRY_TIME_MS = 5 * 60 * 1000;
 
-    // Master Admin Access Key for File Vault (Change this anytime)
+    // Master Admin Access Key for File Vault (Change anytime)
     const VAULT_ADMIN_KEY = "NK7007";
     let isVaultAdmin = false;
 
@@ -1139,16 +1152,51 @@
     };
 
     // ============================================
-    // GOOGLE DRIVE CLOUD VAULT ENGINE
+    // GOOGLE DRIVE CLOUD VAULT + INBUILT READER
     // ============================================
-    function formatDriveDownloadUrl(rawUrl) {
-      if (!rawUrl) return "#";
-      const idMatch = rawUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || rawUrl.match(/id=([a-zA-Z0-9_-]+)/);
-      if (idMatch && idMatch[1]) {
-        return `https://drive.usercontent.google.com/download?id=${idMatch[1]}&export=download`;
-      }
-      return rawUrl;
+    function extractDriveFileId(rawUrl) {
+      if (!rawUrl) return null;
+      const match = rawUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
+                    rawUrl.match(/\/document\/d\/([a-zA-Z0-9_-]+)/) ||
+                    rawUrl.match(/\/presentation\/d\/([a-zA-Z0-9_-]+)/) ||
+                    rawUrl.match(/id=([a-zA-Z0-9_-]+)/);
+      return match ? match[1] : null;
     }
+
+    function formatDriveDownloadUrl(rawUrl) {
+      const fileId = extractDriveFileId(rawUrl);
+      if (fileId) {
+        return `https://drive.usercontent.google.com/download?id=${fileId}&export=download`;
+      }
+      return rawUrl || "#";
+    }
+
+    function formatDrivePreviewUrl(rawUrl) {
+      const fileId = extractDriveFileId(rawUrl);
+      if (fileId) {
+        return `https://drive.google.com/file/d/${fileId}/preview`;
+      }
+      return rawUrl || "";
+    }
+
+    window.openVaultReader = function(rawUrl, title) {
+      const previewUrl = formatDrivePreviewUrl(rawUrl);
+      const box = document.getElementById("vault-reader-box");
+      const frame = document.getElementById("vault-reader-frame");
+      const titleEl = document.getElementById("vault-reader-title");
+
+      titleEl.innerText = "📖 " + title;
+      frame.src = previewUrl;
+      box.style.display = "block";
+      box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    };
+
+    window.closeVaultReader = function() {
+      const box = document.getElementById("vault-reader-box");
+      const frame = document.getElementById("vault-reader-frame");
+      frame.src = "";
+      box.style.display = "none";
+    };
 
     window.handleAdminVaultAuth = function() {
       if (isVaultAdmin) {
@@ -1232,9 +1280,16 @@
         div.className = "feed-item";
 
         if (item.type === "APK") div.style.borderLeftColor = "var(--cyber-green)";
-        else if (item.type === "PDF") div.style.borderLeftColor = "var(--cyber-purple)";
+        else if (item.type === "PDF" || item.type === "DOCX") div.style.borderLeftColor = "var(--cyber-purple)";
         else if (item.type === "PPT") div.style.borderLeftColor = "#f59e0b";
         else div.style.borderLeftColor = "var(--cyber-blue)";
+
+        const safeTitle = (item.title || "Document").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+        const safeRawLink = (item.rawLink || "").replace(/'/g, "\\'");
+
+        const readBtn = item.type !== "APK"
+          ? `<button class="copy-pill" style="border-color: var(--cyber-blue); color: var(--cyber-blue);" onclick="openVaultReader('${safeRawLink}', '${safeTitle}')">📖 Read Here</button>`
+          : "";
 
         let deleteBtn = "";
         if (isVaultAdmin) {
@@ -1255,11 +1310,9 @@
           </div>
 
           <div class="row-group">
+            ${readBtn}
             <a href="${item.directLink}" target="_blank" class="broadcast-btn" style="text-decoration:none; display:inline-block; padding:8px 16px; font-size:0.82rem;">
-              ⬇️ Direct Download
-            </a>
-            <a href="${item.rawLink}" target="_blank" class="copy-pill" style="text-decoration:none; display:inline-block; font-size:0.8rem;">
-              👁️ Preview in Drive
+              ⬇️ Download
             </a>
             <button class="copy-pill" onclick="copyText('${item.directLink}', this)">Copy Link</button>
             ${deleteBtn}
@@ -1766,3 +1819,4 @@
   </script>
 </body>
 </html>
+
