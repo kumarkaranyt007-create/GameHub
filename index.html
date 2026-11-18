@@ -1164,6 +1164,7 @@
             <select id="lab-template-select" onchange="loadLabTemplate(this.value)" style="width:auto; margin:0; padding:7px 10px; font-size:0.82rem;">
               <option value="">📋 Load Practical Template...</option>
               <option value="py_file">Python: Text & CSV File Handling</option>
+              <option value="py_binary">Python: Binary File Handling (pickle)</option>
               <option value="py_sql">Python + SQL: Database Connectivity</option>
               <option value="sql_school">SQL: Create, Insert, Group By & Join</option>
             </select>
@@ -1177,11 +1178,11 @@
           </div>
         </div>
 
-        <!-- VIRTUAL FILE SYSTEM BAR (For Python File Handling) -->
+        <!-- VIRTUAL FILE SYSTEM BAR -->
         <div id="lab-vfs-wrapper">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
             <span style="font-size:0.72rem; color:#94a3b8; font-family:monospace; font-weight:bold;">
-              📁 VIRTUAL LAB FILES (Supports open(), .txt, .csv, .dat)
+              📁 VIRTUAL LAB FILES (Click main.py to edit code)
             </span>
             <div style="display:flex; gap:6px;">
               <button class="copy-pill" style="padding:3px 8px; font-size:0.72rem;" onclick="createNewVirtualFile()">+ New File</button>
@@ -1260,7 +1261,6 @@
       <button onclick="sendChatMessage()">Send</button>
     </div>
   </div>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { getDatabase, ref, push, onValue, remove, set, update, get, onDisconnect, limitToLast, query as fbQuery } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
@@ -1303,7 +1303,6 @@
         document.querySelectorAll('.tab-btn')[index].classList.add('active');
       }
 
-      // Lazy-boot the WebAssembly compilers only when Code Lab tab is opened
       if (tabId === 'lab-tab') {
         initLabEngines();
       }
@@ -1429,6 +1428,13 @@
         activeVirtualFile = "main.py";
         editor.value = virtualFiles["main.py"];
         renderVirtualFileTabs();
+      } else if (tpl === "py_binary") {
+        modeSel.value = "python";
+        switchLabMode();
+        virtualFiles["main.py"] = "import pickle\n\nstudents = [[101, 'Aarav', 95], [102, 'Diya', 98], [103, 'Rohan', 82]]\n\nwith open('students.dat', 'wb') as f:\n    for rec in students:\n        pickle.dump(rec, f)\n\nprint('--- Binary Records (Marks > 90) ---')\nwith open('students.dat', 'rb') as f:\n    try:\n        while True:\n            r = pickle.load(f)\n            if r[2] > 90:\n                print(r)\n    except EOFError:\n        pass";
+        activeVirtualFile = "main.py";
+        editor.value = virtualFiles["main.py"];
+        renderVirtualFileTabs();
       } else if (tpl === "py_sql") {
         modeSel.value = "python";
         switchLabMode();
@@ -1512,9 +1518,8 @@
         consoleEl.innerText = "Running Python...";
 
         try {
-          // Mount all virtual files into Pyodide's in-memory filesystem
           Object.entries(virtualFiles).forEach(([fname, content]) => {
-            if (fname !== "main.py") {
+            if (!fname.endsWith(".py")) {
               pyodideInstance.FS.writeFile(fname, content);
             }
           });
@@ -1523,17 +1528,18 @@
           pyodideInstance.setStdout({ batched: (msg) => { stdoutBuffer += msg + "\n"; } });
           pyodideInstance.setStderr({ batched: (msg) => { stdoutBuffer += "[ERR] " + msg + "\n"; } });
 
-          const scriptToRun = activeVirtualFile === "main.py" ? code : virtualFiles["main.py"];
+          const scriptToRun = activeVirtualFile.endsWith(".py") ? code : virtualFiles["main.py"];
           await pyodideInstance.runPythonAsync(scriptToRun);
 
-          // Sync any files created/modified by Python back into the UI tabs
           const dirFiles = pyodideInstance.FS.readdir(".");
           dirFiles.forEach(f => {
             if (!f.startsWith(".") && !["tmp", "home", "dev", "proc", "lib"].includes(f)) {
               try {
                 const stat = pyodideInstance.FS.stat(f);
-                if (pyodideInstance.FS.isFile(stat.mode) && !f.endsWith(".db")) {
+                if (pyodideInstance.FS.isFile(stat.mode) && !f.endsWith(".db") && !f.endsWith(".dat")) {
                   virtualFiles[f] = pyodideInstance.FS.readFile(f, { encoding: "utf8" });
+                } else if (f.endsWith(".dat")) {
+                  virtualFiles[f] = "[Binary .dat file generated successfully]";
                 }
               } catch (e) {}
             }
@@ -1544,11 +1550,9 @@
           consoleEl.innerText = err.toString();
         }
       } else {
-        // SQL Sandbox Mode with MySQL syntax helper
         sqlScriptBuffer = code;
         consoleEl.innerHTML = "";
         try {
-          // Translate common MySQL shell commands into SQLite equivalents
           let cleanedSql = code
             .replace(/SHOW\s+TABLES\s*;/gi, "SELECT name AS Tables_in_LabDB FROM sqlite_master WHERE type='table';")
             .replace(/DESC\s+([a-zA-Z0-9_]+)\s*;/gi, "PRAGMA table_info($1);")
@@ -1580,19 +1584,33 @@
     window.saveWorkspaceToCloud = async function() {
       const projId = document.getElementById("lab-project-id").value.trim().replace(/[^a-zA-Z0-9_-]/g, "_");
       if (!projId) {
-        alert("Enter a Workspace ID first (e.g. ROLL12_CS) so you can find your files later.");
+        alert("Enter a Workspace ID first (e.g. Kid17) so you can find your files later.");
         return;
       }
-      const mode = document.getElementById("lab-runtime-mode").value;
-      if (mode === "python") virtualFiles[activeVirtualFile] = document.getElementById("lab-code-editor").value;
-      else sqlScriptBuffer = document.getElementById("lab-code-editor").value;
 
-      await set(ref(db, `code-workspaces/${projId}`), {
-        files: virtualFiles,
-        sqlScript: sqlScriptBuffer,
-        updatedAt: Date.now()
+      const mode = document.getElementById("lab-runtime-mode").value;
+      if (mode === "python") {
+        virtualFiles[activeVirtualFile] = document.getElementById("lab-code-editor").value;
+      } else {
+        sqlScriptBuffer = document.getElementById("lab-code-editor").value;
+      }
+
+      const safeFiles = {};
+      Object.entries(virtualFiles).forEach(([fname, content]) => {
+        const safeKey = fname.replace(/\./g, "_dot_");
+        safeFiles[safeKey] = content;
       });
-      alert(`Workspace '${projId}' saved to cloud!`);
+
+      try {
+        await set(ref(db, `code-workspaces/${projId}`), {
+          files: safeFiles,
+          sqlScript: sqlScriptBuffer,
+          updatedAt: Date.now()
+        });
+        alert(`✅ Workspace '${projId}' saved to cloud!`);
+      } catch (err) {
+        alert(`Save failed: ${err.message}`);
+      }
     };
 
     window.loadWorkspaceFromCloud = async function() {
@@ -1601,17 +1619,30 @@
         alert("Enter the Workspace ID you want to load.");
         return;
       }
-      const snap = await get(ref(db, `code-workspaces/${projId}`));
-      if (!snap.exists()) {
-        alert("No saved workspace found with that ID.");
-        return;
+
+      try {
+        const snap = await get(ref(db, `code-workspaces/${projId}`));
+        if (!snap.exists()) {
+          alert(`No saved workspace found for '${projId}'.`);
+          return;
+        }
+
+        const data = snap.val();
+        if (data.files) {
+          const restoredFiles = {};
+          Object.entries(data.files).forEach(([safeKey, content]) => {
+            const origName = safeKey.replace(/_dot_/g, ".");
+            restoredFiles[origName] = content;
+          });
+          virtualFiles = restoredFiles;
+        }
+        if (data.sqlScript) sqlScriptBuffer = data.sqlScript;
+        activeVirtualFile = "main.py";
+        switchLabMode();
+        alert(`✅ Loaded workspace '${projId}'!`);
+      } catch (err) {
+        alert(`Load failed: ${err.message}`);
       }
-      const data = snap.val();
-      if (data.files) virtualFiles = data.files;
-      if (data.sqlScript) sqlScriptBuffer = data.sqlScript;
-      activeVirtualFile = "main.py";
-      switchLabMode();
-      alert(`Loaded workspace '${projId}'!`);
     };
 
     // ============================================
