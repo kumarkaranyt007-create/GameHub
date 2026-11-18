@@ -44,7 +44,7 @@
 
     .container {
       width: 100% !important;
-      max-width: 980px !important;
+      max-width: 960px !important;
       margin: 0 auto;
     }
 
@@ -144,20 +144,20 @@
 
     .tab-btn {
       flex: 1 1 110px;
-      padding: 10px 8px;
+      padding: 10px 10px;
       border: none;
       background: transparent;
       color: #94a3b8;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 700;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.04em;
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.25s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
+      gap: 6px;
     }
 
     .tab-btn.active {
@@ -171,7 +171,7 @@
       background: var(--glass-card);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
-      padding: 20px;
+      padding: 22px;
       border-radius: 16px;
       margin-bottom: 24px;
       border: 1px solid var(--glass-border);
@@ -181,8 +181,8 @@
 
     input, select, textarea {
       width: 100%;
-      padding: 11px 13px;
-      margin: 6px 0;
+      padding: 12px 14px;
+      margin: 7px 0;
       border-radius: 10px;
       border: 1px solid rgba(148, 163, 184, 0.25);
       background: rgba(10, 15, 29, 0.85);
@@ -225,8 +225,8 @@
     button.broadcast-btn {
       background: linear-gradient(135deg, #0284c7, #38bdf8);
       color: #030712;
-      padding: 11px 16px;
-      font-size: 14px;
+      padding: 12px 16px;
+      font-size: 15px;
       letter-spacing: 0.04em;
       box-shadow: 0 4px 18px rgba(56, 189, 248, 0.38);
     }
@@ -240,7 +240,7 @@
       background: rgba(239, 68, 68, 0.15);
       border: 1px solid rgba(239, 68, 68, 0.45);
       color: #fca5a5;
-      padding: 11px 15px;
+      padding: 12px 16px;
       font-size: 13px;
       letter-spacing: 0.03em;
     }
@@ -414,102 +414,87 @@
       display: block;
     }
 
-    /* CODE LAB SANDBOX STYLES */
-    .lab-toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(15, 23, 42, 0.9);
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      margin-bottom: 12px;
-    }
-
-    .file-tabs-bar {
+    /* CODE LAB THEME-MATCHED ELEMENTS */
+    .vfs-bar {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
       align-items: center;
-      margin-bottom: 8px;
-      padding: 6px;
-      background: rgba(2, 6, 23, 0.75);
-      border-radius: 8px;
-      border: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 8px 10px;
+      margin: 8px 0;
+      background: rgba(10, 15, 29, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      border-radius: 10px;
     }
 
-    .file-pill {
-      padding: 5px 10px;
-      border-radius: 6px;
+    .vfs-pill {
+      background: rgba(51, 65, 85, 0.75);
+      color: #cbd5e1;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      border-radius: 8px;
+      padding: 5px 11px;
       font-family: monospace;
       font-size: 0.78rem;
-      background: rgba(30, 41, 59, 0.8);
-      color: #cbd5e1;
-      border: 1px solid rgba(148, 163, 184, 0.25);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      transition: all 0.2s ease;
     }
 
-    .file-pill.active {
-      background: rgba(56, 189, 248, 0.22);
+    .vfs-pill.active {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(129, 140, 248, 0.25));
       border-color: var(--cyber-blue);
       color: var(--cyber-blue);
       font-weight: 700;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
     }
 
-    .lab-editor {
-      width: 100%;
-      min-height: 250px;
-      background: #060a14;
-      color: #e2e8f0;
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 10px;
-      padding: 14px;
+    .lab-editor-box {
+      min-height: 220px;
+      background: #090d16;
+      color: #a7f3d0;
+      border: 1px solid rgba(56, 189, 248, 0.28);
       font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace;
-      font-size: 0.86rem;
+      font-size: 0.85rem;
       line-height: 1.5;
-      tab-size: 4;
     }
 
-    .lab-console {
-      width: 100%;
-      min-height: 170px;
+    .lab-output-box {
+      background: #090d16;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-left: 4px solid var(--cyber-green);
+      border-radius: 12px;
+      padding: 14px 16px;
+      min-height: 150px;
       max-height: 320px;
       overflow: auto;
-      background: #020617;
-      border: 1px solid rgba(34, 197, 94, 0.35);
-      border-radius: 10px;
-      padding: 12px;
-      margin-top: 12px;
-      font-family: 'SF Mono', Monaco, Consolas, monospace;
-      font-size: 0.82rem;
+      font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace;
+      font-size: 0.84rem;
       color: #a7f3d0;
       white-space: pre-wrap;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
     }
 
-    .sql-table {
+    .sql-result-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 8px;
       font-size: 0.8rem;
       color: #f8fafc;
     }
 
-    .sql-table th {
-      background: rgba(56, 189, 248, 0.2);
-      color: var(--cyber-blue);
+    .sql-result-table th {
+      background: rgba(56, 189, 248, 0.18);
+      color: #fde047;
       text-align: left;
-      padding: 6px 10px;
+      padding: 7px 10px;
       border: 1px solid rgba(56, 189, 248, 0.3);
     }
 
-    .sql-table td {
+    .sql-result-table td {
       padding: 6px 10px;
       border: 1px solid rgba(148, 163, 184, 0.2);
+      color: #a7f3d0;
     }
 
     /* RIGHT FAB (CHAT BOT) */
@@ -1142,72 +1127,67 @@
       </div>
     </div>
 
-    <!-- TAB 5: BROWSER PYTHON (WITH FILE HANDLING) + SQLITE LAB -->
+    <!-- TAB 5: PYTHON & SQL LAB (MATCHED TO ORIGINAL GAME HUB THEME) -->
     <div id="lab-tab" class="tab-content">
-      <div class="card" style="padding: 18px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom: 1px solid rgba(56, 189, 248, 0.2); padding-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span class="pulse-dot" id="lab-engine-dot" style="background:#f59e0b; box-shadow:0 0 8px #f59e0b;"></span>
-            <span style="font-size:1rem; font-weight:800; color:var(--cyber-blue);">Python + SQL Browser Lab</span>
-          </div>
-          <span id="lab-engine-status" style="font-size:0.72rem; color:#fde047; font-family:monospace;">STANDBY (CLICK TAB TO BOOT)</span>
+      <div class="card">
+        <div class="card-top">
+          <h3 style="font-size: 1rem; color: #cbd5e1;">Python &amp; SQL Compiler</h3>
+          <span id="lab-engine-status" class="countdown-tag" style="color:#fde047; border-color:rgba(253,224,71,0.35);">STANDBY</span>
         </div>
 
-        <!-- MODE & TEMPLATE TOOLBAR -->
-        <div class="lab-toolbar">
-          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-            <select id="lab-runtime-mode" onchange="switchLabMode()" style="width:auto; margin:0; padding:7px 10px; font-size:0.82rem;">
-              <option value="python">🐍 Python 3 (File Handling + SQLite)</option>
-              <option value="sql">🗄️ SQL Sandbox (MySQL / SQLite)</option>
-            </select>
+        <!-- RUNTIME & PRACTICAL TEMPLATE SELECTORS -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <select id="lab-runtime-mode" onchange="switchLabMode()">
+            <option value="python">🐍 Python 3 (File Handling + SQLite)</option>
+            <option value="sql">🗄️ SQL Sandbox (MySQL / SQLite)</option>
+          </select>
 
-            <select id="lab-template-select" onchange="loadLabTemplate(this.value)" style="width:auto; margin:0; padding:7px 10px; font-size:0.82rem;">
-              <option value="">📋 Load Practical Template...</option>
-              <option value="py_file">Python: Text & CSV File Handling</option>
-              <option value="py_binary">Python: Binary File Handling (pickle)</option>
-              <option value="py_sql">Python + SQL: Database Connectivity</option>
-              <option value="sql_school">SQL: Create, Insert, Group By & Join</option>
-            </select>
-          </div>
-
-          <div style="display:flex; gap:8px; align-items:center;">
-            <button class="broadcast-btn" id="lab-run-btn" onclick="runLabCode()" style="padding:8px 18px; font-size:0.85rem;">
-              ▶ Run Code
-            </button>
-            <button class="copy-pill" onclick="clearLabConsole()">Clear Output</button>
-          </div>
+          <select id="lab-template-select" onchange="loadLabTemplate(this.value)">
+            <option value="">📋 Load Practical Template...</option>
+            <option value="py_file">Python: Text &amp; CSV File Handling</option>
+            <option value="py_binary">Python: Binary File Handling (pickle)</option>
+            <option value="py_sql">Python + SQL: Database Connectivity</option>
+            <option value="sql_school">SQL: Create, Insert, Group By &amp; Join</option>
+          </select>
         </div>
 
         <!-- VIRTUAL FILE SYSTEM BAR -->
         <div id="lab-vfs-wrapper">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-            <span style="font-size:0.72rem; color:#94a3b8; font-family:monospace; font-weight:bold;">
-              📁 VIRTUAL LAB FILES (Click main.py to edit code)
-            </span>
+          <div class="row-group" style="justify-content: space-between; margin-top: 6px;">
+            <span style="font-size:0.75rem; color:#94a3b8; font-family:monospace;">📁 VIRTUAL WORKSPACE FILES</span>
             <div style="display:flex; gap:6px;">
-              <button class="copy-pill" style="padding:3px 8px; font-size:0.72rem;" onclick="createNewVirtualFile()">+ New File</button>
-              <button class="copy-pill" style="padding:3px 8px; font-size:0.72rem;" onclick="downloadActiveVirtualFile()">⬇️ Save File</button>
+              <button class="copy-pill" style="padding: 4px 10px; font-size: 0.75rem;" onclick="createNewVirtualFile()">+ New File</button>
+              <button class="copy-pill" style="padding: 4px 10px; font-size: 0.75rem;" onclick="downloadActiveVirtualFile()">⬇️ Download File</button>
             </div>
           </div>
-          <div class="file-tabs-bar" id="lab-file-tabs"></div>
+          <div class="vfs-bar" id="lab-file-tabs"></div>
         </div>
 
         <!-- CODE EDITOR -->
-        <textarea id="lab-code-editor" class="lab-editor" spellcheck="false" placeholder="Write Python or SQL code here..."></textarea>
+        <textarea id="lab-code-editor" class="lab-editor-box" spellcheck="false" placeholder="# Write Python or SQL code here..."></textarea>
 
-        <!-- CLOUD WORKSPACE SYNC BAR -->
-        <div style="display:flex; gap:8px; align-items:center; margin-top:10px; flex-wrap:wrap; background:rgba(15,23,42,0.75); padding:8px 12px; border-radius:10px; border:1px solid rgba(56,189,248,0.2);">
-          <input type="text" id="lab-project-id" placeholder="Workspace ID (e.g. ROLL12_CS)" style="flex:1; min-width:160px; margin:0; padding:7px 10px; font-size:0.8rem;">
-          <button class="copy-pill" style="border-color:var(--cyber-green); color:var(--cyber-green);" onclick="saveWorkspaceToCloud()">☁️ Save to Cloud</button>
-          <button class="copy-pill" style="border-color:var(--cyber-blue); color:var(--cyber-blue);" onclick="loadWorkspaceFromCloud()">📥 Load from Cloud</button>
+        <!-- RUN & CLEAR BUTTONS -->
+        <div class="btn-grid">
+          <button class="broadcast-btn" id="lab-run-btn" onclick="runLabCode()">▶ Execute Code</button>
+          <button class="clear-btn" onclick="clearLabConsole()">Clear Output</button>
         </div>
 
-        <!-- OUTPUT CONSOLE / SQL TABLE VIEWER -->
-        <div class="section-title" style="margin-top:14px; margin-bottom:4px;">
-          <span>Execution Output</span>
+        <!-- CLOUD WORKSPACE SYNC -->
+        <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(56, 189, 248, 0.2);">
+          <div style="font-size:0.75rem; color:#94a3b8; font-family:monospace; margin-bottom: 4px;">☁️ CLOUD LOCKER (SAVE &amp; RESUME ON ANY DEVICE)</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <input type="text" id="lab-project-id" placeholder="Enter Workspace ID (e.g. Kid17, ROLL12)" style="flex:1; min-width:160px; margin:0;">
+            <button class="copy-pill" style="border-color: var(--cyber-green); color: var(--cyber-green); padding: 10px 14px;" onclick="saveWorkspaceToCloud()">Save Cloud</button>
+            <button class="copy-pill" style="border-color: var(--cyber-blue); color: var(--cyber-blue); padding: 10px 14px;" onclick="loadWorkspaceFromCloud()">Load Cloud</button>
+          </div>
         </div>
-        <div class="lab-console" id="lab-output-console">Ready. Click "▶ Run Code" to execute your program.</div>
       </div>
+
+      <!-- EXECUTION OUTPUT SECTION -->
+      <div class="section-title">
+        <span>Execution Output</span>
+      </div>
+      <div class="lab-output-box" id="lab-output-console">Ready. Click "▶ Execute Code" to run your Python or SQL script.</div>
     </div>
 
   </div> <!-- End container -->
@@ -1344,7 +1324,7 @@
 
       Object.keys(virtualFiles).forEach(fname => {
         const pill = document.createElement("div");
-        pill.className = `file-pill ${fname === activeVirtualFile ? 'active' : ''}`;
+        pill.className = `vfs-pill ${fname === activeVirtualFile ? 'active' : ''}`;
         pill.onclick = () => switchVirtualFile(fname);
 
         let closeSpan = "";
@@ -1474,8 +1454,7 @@
       if (labBooted || labBooting) return;
       labBooting = true;
       const statusEl = document.getElementById("lab-engine-status");
-      const dotEl = document.getElementById("lab-engine-dot");
-      statusEl.innerText = "LOADING PYTHON + SQL RUNTIMES...";
+      statusEl.innerText = "BOOTING WASM...";
 
       try {
         await Promise.all([
@@ -1491,13 +1470,12 @@
 
         labBooted = true;
         labBooting = false;
-        statusEl.innerText = "PYTHON 3.12 + SQLITE READY";
+        statusEl.innerText = "PYTHON + SQL ONLINE";
         statusEl.style.color = "var(--cyber-green)";
-        dotEl.style.background = "var(--cyber-green)";
-        dotEl.style.boxShadow = "0 0 8px var(--cyber-green)";
+        statusEl.style.borderColor = "rgba(34, 197, 94, 0.35)";
       } catch (err) {
         labBooting = false;
-        statusEl.innerText = "RUNTIME LOAD FAILED (CHECK NETWORK)";
+        statusEl.innerText = "OFFLINE / ERROR";
         statusEl.style.color = "var(--cyber-red)";
       }
     }
@@ -1505,7 +1483,7 @@
     window.runLabCode = async function() {
       const consoleEl = document.getElementById("lab-output-console");
       if (!labBooted) {
-        consoleEl.innerText = "Booting WebAssembly runtimes... please wait a moment and click Run again.";
+        consoleEl.innerText = "Booting Python & SQLite engines... please wait a moment and click Execute again.";
         await initLabEngines();
         if (!labBooted) return;
       }
@@ -1515,7 +1493,7 @@
 
       if (mode === "python") {
         virtualFiles[activeVirtualFile] = code;
-        consoleEl.innerText = "Running Python...";
+        consoleEl.innerText = "Executing Python...";
 
         try {
           Object.entries(virtualFiles).forEach(([fname, content]) => {
@@ -1567,7 +1545,7 @@
 
           results.forEach(res => {
             const table = document.createElement("table");
-            table.className = "sql-table";
+            table.className = "sql-result-table";
             let thead = "<thead><tr>" + res.columns.map(c => `<th>${c}</th>`).join("") + "</tr></thead>";
             let tbody = "<tbody>" + res.values.map(row =>
               "<tr>" + row.map(val => `<td>${val === null ? "NULL" : val}</td>`).join("") + "</tr>"
